@@ -18,6 +18,7 @@ class Tool: NSObject, ObservableObject {
             Pen(for: .eraser)
         ]
         super.init()
+        selectedPen = pens.first
     }
 
     func changePen(_ pen: Pen) {

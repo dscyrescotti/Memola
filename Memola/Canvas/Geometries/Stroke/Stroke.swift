@@ -24,7 +24,6 @@ class Stroke: Codable {
     var tailVertices: [QuadVertex] = []
 
     var texture: MTLTexture?
-//    var strokeTexture: MTLTexture?
 
     var isEmpty: Bool {
         vertices.isEmpty
@@ -91,6 +90,7 @@ class Stroke: Codable {
 
     func finish(at point: CGPoint) {
         style.generator.finish(at: point, on: self)
+        NSLog("[Memola] - \(MemoryLayout<QuadVertex>.stride * vertexCount) bytes")
     }
 }
 

@@ -11,6 +11,10 @@ import Foundation
 class Textures {
     static var penTextures: [String: MTLTexture] = [:]
 
+    static func hasCreatedPenTexture(of textureName: String) -> Bool {
+        penTextures[textureName] != nil
+    }
+
     @discardableResult
     static func createPenTexture(with textureName: String, on device: MTLDevice) -> MTLTexture? {
         if let penTexture = penTextures[textureName] {

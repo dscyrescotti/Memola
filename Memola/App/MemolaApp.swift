@@ -11,7 +11,9 @@ import SwiftUI
 struct MemolaApp: App {
     var body: some Scene {
         WindowGroup {
-            MemosView()
+            MemoView()
+                .environmentObject(Canvas())
+                .environment(\.managedObjectContext, Persistence.shared.viewContext)
         }
     }
 }

@@ -110,6 +110,8 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
         let distance = start.distance(to: end)
         let factor: CGFloat
         switch configuration.granularity {
+        case .automatic:
+            factor = min(6, 1 / (stroke.thickness * 10 / 500))
         case .fixed:
             factor = 1 / (stroke.thickness * stroke.style.stepRate)
         case .none:
@@ -139,7 +141,7 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
 extension SolidPointStrokeGenerator {
     struct Configuration {
         var rotation: Rotation = .fixed
-        var granularity: Granularity = .none
+        var granularity: Granularity = .automatic
     }
 
     enum Rotation {
@@ -148,6 +150,7 @@ extension SolidPointStrokeGenerator {
     }
 
     enum Granularity {
+        case automatic
         case fixed
         case none
     }
