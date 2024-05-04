@@ -26,7 +26,7 @@ final class Canvas: NSObject, ObservableObject, Identifiable, Codable, GraphicCo
     var clipBounds: CGRect = .zero
     var zoomScale: CGFloat = .zero
 
-//    weak var board: BoardObject?
+    weak var memo: Memo?
     var graphicLoader: (() throws -> GraphicContext)?
 
     @Published var state: State = .initial
@@ -51,20 +51,20 @@ final class Canvas: NSObject, ObservableObject, Identifiable, Codable, GraphicCo
 // MARK: - Actions
 extension Canvas {
     func load() {
-        guard let graphicLoader else { return }
+//        guard let graphicLoader else { return }
         Task(priority: .high) { [unowned self, graphicLoader] in
             await MainActor.run {
                 self.state = .loading
             }
             do {
-                let graphicContext = try graphicLoader()
+//                let graphicContext = try graphicLoader()
                 graphicContext.delegate = self
                 await MainActor.run {
-                    self.graphicContext = graphicContext
+//                    self.graphicContext = graphicContext
                     self.state = .loaded
                 }
             } catch {
-                NSLog("[SketchNote] - \(error.localizedDescription)")
+                NSLog("[Memola] - \(error.localizedDescription)")
                 await MainActor.run {
                     self.state = .failed
                 }
@@ -73,14 +73,14 @@ extension Canvas {
     }
 
     func save(on managedObjectContext: NSManagedObjectContext) async {
-//        guard let board else { return }
-//        do {
-//            board.data = try JSONEncoder().encode(self)
-//            board.updatedAt = Date()
-//            try managedObjectContext.save()
-//        } catch {
-//            NSLog("[SketchNote] - \(error.localizedDescription)")
-//        }
+        guard let memo else { return }
+        do {
+            memo.data = try JSONEncoder().encode(self)
+            memo.updatedAt = Date()
+            try managedObjectContext.save()
+        } catch {
+            NSLog("[Memola] - \(error.localizedDescription)")
+        }
     }
 
     func listen(on managedObjectContext: NSManagedObjectContext) {

@@ -43,7 +43,7 @@ class CanvasViewController: UIViewController {
         configureGestures()
         configureListeners()
 
-        loadBoard()
+        loadMemo()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -161,7 +161,7 @@ extension CanvasViewController {
 }
 
 extension CanvasViewController {
-    func loadBoard() {
+    func loadMemo() {
         canvas.load()
     }
 
