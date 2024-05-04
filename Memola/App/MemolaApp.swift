@@ -11,7 +11,7 @@ import SwiftUI
 struct MemolaApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MemosView()
         }
     }
 }
