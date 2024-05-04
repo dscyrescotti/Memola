@@ -62,6 +62,10 @@
 		ECA738F42BE612A000A4542E /* Array++.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738F32BE612A000A4542E /* Array++.swift */; };
 		ECA738F62BE612B700A4542E /* MTLDevice++.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738F52BE612B700A4542E /* MTLDevice++.swift */; };
 		ECA738F82BE612EB00A4542E /* Quad.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738F72BE612EB00A4542E /* Quad.swift */; };
+		ECA738FC2BE61C5200A4542E /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738FB2BE61C5200A4542E /* Persistence.swift */; };
+		ECA739012BE61D9C00A4542E /* MemolaModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ECA738FF2BE61D9C00A4542E /* MemolaModel.xcdatamodeld */; };
+		ECA739052BE61E3100A4542E /* Memo.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA739042BE61E3100A4542E /* Memo.swift */; };
+		ECA739082BE623F300A4542E /* PenToolView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA739072BE623F300A4542E /* PenToolView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -121,6 +125,10 @@
 		ECA738F32BE612A000A4542E /* Array++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array++.swift"; sourceTree = "<group>"; };
 		ECA738F52BE612B700A4542E /* MTLDevice++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MTLDevice++.swift"; sourceTree = "<group>"; };
 		ECA738F72BE612EB00A4542E /* Quad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quad.swift; sourceTree = "<group>"; };
+		ECA738FB2BE61C5200A4542E /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		ECA739002BE61D9C00A4542E /* MemolaModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MemolaModel.xcdatamodel; sourceTree = "<group>"; };
+		ECA739042BE61E3100A4542E /* Memo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Memo.swift; sourceTree = "<group>"; };
+		ECA739072BE623F300A4542E /* PenToolView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenToolView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,6 +165,7 @@
 				ECA7387E2BE5FE4200A4542E /* Canvas */,
 				ECA738A12BE601F700A4542E /* Extensions */,
 				ECA738772BE5EEE800A4542E /* Features */,
+				ECA738FA2BE61B1700A4542E /* Persistence */,
 				EC7F6BF12BE5E6E400A34A7B /* Preview Content */,
 				ECA738802BE5FE6000A4542E /* Resources */,
 			);
@@ -200,6 +209,7 @@
 			isa = PBXGroup;
 			children = (
 				ECA7387C2BE5EF4B00A4542E /* MemoView.swift */,
+				ECA739072BE623F300A4542E /* PenToolView.swift */,
 			);
 			path = Memo;
 			sourceTree = "<group>";
@@ -224,7 +234,8 @@
 		ECA738802BE5FE6000A4542E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */,
+				ECA738FE2BE61D5700A4542E /* Models */,
+				ECA738FD2BE61D4700A4542E /* Assets */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -336,7 +347,6 @@
 		ECA738B12BE60D8800A4542E /* Tool */ = {
 			isa = PBXGroup;
 			children = (
-				ECA738C22BE60E7200A4542E /* PenStyles */,
 				ECA738BD2BE60E2800A4542E /* Pen */,
 				ECA738BB2BE60E0300A4542E /* Tool.swift */,
 			);
@@ -356,8 +366,8 @@
 		ECA738BD2BE60E2800A4542E /* Pen */ = {
 			isa = PBXGroup;
 			children = (
-				ECA738BE2BE60E3400A4542E /* Pen.swift */,
-				ECA738C02BE60E5300A4542E /* PenStyle.swift */,
+				ECA739062BE61F7500A4542E /* Core */,
+				ECA738C22BE60E7200A4542E /* PenStyles */,
 			);
 			path = Pen;
 			sourceTree = "<group>";
@@ -418,6 +428,56 @@
 				ECA738982BE6015700A4542E /* Primitives */,
 			);
 			path = Geometries;
+			sourceTree = "<group>";
+		};
+		ECA738FA2BE61B1700A4542E /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				ECA739032BE61E2600A4542E /* Entities */,
+				ECA739022BE61DE700A4542E /* Core */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
+		ECA738FD2BE61D4700A4542E /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		ECA738FE2BE61D5700A4542E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				ECA738FF2BE61D9C00A4542E /* MemolaModel.xcdatamodeld */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		ECA739022BE61DE700A4542E /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				ECA738FB2BE61C5200A4542E /* Persistence.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		ECA739032BE61E2600A4542E /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				ECA739042BE61E3100A4542E /* Memo.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
+		ECA739062BE61F7500A4542E /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				ECA738BE2BE60E3400A4542E /* Pen.swift */,
+				ECA738C02BE60E5300A4542E /* PenStyle.swift */,
+			);
+			path = Core;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -499,6 +559,7 @@
 				ECA738A82BE6025900A4542E /* GraphicUniforms.swift in Sources */,
 				ECA738E62BE611FD00A4542E /* CGRect++.swift in Sources */,
 				ECA738E82BE6120F00A4542E /* Color++.swift in Sources */,
+				ECA738FC2BE61C5200A4542E /* Persistence.swift in Sources */,
 				ECA7387A2BE5EF0400A4542E /* MemosView.swift in Sources */,
 				ECA738BA2BE60DEF00A4542E /* HistoryAction.swift in Sources */,
 				ECA738AA2BE6026D00A4542E /* Uniforms.swift in Sources */,
@@ -513,16 +574,19 @@
 				ECA738862BE5FF2500A4542E /* Canvas.swift in Sources */,
 				ECA738882BE5FF4400A4542E /* Renderer.swift in Sources */,
 				ECA738D42BE60F9100A4542E /* StrokeGenerator.swift in Sources */,
+				ECA739082BE623F300A4542E /* PenToolView.swift in Sources */,
 				ECA738CB2BE60F1900A4542E /* ViewPortContext.swift in Sources */,
 				ECA738EE2BE6125D00A4542E /* simd_float4x4++.swift in Sources */,
 				ECA7388C2BE6009600A4542E /* Textures.swift in Sources */,
 				ECA738B82BE60DDC00A4542E /* HistoryEvent.swift in Sources */,
 				ECA738952BE6012D00A4542E /* ViewPort.metal in Sources */,
+				ECA739012BE61D9C00A4542E /* MemolaModel.xcdatamodeld in Sources */,
 				ECA738F02BE6127700A4542E /* CGSize++.swift in Sources */,
 				ECA738EC2BE6124E00A4542E /* CGAffineTransform++.swift in Sources */,
 				ECA738E22BE610D000A4542E /* GraphicRenderPass.swift in Sources */,
 				ECA738DC2BE6108D00A4542E /* StrokeRenderPass.swift in Sources */,
 				ECA738F42BE612A000A4542E /* Array++.swift in Sources */,
+				ECA739052BE61E3100A4542E /* Memo.swift in Sources */,
 				ECA7388F2BE600DA00A4542E /* Grid.metal in Sources */,
 				ECA738C92BE60EF700A4542E /* GraphicContext.swift in Sources */,
 				ECA738F62BE612B700A4542E /* MTLDevice++.swift in Sources */,
@@ -754,6 +818,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		ECA738FF2BE61D9C00A4542E /* MemolaModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				ECA739002BE61D9C00A4542E /* MemolaModel.xcdatamodel */,
+			);
+			currentVersion = ECA739002BE61D9C00A4542E /* MemolaModel.xcdatamodel */;
+			path = MemolaModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = EC7F6BE02BE5E6E300A34A7B /* Project object */;
 }
