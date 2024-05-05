@@ -118,6 +118,14 @@ extension GraphicContext {
         self.currentPoint = nil
         delegate?.didUpdate.send()
     }
+
+    func cancelStroke() {
+        if !strokes.isEmpty {
+            strokes.removeLast()
+        }
+        currentStroke = nil
+        currentPoint = nil
+    }
 }
 
 extension GraphicContext {

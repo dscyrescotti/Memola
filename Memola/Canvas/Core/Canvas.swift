@@ -12,7 +12,7 @@ import Foundation
 
 final class Canvas: NSObject, ObservableObject, Identifiable, Codable, GraphicContextDelegate {
     let size: CGSize
-    let maximumZoomScale: CGFloat = 30
+    let maximumZoomScale: CGFloat = 25
     let minimumZoomScale: CGFloat = 3.1
 
     var transform: simd_float4x4 = .init()
@@ -32,7 +32,7 @@ final class Canvas: NSObject, ObservableObject, Identifiable, Codable, GraphicCo
     @Published var state: State = .initial
     lazy var didUpdate = PassthroughSubject<Void, Never>()
 
-    init(size: CGSize = .init(width: 8_000, height: 8_000)) {
+    init(size: CGSize = .init(width: 4_000, height: 4_000)) {
         self.size = size
     }
 
@@ -130,6 +130,10 @@ extension Canvas {
 
     func endTouch(at point: CGPoint) {
         graphicContext.endStroke(at: point)
+    }
+
+    func cancelTouch() {
+        graphicContext.cancelStroke()
     }
 
     func setGraphicRenderType(_ renderType: GraphicContext.RenderType) {
