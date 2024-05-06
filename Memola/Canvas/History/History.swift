@@ -12,6 +12,8 @@ class History: ObservableObject {
     @Published var undoStack: [HistoryEvent] = []
     @Published var redoStack: [HistoryEvent] = []
 
+    var redoCache: [HistoryEvent] = []
+
     let historyPublisher = PassthroughSubject<HistoryAction, Never>()
 
     var undoDisabled: Bool {
@@ -46,6 +48,15 @@ class History: ObservableObject {
     }
 
     func resetRedo() {
+        redoCache = redoStack
         redoStack.removeAll()
+    }
+
+    func restoreUndo() {
+        if !undoStack.isEmpty {
+            undoStack.removeLast()
+        }
+        redoStack = redoCache
+        redoCache.removeAll()
     }
 }

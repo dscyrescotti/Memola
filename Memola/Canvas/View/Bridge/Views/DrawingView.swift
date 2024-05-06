@@ -35,11 +35,42 @@ class DrawingView: UIView {
         renderView.drawableSize = size.multiply(by: 2.5)
     }
 
-    func touchBegan(on point: CGPoint) {
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        !canvas.hasValidStroke
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        guard let touch = touches.first else { return }
+        let point = touch.location(in: self)
+        touchBegan(at: point)
+    }
+
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesMoved(touches, with: event)
+        guard let touch = touches.first else { return }
+        let point = touch.location(in: self)
+        touchMoved(to: point)
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        guard let touch = touches.first else { return }
+        let point = touch.location(in: self)
+        touchEnded(at: point)
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
+        guard let touch = touches.first else { return }
+        let point = touch.location(in: self)
+        touchEnded(at: point)
+    }
+
+    func touchBegan(at point: CGPoint) {
         guard !disablesUserInteraction else { return }
         guard let pen = tool.selectedPen else { return }
         let stroke = canvas.beginTouch(at: point.muliply(by: ratio), pen: pen)
-        renderView.draw()
         history.addUndo(.stroke(stroke))
         history.resetRedo()
     }
@@ -47,13 +78,23 @@ class DrawingView: UIView {
     func touchMoved(to point: CGPoint) {
         guard !disablesUserInteraction else { return }
         canvas.moveTouch(to: point.muliply(by: ratio))
-        renderView.draw()
+        if canvas.hasValidStroke {
+            renderView.draw()
+        }
     }
 
-    func touchEnded(to point: CGPoint) {
+    func touchEnded(at point: CGPoint) {
         guard !disablesUserInteraction else { return }
         canvas.endTouch(at: point.muliply(by: ratio))
         renderView.draw()
+    }
+
+    func touchCancelled() {
+        if canvas.graphicContext.currentStroke != nil {
+            canvas.cancelTouch()
+            renderView.draw()
+            history.restoreUndo()
+        }
     }
 
     func disableUserInteraction() {

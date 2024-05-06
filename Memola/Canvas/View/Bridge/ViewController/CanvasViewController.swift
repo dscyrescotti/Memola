@@ -40,7 +40,6 @@ class CanvasViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureViews()
-        configureGestures()
         configureListeners()
 
         loadMemo()
@@ -185,41 +184,6 @@ extension CanvasViewController: MTKViewDelegate {
     }
 }
 
-extension CanvasViewController {
-    func configureGestures() {
-        let drawingPanGesture = UIPanGestureRecognizer(target: self, action: #selector(recognizePanGesture))
-        drawingPanGesture.maximumNumberOfTouches = 1
-        drawingPanGesture.minimumNumberOfTouches = 1
-        drawingView.addGestureRecognizer(drawingPanGesture)
-
-        let drawingTapGesture = UITapGestureRecognizer(target: self, action: #selector(recognizeTapGesture))
-        drawingTapGesture.numberOfTapsRequired = 1
-        drawingView.addGestureRecognizer(drawingTapGesture)
-    }
-
-    @objc func recognizePanGesture(_ gesture: UIPanGestureRecognizer) {
-        let point = gesture.location(in: drawingView)
-        switch gesture.state {
-        case .began:
-            drawingView.touchBegan(on: point)
-        case .changed:
-            drawingView.touchMoved(to: point)
-        case .ended:
-            drawingView.touchEnded(to: point)
-        case .cancelled:
-            drawingView.touchEnded(to: point)
-        default:
-            break
-        }
-    }
-
-    @objc func recognizeTapGesture(_ gesture: UITapGestureRecognizer) {
-        let point = gesture.location(in: drawingView)
-        drawingView.touchBegan(on: point)
-        drawingView.touchEnded(to: point)
-    }
-}
-
 extension CanvasViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         drawingView
@@ -269,6 +233,7 @@ extension CanvasViewController: UIScrollViewDelegate {
 extension CanvasViewController {
     func magnificationStarted() {
         guard !renderer.updatesViewPort else { return }
+        drawingView.touchCancelled()
         canvas.updateClipBounds(scrollView, on: drawingView)
         drawingView.disableUserInteraction()
         renderer.updatesViewPort = true

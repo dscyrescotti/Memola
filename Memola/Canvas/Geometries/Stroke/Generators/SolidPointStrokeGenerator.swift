@@ -89,8 +89,12 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
         let averageX = (prev.x + current.x) / 2
         let averageY = (prev.y + current.y) / 2
         let point = CGPoint(x: averageX, y: averageY)
-        stroke.keyPoints[index] = point
-        stroke.keyPoints[index - 1] = point
+        if index != 0 {
+            stroke.keyPoints[index] = point
+        }
+        if index - 1 != 0 {
+            stroke.keyPoints[index - 1] = point
+        }
     }
 
     private func addPoint(_ point: CGPoint, on stroke: Stroke) {
@@ -117,11 +121,24 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
         case .none:
             factor = 1 / (stroke.thickness * 10 / 500)
         }
-        let segements = max(Int(distance * factor), 1)
-        for i in 0..<segements {
-            let t = CGFloat(i) / CGFloat(segements)
+        let segments = max(Int(distance * factor), 1)
+        for i in 0..<segments {
+            let t = CGFloat(i) / CGFloat(segments)
             let x = pow(1 - t, 2) * start.x + 2.0 * (1 - t) * t * control.x + t * t * end.x
             let y = pow(1 - t, 2) * start.y + 2.0 * (1 - t) * t * control.y + t * t * end.y
+            let point = CGPoint(x: x, y: y)
+            addPoint(point, on: stroke)
+        }
+    }
+
+    #warning("TODO: remove later")
+    private func addLine(from start: CGPoint, to end: CGPoint, on stroke: Stroke) {
+        let distance = end.distance(to: start)
+        let segments = max(distance / stroke.style.stepRate, 2)
+        for i in 0..<Int(segments) {
+            let i = CGFloat(i)
+            let x = start.x + (end.x - start.x) * (i / segments)
+            let y = start.y + (end.y - start.y) * (i / segments)
             let point = CGPoint(x: x, y: y)
             addPoint(point, on: stroke)
         }

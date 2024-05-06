@@ -142,6 +142,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EC1437B42BE748E60022C903 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				ECA738AC2BE60CC600A4542E /* DrawingView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		EC1437B52BE748EF0022C903 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				ECA738AF2BE60D0B00A4542E /* CanvasViewController.swift */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
 		EC7F6BDF2BE5E6E300A34A7B = {
 			isa = PBXGroup;
 			children = (
@@ -338,8 +354,8 @@
 		ECA738AE2BE60CEC00A4542E /* Bridge */ = {
 			isa = PBXGroup;
 			children = (
-				ECA738AC2BE60CC600A4542E /* DrawingView.swift */,
-				ECA738AF2BE60D0B00A4542E /* CanvasViewController.swift */,
+				EC1437B52BE748EF0022C903 /* ViewController */,
+				EC1437B42BE748E60022C903 /* Views */,
 			);
 			path = Bridge;
 			sourceTree = "<group>";
