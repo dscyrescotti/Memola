@@ -22,6 +22,8 @@ class Stroke: Codable {
     var vertexBuffer: MTLBuffer?
     var vertexCount: Int = 0
 
+    let createdAt: Date = Date()
+
     var texture: MTLTexture?
 
     var isEmpty: Bool {

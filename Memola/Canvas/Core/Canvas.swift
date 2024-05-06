@@ -32,6 +32,13 @@ final class Canvas: NSObject, ObservableObject, Identifiable, Codable, GraphicCo
     @Published var state: State = .initial
     lazy var didUpdate = PassthroughSubject<Void, Never>()
 
+    var hasValidStroke: Bool {
+        if let currentStroke = graphicContext.currentStroke {
+            return Date.now.timeIntervalSince(currentStroke.createdAt) * 1000 > 80
+        }
+        return false
+    }
+
     init(size: CGSize = .init(width: 4_000, height: 4_000)) {
         self.size = size
     }

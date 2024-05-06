@@ -40,7 +40,6 @@ class CanvasViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureViews()
-        configureGestures()
         configureListeners()
 
         loadMemo()
@@ -84,8 +83,6 @@ extension CanvasViewController {
         scrollView.showsHorizontalScrollIndicator = true
         scrollView.delegate = self
         scrollView.backgroundColor = .clear
-//        scrollView.pinchGestureRecognizer?.cancelsTouchesInView = true
-//        scrollView.pinchGestureRecognizer?.delaysTouchesEnded = true
 
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
@@ -99,8 +96,6 @@ extension CanvasViewController {
         scrollView.addSubview(drawingView)
         drawingView.backgroundColor = .clear
         drawingView.isUserInteractionEnabled = false
-        drawingView.isMultipleTouchEnabled = true
-        drawingView.isExclusiveTouch = true
     }
 
     func resizeDocumentView(to newSize: CGSize? = nil) {
@@ -189,45 +184,6 @@ extension CanvasViewController: MTKViewDelegate {
     }
 }
 
-extension CanvasViewController {
-    func configureGestures() {
-//        let drawingPanGesture = PanGestureRecognizer(target: self, action: #selector(recognizePanGesture))
-//        drawingPanGesture.maximumNumberOfTouches = 1
-//        drawingPanGesture.minimumNumberOfTouches = 1
-//        drawingView.addGestureRecognizer(drawingPanGesture)
-
-//        let drawingTapGesture = UITapGestureRecognizer(target: self, action: #selector(recognizeTapGesture))
-//        drawingTapGesture.numberOfTapsRequired = 1
-//        drawingView.addGestureRecognizer(drawingTapGesture)
-    }
-
-//    @objc func recognizePanGesture(_ gesture: PanGestureRecognizer) {
-//        let point = gesture.location(in: drawingView)
-//        switch gesture.state {
-//        case .began:
-//            if let initialTouch = gesture.initialTouch {
-//                drawingView.touchBegan(on: initialTouch.location(in: drawingView))
-//            } else {
-//                drawingView.touchBegan(on: point)
-//            }
-//        case .changed:
-//            drawingView.touchMoved(to: point)
-//        case .ended:
-//            drawingView.touchEnded(to: point)
-//        case .cancelled:
-//            drawingView.touchEnded(to: point)
-//        default:
-//            break
-//        }
-//    }
-
-//    @objc func recognizeTapGesture(_ gesture: UITapGestureRecognizer) {
-//        let point = gesture.location(in: drawingView)
-//        drawingView.touchBegan(on: point)
-//        drawingView.touchEnded(to: point)
-//    }
-}
-
 extension CanvasViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         drawingView
@@ -277,6 +233,7 @@ extension CanvasViewController: UIScrollViewDelegate {
 extension CanvasViewController {
     func magnificationStarted() {
         guard !renderer.updatesViewPort else { return }
+        drawingView.touchCancelled()
         canvas.updateClipBounds(scrollView, on: drawingView)
         drawingView.disableUserInteraction()
         renderer.updatesViewPort = true
