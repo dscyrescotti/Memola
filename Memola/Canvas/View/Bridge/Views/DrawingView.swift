@@ -41,7 +41,7 @@ class DrawingView: UIView {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        if let count = event?.allTouches?.count, count > 1 {
+        if !canvas.hasValidStroke, let count = event?.allTouches?.count, count > 1 {
             touchCancelled()
             return
         }
@@ -52,7 +52,7 @@ class DrawingView: UIView {
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesMoved(touches, with: event)
-        if let count = event?.allTouches?.count, count > 1 {
+        if !canvas.hasValidStroke, let count = event?.allTouches?.count, count > 1 {
             touchCancelled()
             return
         }
