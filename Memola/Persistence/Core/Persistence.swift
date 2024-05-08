@@ -13,11 +13,13 @@ class Persistence {
 
     static let shared: Persistence = Persistence()
 
-    private init() { }
-
-    var viewContext: NSManagedObjectContext {
-        persistentContainer.viewContext
+    private init() { 
+        QuadValueTransformer.register()
     }
+
+    lazy var viewContext: NSManagedObjectContext = {
+        persistentContainer.viewContext
+    }()
 
     lazy var persistentContainer: NSPersistentContainer = {
         let persistentStore = NSPersistentStoreDescription()

@@ -7,43 +7,26 @@
 
 import Combine
 import MetalKit
+import CoreData
 import Foundation
 
-protocol GraphicContextDelegate: AnyObject {
-    var didUpdate: PassthroughSubject<Void, Never> { get set }
-}
+@objc(GraphicContext)
+class GraphicContext: NSManagedObject {
+    @NSManaged var id: UUID
+    @NSManaged var canvas: Canvas
+    @NSManaged var strokes: NSMutableOrderedSet
 
-class GraphicContext: Codable {
-    var strokes: [Stroke] = []
     var currentStroke: Stroke?
     var previousStroke: Stroke?
     var currentPoint: CGPoint?
-
     var renderType: RenderType = .finished
-
     var vertices: [ViewPortVertex] = []
     var vertexCount: Int = 4
     var vertexBuffer: MTLBuffer?
 
-    weak var delegate: GraphicContextDelegate?
-
-    init() {
+    override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertInto: context)
         setViewPortVertices()
-    }
-
-    enum CodingKeys: CodingKey {
-        case strokes
-    }
-
-    required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.strokes = try container.decode([Stroke].self, forKey: .strokes)
-        setViewPortVertices()
-    }
-
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(self.strokes, forKey: .strokes)
     }
 
     func setViewPortVertices() {
@@ -57,19 +40,17 @@ class GraphicContext: Codable {
     }
 
     func undoGraphic() {
-        guard !strokes.isEmpty else { return }
-        strokes.removeLast()
+        guard let stroke = strokes.lastObject as? Stroke else { return }
+        strokes.remove(stroke)
         previousStroke = nil
-        delegate?.didUpdate.send()
     }
 
     func redoGraphic(for event: HistoryEvent) {
         switch event {
         case .stroke(let stroke):
-            strokes.append(stroke)
+            strokes.add(stroke)
             previousStroke = nil
         }
-        delegate?.didUpdate.send()
     }
 }
 
@@ -91,12 +72,15 @@ extension GraphicContext: Drawable {
 
 extension GraphicContext {
     func beginStroke(at point: CGPoint, pen: Pen) -> Stroke {
-        let stroke = Stroke(
-            color: pen.color,
-            style: pen.style,
-            thickness: pen.thickness
-        )
-        strokes.append(stroke)
+        let stroke = Stroke(context: Persistence.shared.viewContext)
+        stroke.id = UUID()
+        stroke.color = pen.color
+        stroke.style = pen.strokeStyle.rawValue
+        stroke.thickness = pen.thickness
+        stroke.createdAt = .now
+        stroke.strokeQuads = []
+        stroke.graphicContext = self
+        strokes.add(stroke)
         currentStroke = stroke
         currentPoint = point
         currentStroke?.begin(at: point)
@@ -105,23 +89,28 @@ extension GraphicContext {
 
     func appendStroke(with point: CGPoint) {
         guard let currentStroke else { return }
-        guard let currentPoint, point.distance(to: currentPoint) > currentStroke.thickness * currentStroke.style.stepRate else { return }
+        guard let currentPoint, point.distance(to: currentPoint) > currentStroke.thickness * currentStroke.penStyle.anyPenStyle.stepRate else { return }
         currentStroke.append(to: point)
         self.currentPoint = point
     }
 
     func endStroke(at point: CGPoint) {
-        guard currentPoint != nil else { return }
-        currentStroke?.finish(at: point)
+        guard currentPoint != nil, let currentStroke else { return }
+        currentStroke.finish(at: point)
+        currentStroke.saveQuads()
+        do {
+            try Persistence.shared.viewContext.save()
+        } catch {
+            NSLog("[Memola] - \(error.localizedDescription)")
+        }
         previousStroke = currentStroke
-        currentStroke = nil
+        self.currentStroke = nil
         self.currentPoint = nil
-        delegate?.didUpdate.send()
     }
 
     func cancelStroke() {
-        if !strokes.isEmpty {
-            strokes.removeLast()
+        if let stroke = strokes.lastObject {
+            strokes.remove(stroke)
         }
         currentStroke = nil
         currentPoint = nil

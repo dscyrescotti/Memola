@@ -12,7 +12,7 @@ struct MemosView: View {
 
     @FetchRequest(sortDescriptors: []) var memos: FetchedResults<Memo>
 
-    @State var canvas: Canvas?
+    @State var memo: Memo?
 
     var body: some View {
         NavigationStack {
@@ -29,9 +29,8 @@ struct MemosView: View {
                     }
                 }
         }
-        .fullScreenCover(item: $canvas) { canvas in
-            MemoView()
-                .environmentObject(canvas)
+        .fullScreenCover(item: $memo) { memo in
+            MemoView(canvas: memo.canvas)
         }
     }
 
@@ -59,29 +58,34 @@ struct MemosView: View {
 
     func createMemo(title: String) {
         do {
-            let data = try JSONEncoder().encode(Canvas())
             let memo = Memo(context: managedObjectContext)
             memo.id = UUID()
             memo.title = title
-            memo.data = data
             memo.createdAt = .now
             memo.updatedAt = .now
+
+            let canvas = Canvas(context: managedObjectContext)
+            canvas.id = UUID()
+            canvas.width = 4_000
+            canvas.height = 4_000
+
+            let graphicContext = GraphicContext(context: managedObjectContext)
+            graphicContext.id = UUID()
+            graphicContext.strokes = []
+
+            memo.canvas = canvas
+            canvas.memo = memo
+            canvas.graphicContext = graphicContext
+            graphicContext.canvas = canvas
 
             try managedObjectContext.save()
             openMemo(for: memo)
         } catch {
-            NSLog("[SketchNote] - \(error.localizedDescription)")
+            NSLog("[Memola] - \(error.localizedDescription)")
         }
     }
 
     func openMemo(for memo: Memo) {
-        do {
-            let data = memo.data
-            let canvas = try JSONDecoder().decode(Canvas.self, from: data)
-            canvas.memo = memo
-            self.canvas = canvas
-        } catch {
-            NSLog("[SketchNote] - \(error.localizedDescription)")
-        }
+        self.memo = memo
     }
 }

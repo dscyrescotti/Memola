@@ -1,10 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22222" systemVersion="23B74" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22757" systemVersion="23B74" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Canvas" representedClassName="Canvas" syncable="YES">
+        <attribute name="height" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" customClassName="CGFloat"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="width" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" customClassName="CGFloat"/>
+        <relationship name="graphicContext" maxCount="1" deletionRule="Cascade" destinationEntity="GraphicContext" inverseName="canvas" inverseEntity="GraphicContext"/>
+        <relationship name="memo" maxCount="1" deletionRule="Deny" destinationEntity="Memo" inverseName="canvas" inverseEntity="Memo"/>
+    </entity>
+    <entity name="GraphicContext" representedClassName="GraphicContext" syncable="YES">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="canvas" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Canvas" inverseName="graphicContext" inverseEntity="Canvas"/>
+        <relationship name="strokes" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Stroke" inverseName="graphicContext" inverseEntity="Stroke"/>
+    </entity>
     <entity name="Memo" representedClassName="Memo" syncable="YES">
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="data" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="title" attributeType="String"/>
         <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="canvas" maxCount="1" deletionRule="Cascade" destinationEntity="Canvas" inverseName="memo" inverseEntity="Canvas"/>
+    </entity>
+    <entity name="Stroke" representedClassName="Stroke" syncable="YES">
+        <attribute name="color" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="strokeQuads" optional="YES" attributeType="Transformable" valueTransformerName="QuadValueTransformer" customClassName="[StrokeQuad]"/>
+        <attribute name="style" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="thickness" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="graphicContext" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GraphicContext" inverseName="strokes" inverseEntity="GraphicContext"/>
     </entity>
 </model>

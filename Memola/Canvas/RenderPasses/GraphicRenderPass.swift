@@ -45,7 +45,8 @@ class GraphicRenderPass: RenderPass {
 
         if renderer.redrawsGraphicRender {
             canvas.setGraphicRenderType(.finished)
-            for stroke in graphicContext.strokes {
+            for stroke in graphicContext.strokes.array {
+                guard let stroke = stroke as? Stroke else { continue }
                 if graphicContext.previousStroke === stroke || graphicContext.currentStroke === stroke {
                     continue
                 }

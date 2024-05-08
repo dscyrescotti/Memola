@@ -15,6 +15,7 @@ class Memo: NSManagedObject {
     @NSManaged var data: Data
     @NSManaged var createdAt: Date
     @NSManaged var updatedAt: Date
+    @NSManaged var canvas: Canvas
 }
 
 extension Memo: Identifiable { }
