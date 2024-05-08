@@ -42,14 +42,26 @@ class GraphicContext: NSManagedObject {
     func undoGraphic() {
         guard let stroke = strokes.lastObject as? Stroke else { return }
         strokes.remove(stroke)
+        stroke.graphicContext = nil
         previousStroke = nil
+        do {
+            try Persistence.shared.viewContext.save()
+        } catch {
+            NSLog("[Memola] - \(error.localizedDescription)")
+        }
     }
 
     func redoGraphic(for event: HistoryEvent) {
         switch event {
         case .stroke(let stroke):
             strokes.add(stroke)
+            stroke.graphicContext = self
             previousStroke = nil
+        }
+        do {
+            try Persistence.shared.viewContext.save()
+        } catch {
+            NSLog("[Memola] - \(error.localizedDescription)")
         }
     }
 }
@@ -109,8 +121,15 @@ extension GraphicContext {
     }
 
     func cancelStroke() {
-        if let stroke = strokes.lastObject {
-            strokes.remove(stroke)
+        if let stroke = strokes.lastObject as? Stroke {
+            do {
+                let viewContext = Persistence.shared.viewContext
+                strokes.remove(stroke)
+                viewContext.delete(stroke)
+                try viewContext.save()
+            } catch {
+                NSLog("[Memola] - \(error.localizedDescription)")
+            }
         }
         currentStroke = nil
         currentPoint = nil

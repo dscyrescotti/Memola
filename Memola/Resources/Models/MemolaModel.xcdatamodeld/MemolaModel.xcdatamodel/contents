@@ -23,7 +23,7 @@
         <attribute name="color" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="strokeQuads" optional="YES" attributeType="Transformable" valueTransformerName="QuadValueTransformer" customClassName="[StrokeQuad]"/>
+        <attribute name="strokeQuads" attributeType="Transformable" valueTransformerName="QuadValueTransformer" customClassName="[StrokeQuad]"/>
         <attribute name="style" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thickness" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="graphicContext" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GraphicContext" inverseName="strokes" inverseEntity="GraphicContext"/>

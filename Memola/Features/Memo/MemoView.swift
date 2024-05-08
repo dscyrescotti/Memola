@@ -88,6 +88,7 @@ struct MemoView: View {
     }
 
     func closeMemo() {
+        history.resetRedo()
         if managedObjectContext.hasChanges {
             do {
                 try managedObjectContext.save()
