@@ -31,9 +31,6 @@ struct MemosView: View {
         }
         .fullScreenCover(item: $memo) { memo in
             MemoView(canvas: memo.canvas)
-                .onDisappear {
-                    managedObjectContext.refreshAllObjects()
-                }
         }
     }
 

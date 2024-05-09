@@ -10,7 +10,7 @@ import CoreData
 import Foundation
 
 @objc(Stroke)
-class Stroke: NSManagedObject {
+final class Stroke: NSManagedObject {
     @NSManaged var id: UUID
     @NSManaged var color: [CGFloat]
     @NSManaged var style: Int16
@@ -56,11 +56,12 @@ class Stroke: NSManagedObject {
     func finish(at point: CGPoint) {
         penStyle.anyPenStyle.generator.finish(at: point, on: self)
         keyPoints.removeAll()
+        NSLog("[Memola] - \(_quads.count) quads")
     }
 
     func loadVertices() {
         vertices = strokeQuads
-            .flatMap { $0.quad.generateVertices($0.quad.shape) }
+            .flatMap { $0.quad.generateVertices() }
         vertexCount = vertices.endIndex
     }
 

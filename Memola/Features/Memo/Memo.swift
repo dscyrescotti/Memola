@@ -9,7 +9,7 @@ import CoreData
 import Foundation
 
 @objc(Memo)
-class Memo: NSManagedObject {
+final class Memo: NSManagedObject {
     @NSManaged var id: UUID
     @NSManaged var title: String
     @NSManaged var data: Data

@@ -11,7 +11,7 @@ import MetalKit
 import Foundation
 
 @objc(Canvas)
-class Canvas: NSManagedObject, Identifiable {
+final class Canvas: NSManagedObject, Identifiable {
     @NSManaged var id: UUID
     @NSManaged var width: CGFloat
     @NSManaged var height: CGFloat
@@ -43,11 +43,23 @@ class Canvas: NSManagedObject, Identifiable {
 extension Canvas {
     func load() {
         state = .loading
-        graphicContext.strokes.forEach { stroke in
-            guard let stroke = stroke as? Stroke else { return }
-            stroke.loadVertices()
+        let start = Date().formatted(.dateTime.minute().second().secondFraction(.fractional(5)))
+        Task(priority: .high) { [start] in
+            await withTaskGroup(of: Void.self) { taskGroup in
+                for stroke in graphicContext.strokes {
+                    guard let stroke = stroke as? Stroke else { continue }
+                    taskGroup.addTask {
+                        stroke.loadVertices()
+                    }
+                }
+            }
+
+            let end = Date().formatted(.dateTime.minute().second().secondFraction(.fractional(5)))
+            NSLog("[Memola] - Loaded from \(start) to \(end)")
+            await MainActor.run {
+                state = .loaded
+            }
         }
-        state = .loaded
     }
 }
 

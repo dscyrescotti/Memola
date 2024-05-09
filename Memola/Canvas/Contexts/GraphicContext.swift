@@ -11,7 +11,7 @@ import CoreData
 import Foundation
 
 @objc(GraphicContext)
-class GraphicContext: NSManagedObject {
+final class GraphicContext: NSManagedObject {
     @NSManaged var id: UUID
     @NSManaged var canvas: Canvas?
     @NSManaged var strokes: NSMutableOrderedSet

@@ -58,6 +58,11 @@ class CanvasViewController: UIViewController {
         renderView.draw()
         drawingView.enableUserInteraction()
     }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        Persistence.shared.viewContext.refresh(canvas, mergeChanges: false)
+    }
 }
 
 extension CanvasViewController {

@@ -22,7 +22,7 @@ struct Quad: Codable {
         self.shape = shape
     }
 
-    func generateVertices(_ shape: QuadShape) -> [QuadVertex] {
+    func generateVertices() -> [QuadVertex] {
         switch shape {
         case .rounded:
             generateRoundedQuad()

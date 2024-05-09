@@ -107,7 +107,7 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
         }
         let quad = Quad(origin: point, size: stroke.thickness, color: stroke.color, rotation: rotation)
         stroke._quads.append(quad)
-        stroke.vertices.append(contentsOf: quad.generateVertices(quad.shape))
+        stroke.vertices.append(contentsOf: quad.generateVertices())
         stroke.vertexCount = stroke.vertices.endIndex
     }
 
@@ -116,7 +116,7 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
         let factor: CGFloat
         switch configuration.granularity {
         case .automatic:
-            factor = min(3.5, 1 / (stroke.thickness * 10 / 300))
+            factor = min(3.5, 1 / (stroke.thickness * 1 / 10))
         case .fixed:
             factor = 1 / (stroke.thickness * stroke.penStyle.anyPenStyle.stepRate)
         case .none:

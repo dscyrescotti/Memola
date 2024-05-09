@@ -8,7 +8,7 @@
 import MetalKit
 import Foundation
 
-class StrokeQuad: NSObject, Codable {
+final class StrokeQuad: NSObject, Codable {
     var quad: Quad
 
     init(quad: Quad) {
