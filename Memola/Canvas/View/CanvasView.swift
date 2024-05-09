@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct CanvasView: UIViewControllerRepresentable {
-    let canvas: Canvas
     @EnvironmentObject var tool: Tool
+    @EnvironmentObject var canvas: Canvas
     @EnvironmentObject var history: History
 
     func makeUIViewController(context: Context) -> CanvasViewController {

@@ -56,7 +56,6 @@ final class Stroke: NSManagedObject {
     func finish(at point: CGPoint) {
         penStyle.anyPenStyle.generator.finish(at: point, on: self)
         keyPoints.removeAll()
-        NSLog("[Memola] - \(_quads.count) quads")
     }
 
     func loadVertices() {

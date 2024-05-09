@@ -14,10 +14,10 @@ struct MemoView: View {
     @StateObject var tool = Tool()
     @StateObject var history = History()
 
-    let canvas: Canvas
+    @EnvironmentObject var canvas: Canvas
 
     var body: some View {
-        CanvasView(canvas: canvas)
+        CanvasView()
             .ignoresSafeArea()
             .overlay(alignment: .bottomTrailing) {
                 PenToolView()

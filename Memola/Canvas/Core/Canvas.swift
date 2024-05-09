@@ -42,9 +42,12 @@ final class Canvas: NSManagedObject, Identifiable {
 // MARK: - Actions
 extension Canvas {
     func load() {
-        state = .loading
         let start = Date().formatted(.dateTime.minute().second().secondFraction(.fractional(5)))
         Task(priority: .high) { [start] in
+            await MainActor.run {
+                state = .loading
+                objectWillChange.send()
+            }
             await withTaskGroup(of: Void.self) { taskGroup in
                 for stroke in graphicContext.strokes {
                     guard let stroke = stroke as? Stroke else { continue }
@@ -53,11 +56,11 @@ extension Canvas {
                     }
                 }
             }
-
             let end = Date().formatted(.dateTime.minute().second().secondFraction(.fractional(5)))
             NSLog("[Memola] - Loaded from \(start) to \(end)")
             await MainActor.run {
                 state = .loaded
+                objectWillChange.send()
             }
         }
     }
