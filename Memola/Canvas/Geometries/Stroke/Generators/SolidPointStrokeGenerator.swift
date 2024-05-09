@@ -116,7 +116,7 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
         let factor: CGFloat
         switch configuration.granularity {
         case .automatic:
-            factor = min(3.5, 1 / (stroke.thickness * 1 / 10))
+            factor = min(5, 1 / (stroke.thickness * 10 / 500))
         case .fixed:
             factor = 1 / (stroke.thickness * stroke.penStyle.anyPenStyle.stepRate)
         case .none:
