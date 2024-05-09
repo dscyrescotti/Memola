@@ -29,7 +29,7 @@ struct MemoView: View {
             }
             .overlay(alignment: .topLeading) {
                 Button {
-                    dismiss()
+                    closeMemo()
                 } label: {
                     Image(systemName: "xmark")
                         .padding(15)
@@ -39,16 +39,15 @@ struct MemoView: View {
                 .hoverEffect(.lift)
                 .padding()
             }
-            .disabled(canvas.state == .loading)
+            .disabled(canvas.state == .loading || canvas.state == .closing)
             .overlay {
-                if canvas.state == .loading {
-                    ProgressView {
-                        Text("Loading memo...")
-                    }
-                    .progressViewStyle(.circular)
-                    .padding(20)
-                    .background(.regularMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                switch canvas.state {
+                case .loading:
+                    progressView("Loading memo...")
+                case .closing:
+                    progressView("Saving memo...")
+                default:
+                    EmptyView()
                 }
             }
             .environmentObject(tool)
@@ -79,5 +78,28 @@ struct MemoView: View {
         .padding(15)
         .background(.regularMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 20))
+    }
+
+    func progressView(_ title: String) -> some View {
+        ProgressView {
+            Text(title)
+        }
+        .progressViewStyle(.circular)
+        .padding(20)
+        .background(.regularMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+    }
+
+    func closeMemo() {
+        Task(priority: .high) {
+            await MainActor.run {
+                canvas.state = .closing
+            }
+            await canvas.save(on: managedObjectContext)
+            await MainActor.run {
+                canvas.state = .closed
+                dismiss()
+            }
+        }
     }
 }

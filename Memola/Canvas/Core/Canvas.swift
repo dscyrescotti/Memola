@@ -58,16 +58,16 @@ final class Canvas: NSObject, ObservableObject, Identifiable, Codable, GraphicCo
 // MARK: - Actions
 extension Canvas {
     func load() {
-//        guard let graphicLoader else { return }
+        guard let graphicLoader else { return }
         Task(priority: .high) { [unowned self, graphicLoader] in
             await MainActor.run {
                 self.state = .loading
             }
             do {
-//                let graphicContext = try graphicLoader()
+                let graphicContext = try graphicLoader()
                 graphicContext.delegate = self
                 await MainActor.run {
-//                    self.graphicContext = graphicContext
+                    self.graphicContext = graphicContext
                     self.state = .loaded
                 }
             } catch {
@@ -91,11 +91,11 @@ extension Canvas {
     }
 
     func listen(on managedObjectContext: NSManagedObjectContext) {
-        Task(priority: .background) { [unowned self] in
-            for await _ in didUpdate.values {
-                await save(on: managedObjectContext)
-            }
-        }
+//        Task(priority: .utility) { [unowned self] in
+//            for await _ in didUpdate.throttle(for: 500, scheduler: DispatchQueue.global(qos: .utility), latest: false).values {
+//                await save(on: managedObjectContext)
+//            }
+//        }
     }
 }
 
