@@ -15,7 +15,7 @@ class Canvas: NSManagedObject, Identifiable {
     @NSManaged var id: UUID
     @NSManaged var width: CGFloat
     @NSManaged var height: CGFloat
-    @NSManaged var memo: Memo
+    @NSManaged var memo: Memo?
     @NSManaged var graphicContext: GraphicContext
 
     let gridContext = GridContext()
@@ -43,8 +43,9 @@ class Canvas: NSManagedObject, Identifiable {
 extension Canvas {
     func load() {
         state = .loading
-        graphicContext.strokes.forEach {
-            ($0 as? Stroke)?.loadVertices()
+        graphicContext.strokes.forEach { stroke in
+            guard let stroke = stroke as? Stroke else { return }
+            stroke.loadVertices()
         }
         state = .loaded
     }

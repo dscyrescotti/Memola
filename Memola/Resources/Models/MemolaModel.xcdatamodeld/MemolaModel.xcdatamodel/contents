@@ -4,7 +4,7 @@
         <attribute name="height" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" customClassName="CGFloat"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="width" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" customClassName="CGFloat"/>
-        <relationship name="graphicContext" maxCount="1" deletionRule="Cascade" destinationEntity="GraphicContext" inverseName="canvas" inverseEntity="GraphicContext"/>
+        <relationship name="graphicContext" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="GraphicContext" inverseName="canvas" inverseEntity="GraphicContext"/>
         <relationship name="memo" maxCount="1" deletionRule="Deny" destinationEntity="Memo" inverseName="canvas" inverseEntity="Memo"/>
     </entity>
     <entity name="GraphicContext" representedClassName="GraphicContext" syncable="YES">

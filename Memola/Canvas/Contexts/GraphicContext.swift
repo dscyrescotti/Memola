@@ -13,7 +13,7 @@ import Foundation
 @objc(GraphicContext)
 class GraphicContext: NSManagedObject {
     @NSManaged var id: UUID
-    @NSManaged var canvas: Canvas
+    @NSManaged var canvas: Canvas?
     @NSManaged var strokes: NSMutableOrderedSet
 
     var currentStroke: Stroke?

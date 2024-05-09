@@ -22,7 +22,7 @@ class QuadValueTransformer: ValueTransformer {
             return nil
         }
         do {
-            let data = try JSONEncoder().encode(quads)
+            let data = try JSONEncoder().encode(quads.map(\.quad))
             return data
         } catch {
             print(error.localizedDescription)
@@ -37,8 +37,8 @@ class QuadValueTransformer: ValueTransformer {
             return nil
         }
         do {
-            let quads = try JSONDecoder().decode([StrokeQuad].self, from: data)
-            return quads
+            let quads = try JSONDecoder().decode([Quad].self, from: data)
+            return quads.map(StrokeQuad.init)
         } catch {
             print(error.localizedDescription)
             assertionFailure("[Memola] - Failed to transform `Data` to `Quad`")
