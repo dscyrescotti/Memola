@@ -13,11 +13,13 @@ class Persistence {
 
     static let shared: Persistence = Persistence()
 
-    private init() { 
-        QuadValueTransformer.register()
-    }
+    private init() { }
 
-    lazy var viewContext: NSManagedObjectContext = {
+    static var context: NSManagedObjectContext = {
+        shared.persistentContainer.viewContext
+    }()
+
+    private lazy var viewContext: NSManagedObjectContext = {
         persistentContainer.viewContext
     }()
 
@@ -65,4 +67,18 @@ class Persistence {
             fatalError("[Memola]: \(error.localizedDescription)")
         }
     }()
+
+    static func performe(_ action: (NSManagedObjectContext) -> Void) {
+        action(shared.viewContext)
+    }
+
+    static func saveIfNeeded() {
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                NSLog("[Memola] - \(error.localizedDescription)")
+            }
+        }
+    }
 }

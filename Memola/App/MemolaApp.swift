@@ -12,7 +12,7 @@ struct MemolaApp: App {
     var body: some Scene {
         WindowGroup {
             MemosView()
-                .environment(\.managedObjectContext, Persistence.shared.viewContext)
+                .environment(\.managedObjectContext, Persistence.context)
         }
     }
 }
