@@ -44,11 +44,7 @@ final class GraphicContext: NSManagedObject {
         strokes.remove(stroke)
         stroke.graphicContext = nil
         previousStroke = nil
-        do {
-            try Persistence.shared.viewContext.save()
-        } catch {
-            NSLog("[Memola] - \(error.localizedDescription)")
-        }
+        Persistence.saveIfNeeded()
     }
 
     func redoGraphic(for event: HistoryEvent) {
@@ -58,11 +54,7 @@ final class GraphicContext: NSManagedObject {
             stroke.graphicContext = self
             previousStroke = nil
         }
-        do {
-            try Persistence.shared.viewContext.save()
-        } catch {
-            NSLog("[Memola] - \(error.localizedDescription)")
-        }
+        Persistence.saveIfNeeded()
     }
 }
 
@@ -84,13 +76,13 @@ extension GraphicContext: Drawable {
 
 extension GraphicContext {
     func beginStroke(at point: CGPoint, pen: Pen) -> Stroke {
-        let stroke = Stroke(context: Persistence.shared.viewContext)
+        let stroke = Stroke(context: Persistence.context)
         stroke.id = UUID()
         stroke.color = pen.color
         stroke.style = pen.strokeStyle.rawValue
         stroke.thickness = pen.thickness
         stroke.createdAt = .now
-        stroke.strokeQuads = []
+        stroke.quads = []
         stroke.graphicContext = self
         strokes.add(stroke)
         currentStroke = stroke
@@ -109,12 +101,7 @@ extension GraphicContext {
     func endStroke(at point: CGPoint) {
         guard currentPoint != nil, let currentStroke else { return }
         currentStroke.finish(at: point)
-        currentStroke.saveQuads()
-        do {
-            try Persistence.shared.viewContext.save()
-        } catch {
-            NSLog("[Memola] - \(error.localizedDescription)")
-        }
+        Persistence.saveIfNeeded()
         previousStroke = currentStroke
         self.currentStroke = nil
         self.currentPoint = nil
@@ -122,14 +109,11 @@ extension GraphicContext {
 
     func cancelStroke() {
         if let stroke = strokes.lastObject as? Stroke {
-            do {
-                let viewContext = Persistence.shared.viewContext
+            Persistence.performe { context in
                 strokes.remove(stroke)
-                viewContext.delete(stroke)
-                try viewContext.save()
-            } catch {
-                NSLog("[Memola] - \(error.localizedDescription)")
+                context.delete(stroke)
             }
+            Persistence.saveIfNeeded()
         }
         currentStroke = nil
         currentPoint = nil

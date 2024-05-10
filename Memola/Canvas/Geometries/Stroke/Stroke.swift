@@ -16,7 +16,7 @@ final class Stroke: NSManagedObject {
     @NSManaged var style: Int16
     @NSManaged var createdAt: Date
     @NSManaged var thickness: CGFloat
-    @NSManaged var strokeQuads: Array<StrokeQuad>
+    @NSManaged var quads: NSMutableOrderedSet
     @NSManaged var graphicContext: GraphicContext?
 
     var angle: CGFloat = 0
@@ -31,7 +31,6 @@ final class Stroke: NSManagedObject {
     var thicknessFactor: CGFloat = 0.7
 
     var vertices: [QuadVertex] = []
-    var _quads: [Quad] = []
     var vertexBuffer: MTLBuffer?
     var vertexCount: Int = 0
 
@@ -56,18 +55,25 @@ final class Stroke: NSManagedObject {
     func finish(at point: CGPoint) {
         penStyle.anyPenStyle.generator.finish(at: point, on: self)
         keyPoints.removeAll()
-        NSLog("[Memola] - \(_quads.count) quads")
+        NSLog("[Memola] - \(quads.count) quads")
     }
 
     func loadVertices() {
-        vertices = strokeQuads
-            .flatMap { $0.quad.generateVertices() }
+        vertices = quads
+            .flatMap { ($0 as? Quad)?.generateVertices(color) ?? [] }
         vertexCount = vertices.endIndex
     }
 
-    func saveQuads() {
-        strokeQuads = _quads.map(StrokeQuad.init)
-        _quads.removeAll()
+    func addQuad(at point: CGPoint, rotation: CGFloat, shape: QuadShape) -> Quad {
+        let quad = Quad(context: Persistence.context)
+        quad.id = UUID()
+        quad.origin = point
+        quad.rotation = rotation
+        quad.size = thickness
+        quad.shape = shape.rawValue
+        quads.add(quad)
+        quad.stroke = self
+        return quad
     }
 }
 
@@ -80,6 +86,9 @@ extension Stroke: Drawable {
     }
 
     func draw(device: MTLDevice, renderEncoder: MTLRenderCommandEncoder) {
+        if isEmpty {
+            loadVertices()
+        }
         guard !isEmpty else { return }
         prepare(device: device)
         renderEncoder.setFragmentTexture(texture, index: 0)

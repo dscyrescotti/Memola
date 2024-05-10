@@ -44,22 +44,15 @@ extension Canvas {
     func load() {
         state = .loading
         let start = Date().formatted(.dateTime.minute().second().secondFraction(.fractional(5)))
-        Task(priority: .high) { [start] in
-            await withTaskGroup(of: Void.self) { taskGroup in
-                for stroke in graphicContext.strokes {
-                    guard let stroke = stroke as? Stroke else { continue }
-                    taskGroup.addTask {
-                        stroke.loadVertices()
-                    }
-                }
-            }
-
-            let end = Date().formatted(.dateTime.minute().second().secondFraction(.fractional(5)))
-            NSLog("[Memola] - Loaded from \(start) to \(end)")
-            await MainActor.run {
-                state = .loaded
+        for stroke in graphicContext.strokes {
+            if let stroke = stroke as? Stroke {
+                stroke.loadVertices()
+                NSLog("[Memola] - \(stroke.quads.count) quads")
             }
         }
+        let end = Date().formatted(.dateTime.minute().second().secondFraction(.fractional(5)))
+        NSLog("[Memola] - Loaded from \(start) to \(end)")
+        state = .loaded
     }
 }
 
