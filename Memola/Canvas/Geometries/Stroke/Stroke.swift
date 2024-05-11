@@ -85,9 +85,6 @@ extension Stroke: Drawable {
     }
 
     func draw(device: MTLDevice, renderEncoder: MTLRenderCommandEncoder) {
-        if isEmpty {
-            loadVertices()
-        }
         guard !isEmpty else { return }
         prepare(device: device)
         renderEncoder.setFragmentTexture(texture, index: 0)

@@ -19,6 +19,12 @@ class Persistence {
         shared.persistentContainer.viewContext
     }()
 
+    static var backgroundContext: NSManagedObjectContext = {
+        let context = shared.persistentContainer.newBackgroundContext()
+        context.automaticallyMergesChangesFromParent = true
+        return context
+    }()
+
     private lazy var viewContext: NSManagedObjectContext = {
         persistentContainer.viewContext
     }()

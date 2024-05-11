@@ -20,7 +20,7 @@ final class Canvas: NSManagedObject, Identifiable {
 
     let gridContext = GridContext()
     let viewPortContext = ViewPortContext()
-    let maximumZoomScale: CGFloat = 25
+    let maximumZoomScale: CGFloat = 28
     let minimumZoomScale: CGFloat = 3.1
 
     var transform: simd_float4x4 = .init()
@@ -42,11 +42,11 @@ final class Canvas: NSManagedObject, Identifiable {
 // MARK: - Actions
 extension Canvas {
     func load() {
+        state = .loading
         let start = Date().formatted(.dateTime.minute().second().secondFraction(.fractional(5)))
         for stroke in graphicContext.strokes {
             if let stroke = stroke as? Stroke {
                 stroke.loadVertices()
-                NSLog("[Memola] - \(stroke.quads.count) quads")
             }
         }
         let end = Date().formatted(.dateTime.minute().second().secondFraction(.fractional(5)))
