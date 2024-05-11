@@ -21,7 +21,9 @@ class Persistence {
 
     static var backgroundContext: NSManagedObjectContext = {
         let context = shared.persistentContainer.newBackgroundContext()
-        context.automaticallyMergesChangesFromParent = true
+        context.undoManager = nil
+
+//        context.automaticallyMergesC  hangesFromParent = true
         return context
     }()
 
@@ -85,6 +87,26 @@ class Persistence {
             } catch {
                 NSLog("[Memola] - \(error.localizedDescription)")
             }
+        }
+    }
+
+    static func saveIfNeededInBackground() {
+        if backgroundContext.hasChanges {
+            do {
+                try backgroundContext.save()
+            } catch {
+                NSLog("[Memola] - \(error.localizedDescription)")
+            }
+        }
+    }
+}
+
+extension Persistence {
+    static func background(_ task: @escaping (NSManagedObjectContext) async throws -> Void, errorHandler: ((Error) async -> Void)? = nil) async {
+        do {
+            try await task(backgroundContext)
+        } catch {
+            await errorHandler?(error)
         }
     }
 }

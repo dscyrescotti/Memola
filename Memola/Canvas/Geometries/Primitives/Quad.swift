@@ -8,15 +8,28 @@
 import CoreData
 import Foundation
 
-@objc(Quad)
-class Quad: NSManagedObject {
-    @NSManaged var id: UUID
-    @NSManaged var originX: CGFloat
-    @NSManaged var originY: CGFloat
-    @NSManaged var size: CGFloat
-    @NSManaged var rotation: CGFloat
-    @NSManaged var shape: Int16
-    @NSManaged var stroke: Stroke?
+struct Quad {
+    var originX: CGFloat
+    var originY: CGFloat
+    var size: CGFloat
+    var rotation: CGFloat
+    var shape: Int16
+
+    init(object: QuadObject) {
+        self.originX = object.originX
+        self.originY = object.originY
+        self.size = object.size
+        self.rotation = object.rotation
+        self.shape = object.shape
+    }
+
+    init(origin: CGPoint, size: CGFloat, rotation: CGFloat, shape: Int16) {
+        self.originX = origin.x
+        self.originY = origin.y
+        self.size = size
+        self.rotation = rotation
+        self.shape = shape
+    }
 
     var origin: CGPoint {
         get { CGPoint(x: originX, y: originY) }

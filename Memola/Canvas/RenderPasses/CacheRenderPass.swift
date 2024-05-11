@@ -44,7 +44,8 @@ class CacheRenderPass: RenderPass {
         descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
         descriptor.colorAttachments[0].storeAction = .store
 
-        if let stroke = canvas.graphicContext.currentStroke {
+        let graphicContext = canvas.graphicContext
+        if let stroke = graphicContext.currentStroke {
             if stroke.isEraserPenStyle {
                 eraserRenderPass.stroke = stroke
                 eraserRenderPass.descriptor = descriptor

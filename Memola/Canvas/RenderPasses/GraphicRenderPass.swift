@@ -36,17 +36,16 @@ class GraphicRenderPass: RenderPass {
         guard let descriptor else { return }
 
         guard let graphicPipelineState else { return }
-        let graphicContext = canvas.graphicContext
         guard let graphicTexture else { return }
 
         descriptor.colorAttachments[0].texture = graphicTexture
         descriptor.colorAttachments[0].clearColor = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 0)
         descriptor.colorAttachments[0].storeAction = .store
 
+        let graphicContext = canvas.graphicContext
         if renderer.redrawsGraphicRender {
             canvas.setGraphicRenderType(.finished)
-            for stroke in graphicContext.strokes.array {
-                guard let stroke = stroke as? Stroke else { continue }
+            for stroke in graphicContext.strokes {
                 if graphicContext.previousStroke === stroke || graphicContext.currentStroke === stroke {
                     continue
                 }

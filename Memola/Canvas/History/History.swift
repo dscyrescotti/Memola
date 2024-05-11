@@ -51,9 +51,11 @@ class History: ObservableObject {
         redoCache = redoStack
         for event in redoStack {
             switch event {
-            case .stroke(let stroke):
-                Persistence.performe { context in
-                    context.delete(stroke)
+            case .stroke(let _stroke):
+                Persistence.backgroundContext.perform {
+                    if let stroke = _stroke.object {
+                        Persistence.backgroundContext.delete(stroke)
+                    }
                 }
             }
         }

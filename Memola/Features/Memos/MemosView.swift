@@ -10,9 +10,9 @@ import SwiftUI
 struct MemosView: View {
     @Environment(\.managedObjectContext) var managedObjectContext
 
-    @FetchRequest(sortDescriptors: []) var memos: FetchedResults<Memo>
+    @FetchRequest(sortDescriptors: []) var memoObjects: FetchedResults<MemoObject>
 
-    @State var memo: Memo?
+    @State var memo: MemoObject?
 
     var body: some View {
         NavigationStack {
@@ -30,15 +30,14 @@ struct MemosView: View {
                 }
         }
         .fullScreenCover(item: $memo) { memo in
-            MemoView()
-                .environmentObject(memo.canvas)
+            MemoView(memo: memo)
         }
     }
 
     var memoGrid: some View {
         ScrollView {
             LazyVGrid(columns: .init(repeating: GridItem(.flexible()), count: 3)) {
-                ForEach(memos) { memo in
+                ForEach(memoObjects) { memo in
                     memoCard(memo)
                 }
             }
@@ -46,47 +45,44 @@ struct MemosView: View {
         }
     }
 
-    func memoCard(_ memo: Memo) -> some View {
+    func memoCard(_ memoObject: MemoObject) -> some View {
         VStack(alignment: .leading) {
             Rectangle()
                 .frame(height: 150)
-            Text(memo.title)
+            Text(memoObject.title)
         }
         .onTapGesture {
-            openMemo(for: memo)
+            openMemo(for: memoObject)
         }
     }
 
     func createMemo(title: String) {
         do {
-            let memo = Memo(context: managedObjectContext)
-            memo.id = UUID()
-            memo.title = title
-            memo.createdAt = .now
-            memo.updatedAt = .now
+            let memoObject = MemoObject(context: managedObjectContext)
+            memoObject.title = title
+            memoObject.createdAt = .now
+            memoObject.updatedAt = .now
 
-            let canvas = Canvas(context: managedObjectContext)
-            canvas.id = UUID()
-            canvas.width = 4_000
-            canvas.height = 4_000
+            let canvasObject = CanvasObject(context: managedObjectContext)
+            canvasObject.width = 4_000
+            canvasObject.height = 4_000
 
-            let graphicContext = GraphicContext(context: managedObjectContext)
-            graphicContext.id = UUID()
-            graphicContext.strokes = []
+            let graphicContextObject = GraphicContextObject(context: managedObjectContext)
+            graphicContextObject.strokes = []
 
-            memo.canvas = canvas
-            canvas.memo = memo
-            canvas.graphicContext = graphicContext
-            graphicContext.canvas = canvas
+            memoObject.canvas = canvasObject
+            canvasObject.memo = memoObject
+            canvasObject.graphicContext = graphicContextObject
+            graphicContextObject.canvas = canvasObject
 
             try managedObjectContext.save()
-            openMemo(for: memo)
+            openMemo(for: memoObject)
         } catch {
             NSLog("[Memola] - \(error.localizedDescription)")
         }
     }
 
-    func openMemo(for memo: Memo) {
+    func openMemo(for memo: MemoObject) {
         self.memo = memo
     }
 }

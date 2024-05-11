@@ -132,42 +132,15 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
         }
     }
 
-    #warning("TODO: remove later")
-    private func addLine(from start: CGPoint, to end: CGPoint, on stroke: Stroke) {
-        let distance = end.distance(to: start)
-        let segments = max(distance / stroke.penStyle.anyPenStyle.stepRate, 2)
-        for i in 0..<Int(segments) {
-            let i = CGFloat(i)
-            let x = start.x + (end.x - start.x) * (i / segments)
-            let y = start.y + (end.y - start.y) * (i / segments)
-            let point = CGPoint(x: x, y: y)
-            addPoint(point, on: stroke)
-        }
-    }
-
     private func discardVertices(upto index: Int, quadIndex: Int, on stroke: Stroke) {
         if index < 0 {
             stroke.vertices.removeAll()
-            discardQuads(from: quadIndex + 1, on: stroke)
         } else {
             let count = stroke.vertices.endIndex
             let dropCount = count - (max(0, index) + 1)
             stroke.vertices.removeLast(dropCount)
-            discardQuads(from: quadIndex + 1, on: stroke)
         }
-    }
-
-    private func discardQuads(from start: Int, on stroke: Stroke) {
-        let quads = stroke.quads.array
-        Persistence.performe { context in
-            for index in start..<quads.count {
-                if let quad = quads[index] as? Quad {
-                    quad.stroke = nil
-                    context.delete(quad)
-                    stroke.quads.remove(quad)
-                }
-            }
-        }
+        stroke.removeQuads(from: quadIndex + 1)
     }
 }
 

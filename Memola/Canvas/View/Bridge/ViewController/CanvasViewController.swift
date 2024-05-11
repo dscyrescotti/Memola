@@ -62,9 +62,6 @@ class CanvasViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         history.resetRedo()
-        Persistence.performe { context in
-            context.refresh(canvas, mergeChanges: false)
-        }
     }
 }
 

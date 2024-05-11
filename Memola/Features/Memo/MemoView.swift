@@ -6,15 +6,22 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct MemoView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.managedObjectContext) var managedObjectContext
 
     @StateObject var tool = Tool()
+    @StateObject var canvas: Canvas
     @StateObject var history = History()
 
-    @EnvironmentObject var canvas: Canvas
+    let memo: MemoObject
+
+    init(memo: MemoObject) {
+        self.memo = memo
+        self._canvas = StateObject(wrappedValue: Canvas(size: memo.canvas.size, canvasID: memo.canvas.objectID))
+    }
 
     var body: some View {
         CanvasView()

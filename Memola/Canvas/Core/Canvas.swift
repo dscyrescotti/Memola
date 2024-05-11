@@ -10,16 +10,14 @@ import CoreData
 import MetalKit
 import Foundation
 
-@objc(Canvas)
-final class Canvas: NSManagedObject, Identifiable {
-    @NSManaged var id: UUID
-    @NSManaged var width: CGFloat
-    @NSManaged var height: CGFloat
-    @NSManaged var memo: Memo?
-    @NSManaged var graphicContext: GraphicContext
+final class Canvas: ObservableObject, Identifiable, @unchecked Sendable {
+    let size: CGSize
+    let canvasID: NSManagedObjectID
 
     let gridContext = GridContext()
+    var graphicContext = GraphicContext()
     let viewPortContext = ViewPortContext()
+
     let maximumZoomScale: CGFloat = 28
     let minimumZoomScale: CGFloat = 3.1
 
@@ -28,9 +26,13 @@ final class Canvas: NSManagedObject, Identifiable {
     var zoomScale: CGFloat = .zero
     var uniformsBuffer: MTLBuffer?
 
+    init(size: CGSize, canvasID: NSManagedObjectID) {
+        self.size = size
+        self.canvasID = canvasID
+    }
+
     @Published var state: State = .initial
 
-    var size: CGSize { CGSize(width: width, height: height) }
     var hasValidStroke: Bool {
         if let currentStroke = graphicContext.currentStroke {
             return Date.now.timeIntervalSince(currentStroke.createdAt) * 1000 > 80
@@ -42,16 +44,21 @@ final class Canvas: NSManagedObject, Identifiable {
 // MARK: - Actions
 extension Canvas {
     func load() {
-        state = .loading
-        let start = Date().formatted(.dateTime.minute().second().secondFraction(.fractional(5)))
-        for stroke in graphicContext.strokes {
-            if let stroke = stroke as? Stroke {
-                stroke.loadVertices()
+        Persistence.backgroundContext.perform { [weak self, canvasID] in
+            DispatchQueue.main.async { [weak self] in
+                self?.state = .loading
+            }
+            guard let canvas = Persistence.backgroundContext.object(with: canvasID) as? CanvasObject else {
+                return
+            }
+            let graphicContext = canvas.graphicContext
+            self?.graphicContext.object = graphicContext
+            self?.graphicContext.load()
+            Persistence.backgroundContext.refresh(canvas, mergeChanges: false)
+            DispatchQueue.main.async { [weak self] in
+                self?.state = .loaded
             }
         }
-        let end = Date().formatted(.dateTime.minute().second().secondFraction(.fractional(5)))
-        NSLog("[Memola] - Loaded from \(start) to \(end)")
-        state = .loaded
     }
 }
 
@@ -104,7 +111,7 @@ extension Canvas {
     }
 
     func getNewlyAddedStroke() -> Stroke? {
-        graphicContext.strokes.lastObject as? Stroke
+        graphicContext.strokes.last
     }
 }
 

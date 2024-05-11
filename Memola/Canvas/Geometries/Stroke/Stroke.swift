@@ -9,15 +9,36 @@ import MetalKit
 import CoreData
 import Foundation
 
-@objc(Stroke)
-final class Stroke: NSManagedObject {
-    @NSManaged var id: UUID
-    @NSManaged var color: [CGFloat]
-    @NSManaged var style: Int16
-    @NSManaged var createdAt: Date
-    @NSManaged var thickness: CGFloat
-    @NSManaged var quads: NSMutableOrderedSet
-    @NSManaged var graphicContext: GraphicContext?
+final class Stroke: @unchecked Sendable {
+    var object: StrokeObject?
+    var color: [CGFloat]
+    var style: Int16
+    var createdAt: Date
+    var thickness: CGFloat
+    var quads: [Quad]
+
+    init(object: StrokeObject) {
+        self.object = object
+        self.color = object.color
+        self.style = object.style
+        self.createdAt = object.createdAt
+        self.thickness = object.thickness
+        self.quads = []
+    }
+
+    init(
+        color: [CGFloat],
+        style: Int16,
+        createdAt: Date,
+        thickness: CGFloat,
+        quads: [Quad] = []
+    ) {
+        self.color = color
+        self.style = style
+        self.createdAt = createdAt
+        self.thickness = thickness
+        self.quads = quads
+    }
 
     var angle: CGFloat = 0
 
@@ -25,6 +46,7 @@ final class Stroke: NSManagedObject {
         Style(rawValue: style) ?? .marker
     }
 
+    var batchIndex: Int = 0
     var quadIndex: Int = -1
     var vertexIndex: Int = -1
     var keyPoints: [CGPoint] = []
@@ -58,21 +80,46 @@ final class Stroke: NSManagedObject {
     }
 
     func loadVertices() {
-        vertices = quads
-            .flatMap { ($0 as? Quad)?.generateVertices(color) ?? [] }
+        guard let object else { return }
+        for quad in object.quads {
+            guard let quad = quad as? QuadObject else { continue }
+            vertices.append(contentsOf: Quad(object: quad).generateVertices(object.color))
+        }
         vertexCount = vertices.endIndex
     }
 
     func addQuad(at point: CGPoint, rotation: CGFloat, shape: QuadShape) -> Quad {
-        let quad = Quad(context: Persistence.context)
-        quad.id = UUID()
-        quad.origin = point
-        quad.rotation = rotation
-        quad.size = thickness
-        quad.shape = shape.rawValue
-        quads.add(quad)
-        quad.stroke = self
+        let quad = Quad(
+            origin: point,
+            size: thickness,
+            rotation: rotation,
+            shape: shape.rawValue
+        )
+        quads.append(quad)
         return quad
+    }
+
+    func removeQuads(from index: Int) {
+        let dropCount = quads.endIndex - max(1, index)
+        quads.removeLast(dropCount)
+        let quads = Array(quads[batchIndex..<index])
+        batchIndex = index
+        Persistence.backgroundContext.perform { [weak self, quads] in
+            self?.saveQuads(for: quads)
+        }
+    }
+
+    func saveQuads(for quads: [Quad]) {
+        for _quad in quads {
+            let quad = QuadObject(context: Persistence.backgroundContext)
+            quad.originX = _quad.originX
+            quad.originY = _quad.originY
+            quad.size = _quad.size
+            quad.rotation = _quad.rotation
+            quad.shape = _quad.shape
+            quad.stroke = object
+            object?.quads.add(quad)
+        }
     }
 }
 
