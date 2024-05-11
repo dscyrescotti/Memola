@@ -44,17 +44,17 @@ final class Canvas: ObservableObject, Identifiable, @unchecked Sendable {
 // MARK: - Actions
 extension Canvas {
     func load() {
-        Persistence.backgroundContext.perform { [weak self, canvasID] in
+        withPersistence(\.backgroundContext) { [weak self, canvasID] context in
             DispatchQueue.main.async { [weak self] in
                 self?.state = .loading
             }
-            guard let canvas = Persistence.backgroundContext.object(with: canvasID) as? CanvasObject else {
+            guard let canvas = context.object(with: canvasID) as? CanvasObject else {
                 return
             }
             let graphicContext = canvas.graphicContext
             self?.graphicContext.object = graphicContext
             self?.graphicContext.load()
-            Persistence.backgroundContext.refresh(canvas, mergeChanges: false)
+            context.refresh(canvas, mergeChanges: false)
             DispatchQueue.main.async { [weak self] in
                 self?.state = .loaded
             }

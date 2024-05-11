@@ -52,14 +52,14 @@ class History: ObservableObject {
         for event in redoStack {
             switch event {
             case .stroke(let _stroke):
-                Persistence.backgroundContext.perform {
+                withPersistence(\.backgroundContext) { context in
                     if let stroke = _stroke.object {
-                        Persistence.backgroundContext.delete(stroke)
+                        context.delete(stroke)
                     }
+                    try context.saveIfNeeded()
                 }
             }
         }
-        Persistence.saveIfNeeded()
         redoStack.removeAll()
     }
 

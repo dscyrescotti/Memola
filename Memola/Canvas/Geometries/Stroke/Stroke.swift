@@ -104,14 +104,14 @@ final class Stroke: @unchecked Sendable {
         quads.removeLast(dropCount)
         let quads = Array(quads[batchIndex..<index])
         batchIndex = index
-        Persistence.backgroundContext.perform { [weak self, quads] in
+        withPersistence(\.backgroundContext) { [weak self, quads] context in
             self?.saveQuads(for: quads)
         }
     }
 
     func saveQuads(for quads: [Quad]) {
         for _quad in quads {
-            let quad = QuadObject(context: Persistence.backgroundContext)
+            let quad = QuadObject(\.backgroundContext)
             quad.originX = _quad.originX
             quad.originY = _quad.originY
             quad.size = _quad.size

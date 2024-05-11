@@ -8,27 +8,22 @@
 import CoreData
 import Foundation
 
-class Persistence {
+final class Persistence {
     private let modelName = "MemolaModel"
 
     static let shared: Persistence = Persistence()
 
     private init() { }
 
-    static var context: NSManagedObjectContext = {
-        shared.persistentContainer.viewContext
-    }()
-
-    static var backgroundContext: NSManagedObjectContext = {
-        let context = shared.persistentContainer.newBackgroundContext()
-        context.undoManager = nil
-
-//        context.automaticallyMergesC  hangesFromParent = true
-        return context
-    }()
-
-    private lazy var viewContext: NSManagedObjectContext = {
+    lazy var viewContext: NSManagedObjectContext = {
         persistentContainer.viewContext
+    }()
+
+    lazy var backgroundContext: NSManagedObjectContext = {
+        let context = persistentContainer.newBackgroundContext()
+        context.undoManager = nil
+        context.automaticallyMergesChangesFromParent = true
+        return context
     }()
 
     lazy var persistentContainer: NSPersistentContainer = {
@@ -75,38 +70,16 @@ class Persistence {
             fatalError("[Memola]: \(error.localizedDescription)")
         }
     }()
-
-    static func performe(_ action: (NSManagedObjectContext) -> Void) {
-        action(shared.viewContext)
-    }
-
-    static func saveIfNeeded() {
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                NSLog("[Memola] - \(error.localizedDescription)")
-            }
-        }
-    }
-
-    static func saveIfNeededInBackground() {
-        if backgroundContext.hasChanges {
-            do {
-                try backgroundContext.save()
-            } catch {
-                NSLog("[Memola] - \(error.localizedDescription)")
-            }
-        }
-    }
 }
 
-extension Persistence {
-    static func background(_ task: @escaping (NSManagedObjectContext) async throws -> Void, errorHandler: ((Error) async -> Void)? = nil) async {
+// MARK: - Global Method
+func withPersistence(_ keypath: KeyPath<Persistence, NSManagedObjectContext>, _ task: @escaping (NSManagedObjectContext) throws -> Void) {
+    let context = Persistence.shared[keyPath: keypath]
+    context.perform {
         do {
-            try await task(backgroundContext)
+            try task(context)
         } catch {
-            await errorHandler?(error)
+            NSLog("[Memola] - \(error.localizedDescription)")
         }
     }
 }

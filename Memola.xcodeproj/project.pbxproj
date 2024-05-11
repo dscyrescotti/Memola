@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EC3565522BEFC65F00A4E0BF /* NSManagedObjectContext++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565512BEFC65F00A4E0BF /* NSManagedObjectContext++.swift */; };
+		EC3565542BEFC6AD00A4E0BF /* View++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565532BEFC6AD00A4E0BF /* View++.swift */; };
+		EC3565562BEFC7B300A4E0BF /* NSManagedObject++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */; };
 		EC4538892BEBCAE000A86FEC /* Quad.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4538882BEBCAE000A86FEC /* Quad.swift */; };
 		EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */; };
 		EC7F6BF02BE5E6E400A34A7B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */; };
@@ -74,6 +77,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EC3565512BEFC65F00A4E0BF /* NSManagedObjectContext++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext++.swift"; sourceTree = "<group>"; };
+		EC3565532BEFC6AD00A4E0BF /* View++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View++.swift"; sourceTree = "<group>"; };
+		EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObject++.swift"; sourceTree = "<group>"; };
 		EC4538882BEBCAE000A86FEC /* Quad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quad.swift; sourceTree = "<group>"; };
 		EC7F6BE82BE5E6E300A34A7B /* Memola.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Memola.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemolaApp.swift; sourceTree = "<group>"; };
@@ -339,6 +345,9 @@
 				ECA738E72BE6120F00A4542E /* Color++.swift */,
 				ECA738F52BE612B700A4542E /* MTLDevice++.swift */,
 				ECA738ED2BE6125D00A4542E /* simd_float4x4++.swift */,
+				EC3565512BEFC65F00A4E0BF /* NSManagedObjectContext++.swift */,
+				EC3565532BEFC6AD00A4E0BF /* View++.swift */,
+				EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -594,6 +603,7 @@
 				ECA738FC2BE61C5200A4542E /* Persistence.swift in Sources */,
 				ECA7387A2BE5EF0400A4542E /* MemosView.swift in Sources */,
 				ECA738BA2BE60DEF00A4542E /* HistoryAction.swift in Sources */,
+				EC3565522BEFC65F00A4E0BF /* NSManagedObjectContext++.swift in Sources */,
 				ECFA15222BEF21F500455818 /* CanvasObject.swift in Sources */,
 				ECA738AA2BE6026D00A4542E /* Uniforms.swift in Sources */,
 				ECA7387D2BE5EF4B00A4542E /* MemoView.swift in Sources */,
@@ -604,6 +614,7 @@
 				ECA738EA2BE6122E00A4542E /* CGPoint++.swift in Sources */,
 				ECA738A62BE6023F00A4542E /* GridUniforms.swift in Sources */,
 				ECA738D72BE60FC100A4542E /* SolidPointStrokeGenerator.swift in Sources */,
+				EC3565542BEFC6AD00A4E0BF /* View++.swift in Sources */,
 				ECA738832BE5FEFE00A4542E /* RenderPass.swift in Sources */,
 				ECEC01A82BEE11BA006DA24C /* QuadShape.swift in Sources */,
 				ECA738862BE5FF2500A4542E /* Canvas.swift in Sources */,
@@ -618,6 +629,7 @@
 				ECA739012BE61D9C00A4542E /* MemolaModel.xcdatamodeld in Sources */,
 				ECA738F02BE6127700A4542E /* CGSize++.swift in Sources */,
 				ECFA15242BEF223300455818 /* GraphicContextObject.swift in Sources */,
+				EC3565562BEFC7B300A4E0BF /* NSManagedObject++.swift in Sources */,
 				ECA738EC2BE6124E00A4542E /* CGAffineTransform++.swift in Sources */,
 				ECA738E22BE610D000A4542E /* GraphicRenderPass.swift in Sources */,
 				ECA738DC2BE6108D00A4542E /* StrokeRenderPass.swift in Sources */,

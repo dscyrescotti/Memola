@@ -39,9 +39,9 @@ final class GraphicContext: @unchecked Sendable {
     func undoGraphic() {
         guard !strokes.isEmpty else { return }
         let stroke = strokes.removeLast()
-        Persistence.backgroundContext.perform {
+        withPersistence(\.backgroundContext) { [stroke] context in
             stroke.object?.graphicContext = nil
-            Persistence.saveIfNeededInBackground()
+            try context.saveIfNeeded()
         }
         previousStroke = nil
     }
@@ -50,9 +50,9 @@ final class GraphicContext: @unchecked Sendable {
         switch event {
         case .stroke(let stroke):
             strokes.append(stroke)
-            Persistence.backgroundContext.perform { [weak self] in
+            withPersistence(\.backgroundContext) { [weak self, stroke] context in
                 stroke.object?.graphicContext = self?.object
-                Persistence.saveIfNeededInBackground()
+                try context.saveIfNeeded()
             }
             previousStroke = nil
         }
@@ -95,8 +95,8 @@ extension GraphicContext {
             createdAt: .now,
             thickness: pen.thickness
         )
-        Persistence.backgroundContext.perform { [graphicContext = object, _stroke = stroke] in
-            let stroke = StrokeObject(context: Persistence.backgroundContext)
+        withPersistence(\.backgroundContext) { [graphicContext = object, _stroke = stroke] context in
+            let stroke = StrokeObject(\.backgroundContext)
             stroke.color = _stroke.color
             stroke.style = _stroke.style
             stroke.thickness = _stroke.thickness
@@ -125,12 +125,12 @@ extension GraphicContext {
         currentStroke.finish(at: point)
         let saveIndex = currentStroke.batchIndex
         let quads = Array(currentStroke.quads[saveIndex..<currentStroke.quads.count])
-        Persistence.backgroundContext.perform { [currentStroke, quads] in
+        withPersistence(\.backgroundContext) { [currentStroke, quads] context in
             currentStroke.saveQuads(for: quads)
-            Persistence.saveIfNeededInBackground()
+            try context.saveIfNeeded()
             if let stroke = currentStroke.object {
                 currentStroke.quads.removeAll()
-                Persistence.backgroundContext.refresh(stroke, mergeChanges: false)
+                context.refresh(stroke, mergeChanges: false)
             }
         }
         previousStroke = currentStroke
@@ -141,12 +141,12 @@ extension GraphicContext {
     func cancelStroke() {
         if !strokes.isEmpty {
             let stroke = strokes.removeLast()
-            Persistence.backgroundContext.perform { [graphicContext = object, _stroke = stroke] in
+            withPersistence(\.backgroundContext) { [graphicContext = object, _stroke = stroke] context in
                 if let stroke = _stroke.object {
                     graphicContext?.strokes.remove(stroke)
-                    Persistence.backgroundContext.delete(stroke)
+                    context.delete(stroke)
                 }
-                Persistence.saveIfNeededInBackground()
+                try context.saveIfNeeded()
             }
         }
         currentStroke = nil
