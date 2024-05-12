@@ -7,43 +7,23 @@
 
 import Combine
 import MetalKit
+import CoreData
 import Foundation
 
-protocol GraphicContextDelegate: AnyObject {
-    var didUpdate: PassthroughSubject<Void, Never> { get set }
-}
-
-class GraphicContext: Codable {
+final class GraphicContext: @unchecked Sendable {
     var strokes: [Stroke] = []
+    var object: GraphicContextObject?
+
     var currentStroke: Stroke?
     var previousStroke: Stroke?
     var currentPoint: CGPoint?
-
     var renderType: RenderType = .finished
-
     var vertices: [ViewPortVertex] = []
     var vertexCount: Int = 4
     var vertexBuffer: MTLBuffer?
 
-    weak var delegate: GraphicContextDelegate?
-
     init() {
         setViewPortVertices()
-    }
-
-    enum CodingKeys: CodingKey {
-        case strokes
-    }
-
-    required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.strokes = try container.decode([Stroke].self, forKey: .strokes)
-        setViewPortVertices()
-    }
-
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(self.strokes, forKey: .strokes)
     }
 
     func setViewPortVertices() {
@@ -58,18 +38,39 @@ class GraphicContext: Codable {
 
     func undoGraphic() {
         guard !strokes.isEmpty else { return }
-        strokes.removeLast()
+        let stroke = strokes.removeLast()
+        withPersistence(\.backgroundContext) { [stroke] context in
+            stroke.object?.graphicContext = nil
+            try context.saveIfNeeded()
+        }
         previousStroke = nil
-        delegate?.didUpdate.send()
     }
 
     func redoGraphic(for event: HistoryEvent) {
         switch event {
         case .stroke(let stroke):
             strokes.append(stroke)
+            withPersistence(\.backgroundContext) { [weak self, stroke] context in
+                stroke.object?.graphicContext = self?.object
+                try context.saveIfNeeded()
+            }
             previousStroke = nil
         }
-        delegate?.didUpdate.send()
+    }
+}
+
+extension GraphicContext {
+    func loadStrokes() {
+        guard let object else { return }
+        self.strokes = object.strokes.compactMap { stroke -> Stroke? in
+            guard let stroke = stroke as? StrokeObject else { return nil }
+            let _stroke = Stroke(object: stroke)
+            _stroke.loadQuads()
+            withPersistence(\.backgroundContext) { [stroke] context in
+                context.refresh(stroke, mergeChanges: false)
+            }
+            return _stroke
+        }
     }
 }
 
@@ -93,9 +94,21 @@ extension GraphicContext {
     func beginStroke(at point: CGPoint, pen: Pen) -> Stroke {
         let stroke = Stroke(
             color: pen.color,
-            style: pen.style,
+            style: pen.strokeStyle.rawValue,
+            createdAt: .now,
             thickness: pen.thickness
         )
+        withPersistence(\.backgroundContext) { [graphicContext = object, _stroke = stroke] context in
+            let stroke = StrokeObject(\.backgroundContext)
+            stroke.color = _stroke.color
+            stroke.style = _stroke.style
+            stroke.thickness = _stroke.thickness
+            stroke.createdAt = _stroke.createdAt
+            stroke.quads = []
+            stroke.graphicContext = graphicContext
+            graphicContext?.strokes.add(stroke)
+            _stroke.object = stroke
+        }
         strokes.append(stroke)
         currentStroke = stroke
         currentPoint = point
@@ -105,23 +118,38 @@ extension GraphicContext {
 
     func appendStroke(with point: CGPoint) {
         guard let currentStroke else { return }
-        guard let currentPoint, point.distance(to: currentPoint) > currentStroke.thickness * currentStroke.style.stepRate else { return }
+        guard let currentPoint, point.distance(to: currentPoint) > currentStroke.thickness * currentStroke.penStyle.anyPenStyle.stepRate else { return }
         currentStroke.append(to: point)
         self.currentPoint = point
     }
 
     func endStroke(at point: CGPoint) {
-        guard currentPoint != nil else { return }
-        currentStroke?.finish(at: point)
+        guard currentPoint != nil, let currentStroke else { return }
+        currentStroke.finish(at: point)
+        let saveIndex = currentStroke.batchIndex
+        let quads = Array(currentStroke.quads[saveIndex..<currentStroke.quads.count])
+        withPersistence(\.backgroundContext) { [currentStroke, quads] context in
+            currentStroke.saveQuads(for: quads)
+            try context.saveIfNeeded()
+            if let stroke = currentStroke.object {
+                context.refresh(stroke, mergeChanges: false)
+            }
+        }
         previousStroke = currentStroke
-        currentStroke = nil
+        self.currentStroke = nil
         self.currentPoint = nil
-        delegate?.didUpdate.send()
     }
 
     func cancelStroke() {
         if !strokes.isEmpty {
-            strokes.removeLast()
+            let stroke = strokes.removeLast()
+            withPersistence(\.backgroundContext) { [graphicContext = object, _stroke = stroke] context in
+                if let stroke = _stroke.object {
+                    graphicContext?.strokes.remove(stroke)
+                    context.delete(stroke)
+                }
+                try context.saveIfNeeded()
+            }
         }
         currentStroke = nil
         currentPoint = nil

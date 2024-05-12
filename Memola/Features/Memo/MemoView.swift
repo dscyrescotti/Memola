@@ -6,15 +6,22 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct MemoView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.managedObjectContext) var managedObjectContext
 
     @StateObject var tool = Tool()
+    @StateObject var canvas: Canvas
     @StateObject var history = History()
 
-    @EnvironmentObject var canvas: Canvas
+    let memo: MemoObject
+
+    init(memo: MemoObject) {
+        self.memo = memo
+        self._canvas = StateObject(wrappedValue: Canvas(size: memo.canvas.size, canvasID: memo.canvas.objectID))
+    }
 
     var body: some View {
         CanvasView()
@@ -53,9 +60,6 @@ struct MemoView: View {
             .environmentObject(tool)
             .environmentObject(canvas)
             .environmentObject(history)
-            .task {
-                canvas.listen(on: managedObjectContext)
-            }
     }
 
     var historyTool: some View {
@@ -91,15 +95,14 @@ struct MemoView: View {
     }
 
     func closeMemo() {
-        Task(priority: .high) {
-            await MainActor.run {
-                canvas.state = .closing
-            }
-            await canvas.save(on: managedObjectContext)
-            await MainActor.run {
-                canvas.state = .closed
-                dismiss()
+        history.resetRedo()
+        if managedObjectContext.hasChanges {
+            do {
+                try managedObjectContext.save()
+            } catch {
+                NSLog("[Memola] - \(error.localizedDescription)")
             }
         }
+        dismiss()
     }
 }

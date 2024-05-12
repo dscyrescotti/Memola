@@ -10,27 +10,28 @@ import CoreData
 import MetalKit
 import Foundation
 
-final class Canvas: NSObject, ObservableObject, Identifiable, Codable, GraphicContextDelegate {
+final class Canvas: ObservableObject, Identifiable, @unchecked Sendable {
     let size: CGSize
-    let maximumZoomScale: CGFloat = 25
-    let minimumZoomScale: CGFloat = 3.1
-
-    var transform: simd_float4x4 = .init()
-
-    var uniformsBuffer: MTLBuffer?
+    let canvasID: NSManagedObjectID
 
     let gridContext = GridContext()
     var graphicContext = GraphicContext()
     let viewPortContext = ViewPortContext()
 
+    let maximumZoomScale: CGFloat = 28
+    let minimumZoomScale: CGFloat = 3.1
+
+    var transform: simd_float4x4 = .init()
     var clipBounds: CGRect = .zero
     var zoomScale: CGFloat = .zero
+    var uniformsBuffer: MTLBuffer?
 
-    weak var memo: Memo?
-    var graphicLoader: (() throws -> GraphicContext)?
+    init(size: CGSize, canvasID: NSManagedObjectID) {
+        self.size = size
+        self.canvasID = canvasID
+    }
 
     @Published var state: State = .initial
-    lazy var didUpdate = PassthroughSubject<Void, Never>()
 
     var hasValidStroke: Bool {
         if let currentStroke = graphicContext.currentStroke {
@@ -38,64 +39,26 @@ final class Canvas: NSObject, ObservableObject, Identifiable, Codable, GraphicCo
         }
         return false
     }
-
-    init(size: CGSize = .init(width: 4_000, height: 4_000)) {
-        self.size = size
-    }
-
-    enum CodingKeys: CodingKey {
-        case size
-        case graphicContext
-    }
-
-    required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.size = try container.decode(CGSize.self, forKey: .size)
-        self.graphicLoader = { try container.decode(GraphicContext.self, forKey: .graphicContext) }
-    }
 }
 
 // MARK: - Actions
 extension Canvas {
     func load() {
-        guard let graphicLoader else { return }
-        Task(priority: .high) { [unowned self, graphicLoader] in
-            await MainActor.run {
-                self.state = .loading
+        withPersistence(\.backgroundContext) { [weak self, canvasID] context in
+            DispatchQueue.main.async { [weak self] in
+                self?.state = .loading
             }
-            do {
-                let graphicContext = try graphicLoader()
-                graphicContext.delegate = self
-                await MainActor.run {
-                    self.graphicContext = graphicContext
-                    self.state = .loaded
-                }
-            } catch {
-                NSLog("[Memola] - \(error.localizedDescription)")
-                await MainActor.run {
-                    self.state = .failed
-                }
+            guard let canvas = context.object(with: canvasID) as? CanvasObject else {
+                return
+            }
+            let graphicContext = canvas.graphicContext
+            self?.graphicContext.object = graphicContext
+            self?.graphicContext.loadStrokes()
+            context.refresh(canvas, mergeChanges: false)
+            DispatchQueue.main.async { [weak self] in
+                self?.state = .loaded
             }
         }
-    }
-
-    func save(on managedObjectContext: NSManagedObjectContext) async {
-        guard let memo else { return }
-        do {
-            memo.data = try JSONEncoder().encode(self)
-            memo.updatedAt = Date()
-            try managedObjectContext.save()
-        } catch {
-            NSLog("[Memola] - \(error.localizedDescription)")
-        }
-    }
-
-    func listen(on managedObjectContext: NSManagedObjectContext) {
-//        Task(priority: .utility) { [unowned self] in
-//            for await _ in didUpdate.throttle(for: 500, scheduler: DispatchQueue.global(qos: .utility), latest: false).values {
-//                await save(on: managedObjectContext)
-//            }
-//        }
     }
 }
 

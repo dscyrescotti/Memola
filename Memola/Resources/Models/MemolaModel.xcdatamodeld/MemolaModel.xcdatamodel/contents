@@ -1,10 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22222" systemVersion="23B74" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
-    <entity name="Memo" representedClassName="Memo" syncable="YES">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22757" systemVersion="23B74" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CanvasObject" representedClassName="CanvasObject" syncable="YES">
+        <attribute name="height" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" customClassName="CGFloat"/>
+        <attribute name="width" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" customClassName="CGFloat"/>
+        <relationship name="graphicContext" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="GraphicContextObject" inverseName="canvas" inverseEntity="GraphicContextObject"/>
+        <relationship name="memo" maxCount="1" deletionRule="Deny" destinationEntity="MemoObject" inverseName="canvas" inverseEntity="MemoObject"/>
+    </entity>
+    <entity name="GraphicContextObject" representedClassName="GraphicContextObject" syncable="YES">
+        <relationship name="canvas" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CanvasObject" inverseName="graphicContext" inverseEntity="CanvasObject"/>
+        <relationship name="strokes" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="StrokeObject" inverseName="graphicContext" inverseEntity="StrokeObject"/>
+    </entity>
+    <entity name="MemoObject" representedClassName="MemoObject" syncable="YES">
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="data" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
-        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="title" attributeType="String"/>
         <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="canvas" maxCount="1" deletionRule="Cascade" destinationEntity="CanvasObject" inverseName="memo" inverseEntity="CanvasObject"/>
+    </entity>
+    <entity name="QuadObject" representedClassName="QuadObject" syncable="YES">
+        <attribute name="color" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
+        <attribute name="originX" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="originY" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="rotation" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="shape" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="size" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="stroke" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StrokeObject" inverseName="quads" inverseEntity="StrokeObject"/>
+    </entity>
+    <entity name="StrokeObject" representedClassName="StrokeObject" syncable="YES">
+        <attribute name="color" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="style" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="thickness" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="graphicContext" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GraphicContextObject" inverseName="strokes" inverseEntity="GraphicContextObject"/>
+        <relationship name="quads" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="QuadObject" inverseName="stroke" inverseEntity="QuadObject"/>
     </entity>
 </model>

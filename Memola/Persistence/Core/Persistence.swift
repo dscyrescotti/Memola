@@ -8,16 +8,23 @@
 import CoreData
 import Foundation
 
-class Persistence {
+final class Persistence {
     private let modelName = "MemolaModel"
 
     static let shared: Persistence = Persistence()
 
     private init() { }
 
-    var viewContext: NSManagedObjectContext {
+    lazy var viewContext: NSManagedObjectContext = {
         persistentContainer.viewContext
-    }
+    }()
+
+    lazy var backgroundContext: NSManagedObjectContext = {
+        let context = persistentContainer.newBackgroundContext()
+        context.undoManager = nil
+        context.automaticallyMergesChangesFromParent = true
+        return context
+    }()
 
     lazy var persistentContainer: NSPersistentContainer = {
         let persistentStore = NSPersistentStoreDescription()
@@ -63,4 +70,16 @@ class Persistence {
             fatalError("[Memola]: \(error.localizedDescription)")
         }
     }()
+}
+
+// MARK: - Global Method
+func withPersistence(_ keypath: KeyPath<Persistence, NSManagedObjectContext>, _ task: @escaping (NSManagedObjectContext) throws -> Void) {
+    let context = Persistence.shared[keyPath: keypath]
+    context.perform {
+        do {
+            try task(context)
+        } catch {
+            NSLog("[Memola] - \(error.localizedDescription)")
+        }
+    }
 }

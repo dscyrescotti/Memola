@@ -27,7 +27,7 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
             let control = CGPoint.middle(p1: start, p2: end)
             addCurve(from: start, to: end, by: control, on: stroke)
         case 3:
-            discardPoints(upto: stroke.vertexIndex, on: stroke)
+            stroke.removeQuads(from: stroke.quadIndex + 1)
             let index = stroke.keyPoints.count - 1
             var start = stroke.keyPoints[index - 2]
             var end = CGPoint.middle(p1: stroke.keyPoints[index - 2], p2: stroke.keyPoints[index - 1])
@@ -62,7 +62,7 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
     }
 
     private func smoothOutPath(on stroke: Stroke) {
-        discardPoints(upto: stroke.vertexIndex, on: stroke)
+        stroke.removeQuads(from: stroke.quadIndex + 1)
         adjustPreviousKeyPoint(on: stroke)
         switch stroke.keyPoints.count {
         case 4:
@@ -79,7 +79,7 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
             let end = CGPoint.middle(p1: stroke.keyPoints[index - 1], p2: stroke.keyPoints[index])
             addCurve(from: start, to: end, by: control, on: stroke)
         }
-        stroke.vertexIndex = stroke.vertices.endIndex - 1
+        stroke.quadIndex = stroke.quads.count - 1
     }
 
     private func adjustPreviousKeyPoint(on stroke: Stroke) {
@@ -105,9 +105,8 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
         case .random:
             rotation = CGFloat.random(in: 0...360) * .pi / 180
         }
-        let quad = Quad(origin: point, size: stroke.thickness, color: stroke.color, rotation: rotation)
-        stroke.vertices.append(contentsOf: quad.vertices)
-        stroke.vertexCount = stroke.vertices.endIndex
+        let quad = stroke.addQuad(at: point, rotation: rotation, shape: .rounded)
+        stroke.quads.append(quad)
     }
 
     private func addCurve(from start: CGPoint, to end: CGPoint, by control: CGPoint, on stroke: Stroke) {
@@ -115,9 +114,9 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
         let factor: CGFloat
         switch configuration.granularity {
         case .automatic:
-            factor = min(6, 1 / (stroke.thickness * 10 / 500))
+            factor = min(5, 1 / (stroke.thickness * 1 / 50))
         case .fixed:
-            factor = 1 / (stroke.thickness * stroke.style.stepRate)
+            factor = 1 / (stroke.thickness * stroke.penStyle.anyPenStyle.stepRate)
         case .none:
             factor = 1 / (stroke.thickness * 10 / 500)
         }
@@ -128,29 +127,6 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
             let y = pow(1 - t, 2) * start.y + 2.0 * (1 - t) * t * control.y + t * t * end.y
             let point = CGPoint(x: x, y: y)
             addPoint(point, on: stroke)
-        }
-    }
-
-    #warning("TODO: remove later")
-    private func addLine(from start: CGPoint, to end: CGPoint, on stroke: Stroke) {
-        let distance = end.distance(to: start)
-        let segments = max(distance / stroke.style.stepRate, 2)
-        for i in 0..<Int(segments) {
-            let i = CGFloat(i)
-            let x = start.x + (end.x - start.x) * (i / segments)
-            let y = start.y + (end.y - start.y) * (i / segments)
-            let point = CGPoint(x: x, y: y)
-            addPoint(point, on: stroke)
-        }
-    }
-
-    private func discardPoints(upto index: Int, on stroke: Stroke) {
-        if index < 0 {
-            stroke.vertices.removeAll()
-        } else {
-            let count = stroke.vertices.endIndex
-            let dropCount = count - (max(0, index) + 1)
-            stroke.vertices.removeLast(dropCount)
         }
     }
 }

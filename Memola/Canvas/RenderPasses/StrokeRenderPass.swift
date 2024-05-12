@@ -15,6 +15,7 @@ class StrokeRenderPass: RenderPass {
     weak var graphicDescriptor: MTLRenderPassDescriptor?
 
     var strokePipelineState: MTLRenderPipelineState?
+    var quadPipelineState: MTLComputePipelineState?
     weak var graphicPipelineState: MTLRenderPipelineState?
 
     var stroke: Stroke?
@@ -23,6 +24,7 @@ class StrokeRenderPass: RenderPass {
     init(renderer: Renderer) {
         descriptor = MTLRenderPassDescriptor()
         strokePipelineState = PipelineStates.createStrokePipelineState(from: renderer)
+        quadPipelineState = PipelineStates.createQuadPipelineState(from: renderer)
     }
 
     func resize(on view: MTKView, to size: CGSize, with renderer: Renderer) {
@@ -32,6 +34,8 @@ class StrokeRenderPass: RenderPass {
 
     func draw(on canvas: Canvas, with renderer: Renderer) {
         guard let descriptor else { return }
+
+        generateVertexBuffer(on: canvas, with: renderer)
 
         guard let strokeTexture else { return }
         descriptor.colorAttachments[0].texture = strokeTexture
@@ -50,14 +54,38 @@ class StrokeRenderPass: RenderPass {
 
         canvas.setUniformsBuffer(device: renderer.device, renderEncoder: renderEncoder)
         stroke?.draw(device: renderer.device, renderEncoder: renderEncoder)
-
         renderEncoder.endEncoding()
         commandBuffer.commit()
 
         drawStrokeTexture(on: canvas, with: renderer)
     }
 
-    func drawStrokeTexture(on canvas: Canvas, with renderer: Renderer) {
+    private func generateVertexBuffer(on canvas: Canvas, with renderer: Renderer) {
+        guard let stroke, !stroke.quads.isEmpty, let quadPipelineState else { return }
+        guard let quadCommandBuffer = renderer.commandQueue.makeCommandBuffer() else { return }
+        guard let computeEncoder = quadCommandBuffer.makeComputeCommandEncoder() else { return }
+
+        computeEncoder.label = "Quad Render Pass"
+
+        let quadCount = stroke.quads.endIndex
+        var quads = stroke.quads
+        let quadBuffer = renderer.device.makeBuffer(bytes: &quads, length: MemoryLayout<Quad>.stride * quadCount, options: [])
+        let vertexBuffer = renderer.device.makeBuffer(length: MemoryLayout<QuadVertex>.stride * quadCount * 6, options: [])
+
+        computeEncoder.setComputePipelineState(quadPipelineState)
+        computeEncoder.setBuffer(quadBuffer, offset: 0, index: 0)
+        computeEncoder.setBuffer(vertexBuffer, offset: 0, index: 1)
+
+        stroke.vertexBuffer = vertexBuffer
+
+        let threadsPerGroup = MTLSize(width: 1, height: 1, depth: 1)
+        let numThreadgroups = MTLSize(width: quadCount + 1, height: 1, depth: 1)
+        computeEncoder.dispatchThreadgroups(numThreadgroups, threadsPerThreadgroup: threadsPerGroup)
+        computeEncoder.endEncoding()
+        quadCommandBuffer.commit()
+    }
+
+    private func drawStrokeTexture(on canvas: Canvas, with renderer: Renderer) {
         guard let stroke else { return }
         guard let graphicDescriptor, let graphicPipelineState else { return }
 

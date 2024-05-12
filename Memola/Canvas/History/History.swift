@@ -49,6 +49,17 @@ class History: ObservableObject {
 
     func resetRedo() {
         redoCache = redoStack
+        for event in redoStack {
+            switch event {
+            case .stroke(let _stroke):
+                withPersistence(\.backgroundContext) { context in
+                    if let stroke = _stroke.object {
+                        context.delete(stroke)
+                    }
+                    try context.saveIfNeeded()
+                }
+            }
+        }
         redoStack.removeAll()
     }
 
