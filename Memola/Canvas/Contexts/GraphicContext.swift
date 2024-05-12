@@ -60,12 +60,15 @@ final class GraphicContext: @unchecked Sendable {
 }
 
 extension GraphicContext {
-    func load() {
+    func loadStrokes() {
         guard let object else { return }
         self.strokes = object.strokes.compactMap { stroke -> Stroke? in
             guard let stroke = stroke as? StrokeObject else { return nil }
             let _stroke = Stroke(object: stroke)
-            _stroke.loadVertices()
+            _stroke.loadQuads()
+            withPersistence(\.backgroundContext) { [stroke] context in
+                context.refresh(stroke, mergeChanges: false)
+            }
             return _stroke
         }
     }
@@ -129,7 +132,6 @@ extension GraphicContext {
             currentStroke.saveQuads(for: quads)
             try context.saveIfNeeded()
             if let stroke = currentStroke.object {
-                currentStroke.quads.removeAll()
                 context.refresh(stroke, mergeChanges: false)
             }
         }

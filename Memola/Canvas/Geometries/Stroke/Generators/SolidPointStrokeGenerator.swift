@@ -27,7 +27,7 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
             let control = CGPoint.middle(p1: start, p2: end)
             addCurve(from: start, to: end, by: control, on: stroke)
         case 3:
-            discardVertices(upto: stroke.vertexIndex, quadIndex: stroke.quadIndex, on: stroke)
+            stroke.removeQuads(from: stroke.quadIndex + 1)
             let index = stroke.keyPoints.count - 1
             var start = stroke.keyPoints[index - 2]
             var end = CGPoint.middle(p1: stroke.keyPoints[index - 2], p2: stroke.keyPoints[index - 1])
@@ -62,7 +62,7 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
     }
 
     private func smoothOutPath(on stroke: Stroke) {
-        discardVertices(upto: stroke.vertexIndex, quadIndex: stroke.quadIndex, on: stroke)
+        stroke.removeQuads(from: stroke.quadIndex + 1)
         adjustPreviousKeyPoint(on: stroke)
         switch stroke.keyPoints.count {
         case 4:
@@ -80,7 +80,6 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
             addCurve(from: start, to: end, by: control, on: stroke)
         }
         stroke.quadIndex = stroke.quads.count - 1
-        stroke.vertexIndex = stroke.vertices.endIndex - 1
     }
 
     private func adjustPreviousKeyPoint(on stroke: Stroke) {
@@ -107,8 +106,7 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
             rotation = CGFloat.random(in: 0...360) * .pi / 180
         }
         let quad = stroke.addQuad(at: point, rotation: rotation, shape: .rounded)
-        stroke.vertices.append(contentsOf: quad.generateVertices(stroke.color))
-        stroke.vertexCount = stroke.vertices.endIndex
+        stroke.quads.append(quad)
     }
 
     private func addCurve(from start: CGPoint, to end: CGPoint, by control: CGPoint, on stroke: Stroke) {
@@ -130,17 +128,6 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
             let point = CGPoint(x: x, y: y)
             addPoint(point, on: stroke)
         }
-    }
-
-    private func discardVertices(upto index: Int, quadIndex: Int, on stroke: Stroke) {
-        if index < 0 {
-            stroke.vertices.removeAll()
-        } else {
-            let count = stroke.vertices.endIndex
-            let dropCount = count - (max(0, index) + 1)
-            stroke.vertices.removeLast(dropCount)
-        }
-        stroke.removeQuads(from: quadIndex + 1)
     }
 }
 

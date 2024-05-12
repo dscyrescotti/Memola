@@ -41,27 +41,21 @@ final class Stroke: @unchecked Sendable {
     }
 
     var angle: CGFloat = 0
-
     var penStyle: Style {
         Style(rawValue: style) ?? .marker
     }
 
     var batchIndex: Int = 0
     var quadIndex: Int = -1
-    var vertexIndex: Int = -1
     var keyPoints: [CGPoint] = []
     var thicknessFactor: CGFloat = 0.7
 
-    var vertices: [QuadVertex] = []
     var vertexBuffer: MTLBuffer?
-    var vertexCount: Int = 0
-
     var texture: MTLTexture?
 
     var isEmpty: Bool {
-        vertices.isEmpty
+        quads.isEmpty
     }
-
     var isEraserPenStyle: Bool {
         penStyle == .eraser
     }
@@ -78,14 +72,15 @@ final class Stroke: @unchecked Sendable {
         penStyle.anyPenStyle.generator.finish(at: point, on: self)
         keyPoints.removeAll()
     }
+}
 
-    func loadVertices() {
+extension Stroke {
+    func loadQuads() {
         guard let object else { return }
-        for quad in object.quads {
-            guard let quad = quad as? QuadObject else { continue }
-            vertices.append(contentsOf: Quad(object: quad).generateVertices(object.color))
+        quads = object.quads.compactMap { quad in
+            guard let quad = quad as? QuadObject else { return nil }
+            return Quad(object: quad)
         }
-        vertexCount = vertices.endIndex
     }
 
     func addQuad(at point: CGPoint, rotation: CGFloat, shape: QuadShape) -> Quad {
@@ -93,7 +88,8 @@ final class Stroke: @unchecked Sendable {
             origin: point,
             size: thickness,
             rotation: rotation,
-            shape: shape.rawValue
+            shape: shape.rawValue,
+            color: color
         )
         quads.append(quad)
         return quad
@@ -112,11 +108,12 @@ final class Stroke: @unchecked Sendable {
     func saveQuads(for quads: [Quad]) {
         for _quad in quads {
             let quad = QuadObject(\.backgroundContext)
-            quad.originX = _quad.originX
-            quad.originY = _quad.originY
-            quad.size = _quad.size
-            quad.rotation = _quad.rotation
+            quad.originX = _quad.originX.cgFloat
+            quad.originY = _quad.originY.cgFloat
+            quad.size = _quad.size.cgFloat
+            quad.rotation = _quad.rotation.cgFloat
             quad.shape = _quad.shape
+            quad.color = _quad.getColor()
             quad.stroke = object
             object?.quads.add(quad)
         }
@@ -128,7 +125,6 @@ extension Stroke: Drawable {
         if texture == nil {
             texture = penStyle.anyPenStyle.loadTexture(on: device)
         }
-        vertexBuffer = device.makeBuffer(bytes: &vertices, length: MemoryLayout<QuadVertex>.stride * vertexCount, options: .cpuCacheModeWriteCombined)
     }
 
     func draw(device: MTLDevice, renderEncoder: MTLRenderCommandEncoder) {
@@ -136,7 +132,8 @@ extension Stroke: Drawable {
         prepare(device: device)
         renderEncoder.setFragmentTexture(texture, index: 0)
         renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-        renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertexCount)
+        renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: quads.endIndex * 6)
+        vertexBuffer = nil
     }
 }
 

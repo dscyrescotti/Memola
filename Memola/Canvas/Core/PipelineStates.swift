@@ -131,4 +131,13 @@ struct PipelineStates {
         }
         return try? device.makeComputePipelineState(function: function)
     }
+
+    static func createQuadPipelineState(from renderer: Renderer) -> MTLComputePipelineState? {
+        let device = renderer.device
+        let library = renderer.library
+        guard let function = library.makeFunction(name: "generate_stroke_vertices") else {
+            return nil
+        }
+        return try? device.makeComputePipelineState(function: function)
+    }
 }

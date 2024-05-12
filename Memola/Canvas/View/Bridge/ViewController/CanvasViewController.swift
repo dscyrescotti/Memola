@@ -62,6 +62,9 @@ class CanvasViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         history.resetRedo()
+        withPersistence(\.backgroundContext) { context in
+            context.refreshAllObjects()
+        }
     }
 }
 

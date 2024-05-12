@@ -10,6 +10,8 @@
 		EC3565522BEFC65F00A4E0BF /* NSManagedObjectContext++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565512BEFC65F00A4E0BF /* NSManagedObjectContext++.swift */; };
 		EC3565542BEFC6AD00A4E0BF /* View++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565532BEFC6AD00A4E0BF /* View++.swift */; };
 		EC3565562BEFC7B300A4E0BF /* NSManagedObject++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */; };
+		EC35655A2BF060D900A4E0BF /* Quad.metal in Sources */ = {isa = PBXBuildFile; fileRef = EC3565592BF060D900A4E0BF /* Quad.metal */; };
+		EC35655C2BF0712A00A4E0BF /* Float++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC35655B2BF0712A00A4E0BF /* Float++.swift */; };
 		EC4538892BEBCAE000A86FEC /* Quad.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4538882BEBCAE000A86FEC /* Quad.swift */; };
 		EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */; };
 		EC7F6BF02BE5E6E400A34A7B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */; };
@@ -80,6 +82,8 @@
 		EC3565512BEFC65F00A4E0BF /* NSManagedObjectContext++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext++.swift"; sourceTree = "<group>"; };
 		EC3565532BEFC6AD00A4E0BF /* View++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View++.swift"; sourceTree = "<group>"; };
 		EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObject++.swift"; sourceTree = "<group>"; };
+		EC3565592BF060D900A4E0BF /* Quad.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Quad.metal; sourceTree = "<group>"; };
+		EC35655B2BF0712A00A4E0BF /* Float++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float++.swift"; sourceTree = "<group>"; };
 		EC4538882BEBCAE000A86FEC /* Quad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quad.swift; sourceTree = "<group>"; };
 		EC7F6BE82BE5E6E300A34A7B /* Memola.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Memola.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemolaApp.swift; sourceTree = "<group>"; };
@@ -300,6 +304,7 @@
 				ECA738922BE6011100A4542E /* Stroke.metal */,
 				ECA738942BE6012D00A4542E /* ViewPort.metal */,
 				ECA738962BE6014200A4542E /* Graphic.metal */,
+				EC3565592BF060D900A4E0BF /* Quad.metal */,
 			);
 			path = Shaders;
 			sourceTree = "<group>";
@@ -348,6 +353,7 @@
 				EC3565512BEFC65F00A4E0BF /* NSManagedObjectContext++.swift */,
 				EC3565532BEFC6AD00A4E0BF /* View++.swift */,
 				EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */,
+				EC35655B2BF0712A00A4E0BF /* Float++.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -594,6 +600,7 @@
 				ECA738E42BE6110800A4542E /* Drawable.swift in Sources */,
 				ECA738AD2BE60CC600A4542E /* DrawingView.swift in Sources */,
 				ECA738E02BE610B900A4542E /* EraserRenderPass.swift in Sources */,
+				EC35655A2BF060D900A4E0BF /* Quad.metal in Sources */,
 				ECA738912BE600F500A4542E /* Cache.metal in Sources */,
 				ECA7389C2BE601AF00A4542E /* GridVertex.swift in Sources */,
 				ECA738A82BE6025900A4542E /* GraphicUniforms.swift in Sources */,
@@ -631,6 +638,7 @@
 				ECFA15242BEF223300455818 /* GraphicContextObject.swift in Sources */,
 				EC3565562BEFC7B300A4E0BF /* NSManagedObject++.swift in Sources */,
 				ECA738EC2BE6124E00A4542E /* CGAffineTransform++.swift in Sources */,
+				EC35655C2BF0712A00A4E0BF /* Float++.swift in Sources */,
 				ECA738E22BE610D000A4542E /* GraphicRenderPass.swift in Sources */,
 				ECA738DC2BE6108D00A4542E /* StrokeRenderPass.swift in Sources */,
 				ECA738F42BE612A000A4542E /* Array++.swift in Sources */,

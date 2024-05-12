@@ -15,5 +15,6 @@ final class QuadObject: NSManagedObject {
     @NSManaged var size: CGFloat
     @NSManaged var rotation: CGFloat
     @NSManaged var shape: Int16
+    @NSManaged var color: [CGFloat]
     @NSManaged var stroke: StrokeObject?
 }

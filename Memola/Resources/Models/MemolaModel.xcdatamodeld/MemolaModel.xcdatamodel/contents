@@ -17,6 +17,7 @@
         <relationship name="canvas" maxCount="1" deletionRule="Cascade" destinationEntity="CanvasObject" inverseName="memo" inverseEntity="CanvasObject"/>
     </entity>
     <entity name="QuadObject" representedClassName="QuadObject" syncable="YES">
+        <attribute name="color" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
         <attribute name="originX" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="originY" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="rotation" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>

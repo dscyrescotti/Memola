@@ -31,6 +31,11 @@ struct MemosView: View {
         }
         .fullScreenCover(item: $memo) { memo in
             MemoView(memo: memo)
+                .onDisappear {
+                    withPersistence(\.viewContext) { context in
+                        context.refreshAllObjects()
+                    }
+                }
         }
     }
 
