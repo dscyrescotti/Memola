@@ -72,7 +72,7 @@ final class Stroke: @unchecked Sendable {
     }
 
     func isVisible(in bounds: CGRect) -> Bool {
-        bounds.contains(strokeBounds)
+        bounds.contains(strokeBounds) || bounds.intersects(strokeBounds)
     }
 
     func begin(at point: CGPoint) {
