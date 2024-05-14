@@ -60,16 +60,30 @@ final class GraphicContext: @unchecked Sendable {
 }
 
 extension GraphicContext {
-    func loadStrokes() {
+    func loadStrokes(_ bounds: CGRect) {
         guard let object else { return }
         self.strokes = object.strokes.compactMap { stroke -> Stroke? in
             guard let stroke = stroke as? StrokeObject else { return nil }
             let _stroke = Stroke(object: stroke)
-            _stroke.loadQuads()
-            withPersistence(\.backgroundContext) { [stroke] context in
-                context.refresh(stroke, mergeChanges: false)
+            if _stroke.isVisible(in: bounds) {
+                _stroke.loadQuads()
+                withPersistence(\.backgroundContext) { [stroke] context in
+                    context.refresh(stroke, mergeChanges: false)
+                }
+            } else {
+                withPersistence(\.backgroundContext) { [stroke] context in
+                    _stroke.loadQuads()
+                    context.refresh(stroke, mergeChanges: false)
+                }
             }
             return _stroke
+        }
+    }
+
+    func loadQuads(_ bounds: CGRect) {
+        for stroke in self.strokes {
+            guard stroke.isVisible(in: bounds), stroke.quads.isEmpty else { continue }
+            stroke.loadQuads()
         }
     }
 }
@@ -93,6 +107,7 @@ extension GraphicContext: Drawable {
 extension GraphicContext {
     func beginStroke(at point: CGPoint, pen: Pen) -> Stroke {
         let stroke = Stroke(
+            bounds: [point.x - pen.thickness, point.y - pen.thickness, point.x + pen.thickness, point.y + pen.thickness],
             color: pen.color,
             style: pen.strokeStyle.rawValue,
             createdAt: .now,
@@ -100,6 +115,7 @@ extension GraphicContext {
         )
         withPersistence(\.backgroundContext) { [graphicContext = object, _stroke = stroke] context in
             let stroke = StrokeObject(\.backgroundContext)
+            stroke.bounds = _stroke.bounds
             stroke.color = _stroke.color
             stroke.style = _stroke.style
             stroke.thickness = _stroke.thickness
@@ -126,10 +142,11 @@ extension GraphicContext {
     func endStroke(at point: CGPoint) {
         guard currentPoint != nil, let currentStroke else { return }
         currentStroke.finish(at: point)
-        let saveIndex = currentStroke.batchIndex
-        let quads = Array(currentStroke.quads[saveIndex..<currentStroke.quads.count])
+        let batchIndex = currentStroke.batchIndex
+        let quads = Array(currentStroke.quads[batchIndex..<currentStroke.quads.count])
         withPersistence(\.backgroundContext) { [currentStroke, quads] context in
             currentStroke.saveQuads(for: quads)
+            currentStroke.object?.bounds = currentStroke.bounds
             try context.saveIfNeeded()
             if let stroke = currentStroke.object {
                 context.refresh(stroke, mergeChanges: false)

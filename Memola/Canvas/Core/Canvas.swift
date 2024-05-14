@@ -18,12 +18,14 @@ final class Canvas: ObservableObject, Identifiable, @unchecked Sendable {
     var graphicContext = GraphicContext()
     let viewPortContext = ViewPortContext()
 
-    let maximumZoomScale: CGFloat = 28
-    let minimumZoomScale: CGFloat = 3.1
+    let maximumZoomScale: CGFloat = 30
+    let minimumZoomScale: CGFloat = 5
+    let defaultZoomScale: CGFloat = 20
 
     var transform: simd_float4x4 = .init()
     var clipBounds: CGRect = .zero
     var zoomScale: CGFloat = .zero
+    var bounds: CGRect = .zero
     var uniformsBuffer: MTLBuffer?
 
     init(size: CGSize, canvasID: NSManagedObjectID) {
@@ -44,8 +46,9 @@ final class Canvas: ObservableObject, Identifiable, @unchecked Sendable {
 // MARK: - Actions
 extension Canvas {
     func load() {
-        withPersistence(\.backgroundContext) { [weak self, canvasID] context in
+        withPersistence(\.backgroundContext) { [weak self, canvasID, bounds] context in
             DispatchQueue.main.async { [weak self] in
+                NSLog(Date().formatted(.dateTime.minute().second().secondFraction(.fractional(2))))
                 self?.state = .loading
             }
             guard let canvas = context.object(with: canvasID) as? CanvasObject else {
@@ -53,11 +56,18 @@ extension Canvas {
             }
             let graphicContext = canvas.graphicContext
             self?.graphicContext.object = graphicContext
-            self?.graphicContext.loadStrokes()
+            self?.graphicContext.loadStrokes(bounds)
             context.refresh(canvas, mergeChanges: false)
             DispatchQueue.main.async { [weak self] in
+                NSLog(Date().formatted(.dateTime.minute().second().secondFraction(.fractional(2))))
                 self?.state = .loaded
             }
+        }
+    }
+
+    func loadStrokes(_ bounds: CGRect) {
+        withPersistence(\.backgroundContext) { [weak self, bounds] context in
+            self?.graphicContext.loadQuads(bounds)
         }
     }
 }

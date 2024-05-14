@@ -11,6 +11,7 @@ import Foundation
 
 final class Stroke: @unchecked Sendable {
     var object: StrokeObject?
+    var bounds: [CGFloat]
     var color: [CGFloat]
     var style: Int16
     var createdAt: Date
@@ -19,6 +20,7 @@ final class Stroke: @unchecked Sendable {
 
     init(object: StrokeObject) {
         self.object = object
+        self.bounds = object.bounds
         self.color = object.color
         self.style = object.style
         self.createdAt = object.createdAt
@@ -27,12 +29,14 @@ final class Stroke: @unchecked Sendable {
     }
 
     init(
+        bounds: [CGFloat],
         color: [CGFloat],
         style: Int16,
         createdAt: Date,
         thickness: CGFloat,
         quads: [Quad] = []
     ) {
+        self.bounds = bounds
         self.color = color
         self.style = style
         self.createdAt = createdAt
@@ -58,6 +62,17 @@ final class Stroke: @unchecked Sendable {
     }
     var isEraserPenStyle: Bool {
         penStyle == .eraser
+    }
+    var strokeBounds: CGRect {
+        let x = bounds[0]
+        let y = bounds[1]
+        let width = bounds[2] - x
+        let height = bounds[3] - y
+        return CGRect(x: x, y: y, width: width, height: height)
+    }
+
+    func isVisible(in bounds: CGRect) -> Bool {
+        bounds.contains(strokeBounds)
     }
 
     func begin(at point: CGPoint) {
@@ -106,6 +121,8 @@ extension Stroke {
     }
 
     func saveQuads(for quads: [Quad]) {
+        var topLeft: CGPoint = CGPoint(x: bounds[0], y: bounds[1])
+        var bottomRight: CGPoint = CGPoint(x: bounds[2], y: bounds[3])
         for _quad in quads {
             let quad = QuadObject(\.backgroundContext)
             quad.originX = _quad.originX.cgFloat
@@ -116,7 +133,12 @@ extension Stroke {
             quad.color = _quad.getColor()
             quad.stroke = object
             object?.quads.add(quad)
+            topLeft.x = min(quad.originX, topLeft.x)
+            topLeft.y = min(quad.originY, topLeft.y)
+            bottomRight.x = max(quad.originX, bottomRight.x)
+            bottomRight.y = max(quad.originY, bottomRight.y)
         }
+        bounds = [topLeft.x, topLeft.y, bottomRight.x, bottomRight.y]
     }
 }
 
