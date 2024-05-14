@@ -83,6 +83,7 @@ class StrokeRenderPass: RenderPass {
         computeEncoder.dispatchThreadgroups(numThreadgroups, threadsPerThreadgroup: threadsPerGroup)
         computeEncoder.endEncoding()
         quadCommandBuffer.commit()
+        quadCommandBuffer.waitUntilCompleted()
     }
 
     private func drawStrokeTexture(on canvas: Canvas, with renderer: Renderer) {
