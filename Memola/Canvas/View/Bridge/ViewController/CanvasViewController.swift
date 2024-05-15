@@ -41,13 +41,13 @@ class CanvasViewController: UIViewController {
         super.viewDidLoad()
         configureViews()
         configureListeners()
-
-        loadMemo()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         resizeDocumentView()
+        updateDocumentBounds()
+        loadMemo()
     }
 
     override func viewDidLayoutSubviews() {
@@ -119,11 +119,11 @@ extension CanvasViewController {
         let newFrame = CGRect(x: 0, y: 0, width: width, height: height)
         drawingView.frame = newFrame
 
-        scrollView.setZoomScale(canvas.minimumZoomScale, animated: true)
+        scrollView.setZoomScale(canvas.defaultZoomScale, animated: true)
         centerDocumentView(to: newSize)
 
-        let offsetX = (newFrame.width * canvas.minimumZoomScale - view.frame.width) / 2
-        let offsetY = (newFrame.height * canvas.minimumZoomScale - view.frame.height) / 2
+        let offsetX = (newFrame.width * canvas.defaultZoomScale - view.frame.width) / 2
+        let offsetY = (newFrame.height * canvas.defaultZoomScale - view.frame.height) / 2
 
         let point = CGPoint(x: offsetX, y: offsetY)
         scrollView.setContentOffset(point, animated: true)
@@ -137,6 +137,20 @@ extension CanvasViewController {
         let verticalPadding = documentViewSize.height < scrollViewSize.height ? (scrollViewSize.height - documentViewSize.height) / 2 : 0
         let horizontalPadding = documentViewSize.width < scrollViewSize.width ? (scrollViewSize.width - documentViewSize.width) / 2 : 0
         self.scrollView.contentInset = UIEdgeInsets(top: verticalPadding, left: horizontalPadding, bottom: verticalPadding, right: horizontalPadding)
+    }
+
+    func updateDocumentBounds() {
+        var bounds = scrollView.bounds.muliply(by: drawingView.ratio / scrollView.zoomScale)
+        let xDelta = bounds.minX * 0.05
+        let yDelta = bounds.minY * 0.05
+        bounds.origin.x -= xDelta
+        bounds.origin.y -= yDelta
+        bounds.size.width += xDelta * 2
+        bounds.size.height += yDelta * 2
+        canvas.bounds = bounds
+        if canvas.state == .loaded {
+            canvas.loadStrokes(bounds)
+        }
     }
 }
 
@@ -208,6 +222,7 @@ extension CanvasViewController: UIScrollViewDelegate {
     }
 
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+        updateDocumentBounds()
         centerDocumentView()
         magnificationEnded()
     }
@@ -234,6 +249,7 @@ extension CanvasViewController: UIScrollViewDelegate {
     }
 
     func scrollViewDidEndScrolling(_ scrollView: UIScrollView) {
+        updateDocumentBounds()
         draggingEnded()
     }
 }

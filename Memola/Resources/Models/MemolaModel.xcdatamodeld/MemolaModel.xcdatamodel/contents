@@ -26,6 +26,7 @@
         <relationship name="stroke" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StrokeObject" inverseName="quads" inverseEntity="StrokeObject"/>
     </entity>
     <entity name="StrokeObject" representedClassName="StrokeObject" syncable="YES">
+        <attribute name="bounds" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
         <attribute name="color" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="style" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>

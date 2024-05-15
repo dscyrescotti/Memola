@@ -69,8 +69,8 @@ struct MemosView: View {
             memoObject.updatedAt = .now
 
             let canvasObject = CanvasObject(context: managedObjectContext)
-            canvasObject.width = 4_000
-            canvasObject.height = 4_000
+            canvasObject.width = 8_000
+            canvasObject.height = 8_000
 
             let graphicContextObject = GraphicContextObject(context: managedObjectContext)
             graphicContextObject.strokes = []

@@ -16,4 +16,8 @@ extension CGRect {
         t = t.scaledBy(x: rect.width, y: rect.height)
         return t
     }
+
+    func muliply(by factor: CGFloat) -> CGRect {
+        CGRect(origin: origin.muliply(by: factor), size: size.multiply(by: factor))
+    }
 }

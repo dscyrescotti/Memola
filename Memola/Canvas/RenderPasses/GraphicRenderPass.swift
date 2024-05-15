@@ -49,6 +49,7 @@ class GraphicRenderPass: RenderPass {
                 if graphicContext.previousStroke === stroke || graphicContext.currentStroke === stroke {
                     continue
                 }
+                guard stroke.isVisible(in: canvas.bounds) else { continue }
                 descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
                 clearsTexture = false
                 if stroke.isEraserPenStyle {
