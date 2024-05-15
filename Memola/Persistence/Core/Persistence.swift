@@ -26,6 +26,13 @@ final class Persistence {
         return context
     }()
 
+    var newBackgroundContext: NSManagedObjectContext {
+        let context = persistentContainer.newBackgroundContext()
+        context.undoManager = nil
+        context.automaticallyMergesChangesFromParent = true
+        return context
+    }
+
     lazy var persistentContainer: NSPersistentContainer = {
         let persistentStore = NSPersistentStoreDescription()
         persistentStore.shouldMigrateStoreAutomatically = true
@@ -76,6 +83,17 @@ final class Persistence {
 func withPersistence(_ keypath: KeyPath<Persistence, NSManagedObjectContext>, _ task: @escaping (NSManagedObjectContext) throws -> Void) {
     let context = Persistence.shared[keyPath: keypath]
     context.perform {
+        do {
+            try task(context)
+        } catch {
+            NSLog("[Memola] - \(error.localizedDescription)")
+        }
+    }
+}
+
+func withPersistenceSync(_ keypath: KeyPath<Persistence, NSManagedObjectContext>, _ task: @escaping (NSManagedObjectContext) throws -> Void) {
+    let context = Persistence.shared[keyPath: keypath]
+    context.performAndWait {
         do {
             try task(context)
         } catch {

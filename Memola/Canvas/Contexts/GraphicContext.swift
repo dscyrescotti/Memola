@@ -62,13 +62,21 @@ final class GraphicContext: @unchecked Sendable {
 extension GraphicContext {
     func loadStrokes(_ bounds: CGRect) {
         guard let object else { return }
+        let queue = OperationQueue()
+        queue.qualityOfService = .userInteractive
         self.strokes = object.strokes.compactMap { stroke -> Stroke? in
             guard let stroke = stroke as? StrokeObject else { return nil }
             let _stroke = Stroke(object: stroke)
             if _stroke.isVisible(in: bounds) {
-                _stroke.loadQuads()
-                withPersistence(\.backgroundContext) { [stroke] context in
-                    context.refresh(stroke, mergeChanges: false)
+                let id = stroke.objectID
+                queue.addOperation {
+                    withPersistenceSync(\.newBackgroundContext) { [_stroke] context in
+                        guard let stroke = try? context.existingObject(with: id) as? StrokeObject else { return }
+                        _stroke.loadQuads(from: stroke)
+                    }
+                    withPersistence(\.backgroundContext) { [stroke] context in
+                        context.refresh(stroke, mergeChanges: false)
+                    }
                 }
             } else {
                 withPersistence(\.backgroundContext) { [stroke] context in
@@ -78,6 +86,7 @@ extension GraphicContext {
             }
             return _stroke
         }
+        queue.waitUntilAllOperationsAreFinished()
     }
 
     func loadQuads(_ bounds: CGRect) {

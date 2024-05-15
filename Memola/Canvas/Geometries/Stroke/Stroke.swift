@@ -98,6 +98,13 @@ extension Stroke {
         }
     }
 
+    func loadQuads(from object: StrokeObject) {
+        quads = object.quads.compactMap { quad in
+            guard let quad = quad as? QuadObject else { return nil }
+            return Quad(object: quad)
+        }
+    }
+
     func addQuad(at point: CGPoint, rotation: CGFloat, shape: QuadShape) -> Quad {
         let quad = Quad(
             origin: point,
