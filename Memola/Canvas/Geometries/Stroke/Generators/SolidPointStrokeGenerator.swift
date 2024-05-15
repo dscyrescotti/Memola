@@ -16,11 +16,11 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
     }
 
     func append(to point: CGPoint, on stroke: Stroke) {
-        guard stroke.keyPoints.count > 0 else {
+        guard stroke.keyPoints.endIndex > 0 else {
             return
         }
         stroke.keyPoints.append(point)
-        switch stroke.keyPoints.count {
+        switch stroke.keyPoints.endIndex {
         case 2:
             let start = stroke.keyPoints[0]
             let end = stroke.keyPoints[1]
@@ -28,7 +28,7 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
             addCurve(from: start, to: end, by: control, on: stroke)
         case 3:
             stroke.removeQuads(from: stroke.quadIndex + 1)
-            let index = stroke.keyPoints.count - 1
+            let index = stroke.keyPoints.endIndex - 1
             var start = stroke.keyPoints[index - 2]
             var end = CGPoint.middle(p1: stroke.keyPoints[index - 2], p2: stroke.keyPoints[index - 1])
             var control = CGPoint.middle(p1: start, p2: end)
@@ -39,7 +39,7 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
             addCurve(from: start, to: end, by: control, on: stroke)
         default:
             smoothOutPath(on: stroke)
-            let index = stroke.keyPoints.count - 1
+            let index = stroke.keyPoints.endIndex - 1
             let start = CGPoint.middle(p1: stroke.keyPoints[index - 2], p2: stroke.keyPoints[index - 1])
             let control = stroke.keyPoints[index - 1]
             let end = CGPoint.middle(p1: stroke.keyPoints[index - 1], p2: stroke.keyPoints[index])
@@ -48,12 +48,12 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
     }
 
     func finish(at point: CGPoint, on stroke: Stroke) {
-        switch stroke.keyPoints.count {
+        switch stroke.keyPoints.endIndex {
         case 0...1:
             break
         default:
             append(to: point, on: stroke)
-            let index = stroke.keyPoints.count - 1
+            let index = stroke.keyPoints.endIndex - 1
             let start = CGPoint.middle(p1: stroke.keyPoints[index - 2], p2: stroke.keyPoints[index - 1])
             let end = stroke.keyPoints[index]
             let control = CGPoint.middle(p1: start, p2: end)
@@ -64,37 +64,34 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
     private func smoothOutPath(on stroke: Stroke) {
         stroke.removeQuads(from: stroke.quadIndex + 1)
         adjustPreviousKeyPoint(on: stroke)
-        switch stroke.keyPoints.count {
+        switch stroke.keyPoints.endIndex {
         case 4:
-            let index = stroke.keyPoints.count - 2
+            let index = stroke.keyPoints.endIndex - 2
             let start = stroke.keyPoints[index - 2]
             let end = CGPoint.middle(p1: stroke.keyPoints[index - 2], p2: stroke.keyPoints[index - 1])
             let control = CGPoint.middle(p1: start, p2: end)
             addCurve(from: start, to: end, by: control, on: stroke)
             fallthrough
         default:
-            let index = stroke.keyPoints.count - 2
+            let index = stroke.keyPoints.endIndex - 2
             let start = CGPoint.middle(p1: stroke.keyPoints[index - 2], p2: stroke.keyPoints[index - 1])
             let control = stroke.keyPoints[index - 1]
             let end = CGPoint.middle(p1: stroke.keyPoints[index - 1], p2: stroke.keyPoints[index])
             addCurve(from: start, to: end, by: control, on: stroke)
         }
-        stroke.quadIndex = stroke.quads.count - 1
+        stroke.quadIndex = stroke.quads.endIndex - 1
     }
 
     private func adjustPreviousKeyPoint(on stroke: Stroke) {
-        let index = stroke.keyPoints.count - 1
-        let prev = stroke.keyPoints[index - 1]
+        let index = stroke.keyPoints.endIndex - 1
+        let prev = stroke.keyPoints[index - 2]
+        let mid = stroke.keyPoints[index - 1]
         let current = stroke.keyPoints[index]
-        let averageX = (prev.x + current.x) / 2
-        let averageY = (prev.y + current.y) / 2
+        let averageX = (prev.x + current.x + mid.x) / 3
+        let averageY = (prev.y + current.y + mid.y) / 3
         let point = CGPoint(x: averageX, y: averageY)
-        if index != 0 {
-            stroke.keyPoints[index] = point
-        }
-        if index - 1 != 0 {
-            stroke.keyPoints[index - 1] = point
-        }
+        stroke.keyPoints[index] = point
+        stroke.keyPoints[index - 1] = point
     }
 
     private func addPoint(_ point: CGPoint, on stroke: Stroke) {
