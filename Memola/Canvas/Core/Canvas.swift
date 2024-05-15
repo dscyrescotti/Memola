@@ -18,7 +18,7 @@ final class Canvas: ObservableObject, Identifiable, @unchecked Sendable {
     var graphicContext = GraphicContext()
     let viewPortContext = ViewPortContext()
 
-    let maximumZoomScale: CGFloat = 30
+    let maximumZoomScale: CGFloat = 35
     let minimumZoomScale: CGFloat = 5
     let defaultZoomScale: CGFloat = 20
 
@@ -48,7 +48,6 @@ extension Canvas {
     func load() {
         withPersistence(\.backgroundContext) { [weak self, canvasID, bounds] context in
             DispatchQueue.main.async { [weak self] in
-                NSLog(Date().formatted(.dateTime.minute().second().secondFraction(.fractional(2))))
                 self?.state = .loading
             }
             guard let canvas = context.object(with: canvasID) as? CanvasObject else {
@@ -59,7 +58,6 @@ extension Canvas {
             self?.graphicContext.loadStrokes(bounds)
             context.refresh(canvas, mergeChanges: false)
             DispatchQueue.main.async { [weak self] in
-                NSLog(Date().formatted(.dateTime.minute().second().secondFraction(.fractional(2))))
                 self?.state = .loaded
             }
         }

@@ -12,7 +12,7 @@ struct EraserPenStyle: PenStyle {
 
     var textureName: String = "point-texture"
 
-    var thinkness: (min: CGFloat, max: CGFloat) = (1, 120)
+    var thinkness: (min: CGFloat, max: CGFloat) = (0.5, 120)
 
     var color: [CGFloat] = [1, 1, 1, 0]
 
