@@ -26,19 +26,19 @@ struct MemoView: View {
     var body: some View {
         CanvasView()
             .ignoresSafeArea()
-            .overlay(alignment: .bottomTrailing) {
-                PenToolView()
-                    .padding()
-            }
             .overlay(alignment: .topTrailing) {
-                historyTool
-                    .padding()
+                VStack(alignment: .trailing, spacing: 20) {
+                    historyTool
+                    PenToolView()
+                }
+                .padding()
             }
             .overlay(alignment: .topLeading) {
                 Button {
                     closeMemo()
                 } label: {
                     Image(systemName: "xmark")
+                        .contentShape(.circle)
                         .padding(15)
                         .background(.regularMaterial)
                         .clipShape(RoundedRectangle(cornerRadius: 20))
@@ -68,6 +68,7 @@ struct MemoView: View {
                 history.historyPublisher.send(.undo)
             } label: {
                 Image(systemName: "arrow.uturn.backward.circle")
+                    .contentShape(.circle)
             }
             .hoverEffect(.lift)
             .disabled(history.undoDisabled)
@@ -75,6 +76,7 @@ struct MemoView: View {
                 history.historyPublisher.send(.redo)
             } label: {
                 Image(systemName: "arrow.uturn.forward.circle")
+                    .contentShape(.circle)
             }
             .hoverEffect(.lift)
             .disabled(history.redoDisabled)

@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "bullet-tip.png",
+      "filename" : "marker-tip.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "bullet-tip@2x.png",
+      "filename" : "marker-tip@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "bullet-tip@3x.png",
+      "filename" : "marker-tip@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -13,6 +13,8 @@
 		EC35655A2BF060D900A4E0BF /* Quad.metal in Sources */ = {isa = PBXBuildFile; fileRef = EC3565592BF060D900A4E0BF /* Quad.metal */; };
 		EC35655C2BF0712A00A4E0BF /* Float++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC35655B2BF0712A00A4E0BF /* Float++.swift */; };
 		EC4538892BEBCAE000A86FEC /* Quad.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4538882BEBCAE000A86FEC /* Quad.swift */; };
+		EC5050072BF65CED00B4D86E /* PenDropDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5050062BF65CED00B4D86E /* PenDropDelegate.swift */; };
+		EC50500D2BF6674400B4D86E /* DraggableViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC50500C2BF6674400B4D86E /* DraggableViewModifier.swift */; };
 		EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */; };
 		EC7F6BF02BE5E6E400A34A7B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */; };
 		EC7F6BF32BE5E6E400A34A7B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BF22BE5E6E400A34A7B /* Preview Assets.xcassets */; };
@@ -85,6 +87,9 @@
 		EC3565592BF060D900A4E0BF /* Quad.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Quad.metal; sourceTree = "<group>"; };
 		EC35655B2BF0712A00A4E0BF /* Float++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float++.swift"; sourceTree = "<group>"; };
 		EC4538882BEBCAE000A86FEC /* Quad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quad.swift; sourceTree = "<group>"; };
+		EC5050062BF65CED00B4D86E /* PenDropDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenDropDelegate.swift; sourceTree = "<group>"; };
+		EC50500C2BF6674400B4D86E /* DraggableViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraggableViewModifier.swift; sourceTree = "<group>"; };
+		EC50500E2BF670EA00B4D86E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EC7F6BE82BE5E6E300A34A7B /* Memola.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Memola.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemolaApp.swift; sourceTree = "<group>"; };
 		EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -178,6 +183,63 @@
 			path = ViewController;
 			sourceTree = "<group>";
 		};
+		EC5050042BF65CBC00B4D86E /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				ECA738BB2BE60E0300A4542E /* Tool.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		EC5050052BF65CCD00B4D86E /* PenTool */ = {
+			isa = PBXGroup;
+			children = (
+				ECA739072BE623F300A4542E /* PenToolView.swift */,
+				EC5050062BF65CED00B4D86E /* PenDropDelegate.swift */,
+			);
+			path = PenTool;
+			sourceTree = "<group>";
+		};
+		EC5050082BF65D0500B4D86E /* Memo */ = {
+			isa = PBXGroup;
+			children = (
+				ECA7387C2BE5EF4B00A4542E /* MemoView.swift */,
+			);
+			path = Memo;
+			sourceTree = "<group>";
+		};
+		EC5050092BF65D5700B4D86E /* Canvas */ = {
+			isa = PBXGroup;
+			children = (
+				ECA738B22BE60D9E00A4542E /* CanvasView.swift */,
+			);
+			path = Canvas;
+			sourceTree = "<group>";
+		};
+		EC50500A2BF6672000B4D86E /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				EC50500B2BF6673300B4D86E /* ViewModifiers */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		EC50500B2BF6673300B4D86E /* ViewModifiers */ = {
+			isa = PBXGroup;
+			children = (
+				EC50500C2BF6674400B4D86E /* DraggableViewModifier.swift */,
+			);
+			path = ViewModifiers;
+			sourceTree = "<group>";
+		};
+		EC5050102BF670EE00B4D86E /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				EC50500E2BF670EA00B4D86E /* Info.plist */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
 		EC7F6BDF2BE5E6E300A34A7B = {
 			isa = PBXGroup;
 			children = (
@@ -199,6 +261,8 @@
 			children = (
 				ECA738762BE5EE4E00A4542E /* App */,
 				ECA7387E2BE5FE4200A4542E /* Canvas */,
+				EC5050102BF670EE00B4D86E /* Config */,
+				EC50500A2BF6672000B4D86E /* Components */,
 				ECA738A12BE601F700A4542E /* Extensions */,
 				ECA738772BE5EEE800A4542E /* Features */,
 				ECA738FA2BE61B1700A4542E /* Persistence */,
@@ -244,8 +308,8 @@
 		ECA7387B2BE5EF3500A4542E /* Memo */ = {
 			isa = PBXGroup;
 			children = (
-				ECA7387C2BE5EF4B00A4542E /* MemoView.swift */,
-				ECA739072BE623F300A4542E /* PenToolView.swift */,
+				EC5050082BF65D0500B4D86E /* Memo */,
+				EC5050052BF65CCD00B4D86E /* PenTool */,
 			);
 			path = Memo;
 			sourceTree = "<group>";
@@ -371,8 +435,8 @@
 		ECA738AB2BE60CB500A4542E /* View */ = {
 			isa = PBXGroup;
 			children = (
+				EC5050092BF65D5700B4D86E /* Canvas */,
 				ECA738AE2BE60CEC00A4542E /* Bridge */,
-				ECA738B22BE60D9E00A4542E /* CanvasView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -389,8 +453,8 @@
 		ECA738B12BE60D8800A4542E /* Tool */ = {
 			isa = PBXGroup;
 			children = (
+				EC5050042BF65CBC00B4D86E /* Core */,
 				ECA738BD2BE60E2800A4542E /* Pen */,
-				ECA738BB2BE60E0300A4542E /* Tool.swift */,
 			);
 			path = Tool;
 			sourceTree = "<group>";
@@ -646,6 +710,7 @@
 				ECA7388F2BE600DA00A4542E /* Grid.metal in Sources */,
 				ECA738C92BE60EF700A4542E /* GraphicContext.swift in Sources */,
 				ECA738F62BE612B700A4542E /* MTLDevice++.swift in Sources */,
+				EC50500D2BF6674400B4D86E /* DraggableViewModifier.swift in Sources */,
 				ECA7389E2BE601CB00A4542E /* QuadVertex.swift in Sources */,
 				ECA738B32BE60D9E00A4542E /* CanvasView.swift in Sources */,
 				ECA738C42BE60E8800A4542E /* MarkerPenStyle.swift in Sources */,
@@ -655,6 +720,7 @@
 				ECA738B62BE60DCD00A4542E /* History.swift in Sources */,
 				ECA738D22BE60F7B00A4542E /* Stroke.swift in Sources */,
 				ECA738F22BE6128F00A4542E /* Collection++.swift in Sources */,
+				EC5050072BF65CED00B4D86E /* PenDropDelegate.swift in Sources */,
 				ECA738A32BE6020A00A4542E /* CGFloat++.swift in Sources */,
 				ECA738C12BE60E5300A4542E /* PenStyle.swift in Sources */,
 				ECA738DE2BE610A000A4542E /* ViewPortRenderPass.swift in Sources */,
@@ -798,7 +864,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Memola/Preview Content\"";
 				DEVELOPMENT_TEAM = 9TYSSFKV5U;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Memola/Config/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -830,7 +897,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Memola/Preview Content\"";
 				DEVELOPMENT_TEAM = 9TYSSFKV5U;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Memola/Config/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

@@ -7,13 +7,16 @@
 
 import SwiftUI
 import Foundation
+import UniformTypeIdentifiers
 
 class Pen: NSObject, ObservableObject, Identifiable {
+    let id: String
     @Published var style: any PenStyle
     @Published var color: [CGFloat]
     @Published var thickness: CGFloat
 
     init(style: any PenStyle, color: [CGFloat], thickness: CGFloat) {
+        self.id = UUID().uuidString
         self.style = style
         self.color = color
         self.thickness = thickness

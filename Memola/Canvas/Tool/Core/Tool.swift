@@ -11,17 +11,22 @@ import Foundation
 class Tool: NSObject, ObservableObject {
     @Published var pens: [Pen]
     @Published var selectedPen: Pen?
+    @Published var draggedPen: Pen?
 
     override init() {
         pens = [
-            Pen(for: .marker),
-            Pen(for: .eraser)
+            Pen(for: .eraser),
+            Pen(for: .marker)
         ]
         super.init()
-        selectedPen = pens.first
+        selectedPen = pens[1]
     }
 
     func changePen(_ pen: Pen) {
         selectedPen = pen
+    }
+
+    func addPen(_ pen: Pen) {
+        pens.append(pen)
     }
 }
