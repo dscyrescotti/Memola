@@ -15,7 +15,7 @@ struct PenToolView: View {
     let factor: CGFloat = 1.22
 
     var body: some View {
-        VStack(alignment: .trailing, spacing: 0) {
+        ScrollViewReader { proxy in
             ScrollView(.vertical, showsIndicators: false) {
                 if tool.isReordering {
                     LazyVStack(spacing: 0) {
@@ -23,12 +23,14 @@ struct PenToolView: View {
                             if pen.strokeStyle == .marker {
                                 penView(pen)
                                     .offset(y: tool.isShaking ? 1.5 : -1.5)
+                                    .id(pen.id)
                             } else {
                                 penView(pen)
+                                    .id(pen.id)
                             }
                         }
                     }
-                    .padding(.vertical, 5)
+                    .padding(.vertical, 10)
                     .padding(.leading, 40)
                     .onAppear {
                         withAnimation(.easeInOut.repeatForever().speed(5)) {
@@ -40,23 +42,22 @@ struct PenToolView: View {
                     LazyVStack(spacing: 0) {
                         ForEach(tool.pens) { pen in
                             penView(pen)
+                                .id(pen.id)
                         }
                     }
-                    .padding(.vertical, 5)
+                    .padding(.vertical, 10)
                     .padding(.leading, 40)
                 }
             }
-            VStack(spacing: 0) {
-                Divider()
-                if tool.isReordering {
-                    reorderCancelButton
-                } else {
-                    newPenButton
+            .onReceive(tool.scrollPublisher) { id in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    withAnimation {
+                        proxy.scrollTo(id)
+                    }
                 }
             }
-            .frame(width: width * factor - 20)
         }
-        .frame(maxHeight: (height * factor + 10) * 8)
+        .frame(maxHeight:( (height * factor + 10) * 7) + 20)
         .fixedSize()
         .background {
             HStack(spacing: 0) {
@@ -66,6 +67,16 @@ struct PenToolView: View {
             }
         }
         .clipShape(.rect(cornerRadii: .init(bottomTrailing: 20, topTrailing: 20)))
+        .overlay(alignment: .bottomLeading) {
+            Group {
+                if tool.isReordering {
+                    doneButton
+                } else {
+                    newPenButton
+                }
+            }
+            .offset(x: 60, y: 10)
+        }
     }
 
     @ViewBuilder
@@ -125,25 +136,33 @@ struct PenToolView: View {
             let _pen = Pen(object: pen)
             tool.addPen(_pen)
         } label: {
-            Image(systemName: "pencil.tip.crop.circle.badge.plus")
+            Image(systemName: "plus.circle.fill")
                 .font(.title2)
+                .padding(1)
                 .contentShape(.circle)
+                .background {
+                    Circle()
+                        .fill(.white)
+                }
         }
         .foregroundStyle(.green)
         .hoverEffect(.lift)
-        .padding(10)
     }
 
-    var reorderCancelButton: some View {
+    var doneButton: some View {
         Button {
             tool.isReordering = false
         } label: {
             Image(systemName: "xmark.circle")
                 .font(.title2)
+                .padding(1)
                 .contentShape(.circle)
+                .background {
+                    Circle()
+                        .fill(.white)
+                }
         }
         .hoverEffect(.lift)
-        .padding(10)
     }
 
     func penPreview(_ pen: Pen) -> some View {

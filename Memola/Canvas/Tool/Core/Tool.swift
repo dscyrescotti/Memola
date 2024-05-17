@@ -5,6 +5,7 @@
 //  Created by Dscyre Scotti on 5/4/24.
 //
 
+import Combine
 import SwiftUI
 import CoreData
 import Foundation
@@ -18,6 +19,8 @@ public class Tool: NSObject, ObservableObject {
     @Published var isReordering: Bool = false
     @Published var isShaking: Bool = false
     @Published var shakingId: UUID = UUID()
+
+    let scrollPublisher = PassthroughSubject<String, Never>()
 
     init(object: ToolObject) {
         self.object = object
@@ -61,6 +64,7 @@ public class Tool: NSObject, ObservableObject {
         if let _pen = pen.object {
             object.pens.add(_pen)
         }
+        scrollPublisher.send(pen.id)
     }
 
     func removePen(_ pen: Pen) {
