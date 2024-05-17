@@ -10,6 +10,7 @@
 		EC0D14212BF79C73009BFE5F /* ToolObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14202BF79C73009BFE5F /* ToolObject.swift */; };
 		EC0D14242BF79C98009BFE5F /* MemolaModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14222BF79C98009BFE5F /* MemolaModel.xcdatamodeld */; };
 		EC0D14262BF7A8C9009BFE5F /* PenObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14252BF7A8C9009BFE5F /* PenObject.swift */; };
+		EC0D14282BF7BF20009BFE5F /* ContextMenuableViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14272BF7BF20009BFE5F /* ContextMenuableViewModifier.swift */; };
 		EC3565522BEFC65F00A4E0BF /* NSManagedObjectContext++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565512BEFC65F00A4E0BF /* NSManagedObjectContext++.swift */; };
 		EC3565542BEFC6AD00A4E0BF /* View++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565532BEFC6AD00A4E0BF /* View++.swift */; };
 		EC3565562BEFC7B300A4E0BF /* NSManagedObject++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */; };
@@ -86,6 +87,7 @@
 		EC0D14202BF79C73009BFE5F /* ToolObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolObject.swift; sourceTree = "<group>"; };
 		EC0D14232BF79C98009BFE5F /* MemolaModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MemolaModel.xcdatamodel; sourceTree = "<group>"; };
 		EC0D14252BF7A8C9009BFE5F /* PenObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenObject.swift; sourceTree = "<group>"; };
+		EC0D14272BF7BF20009BFE5F /* ContextMenuableViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenuableViewModifier.swift; sourceTree = "<group>"; };
 		EC3565512BEFC65F00A4E0BF /* NSManagedObjectContext++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext++.swift"; sourceTree = "<group>"; };
 		EC3565532BEFC6AD00A4E0BF /* View++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View++.swift"; sourceTree = "<group>"; };
 		EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObject++.swift"; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 			isa = PBXGroup;
 			children = (
 				EC50500C2BF6674400B4D86E /* DraggableViewModifier.swift */,
+				EC0D14272BF7BF20009BFE5F /* ContextMenuableViewModifier.swift */,
 			);
 			path = ViewModifiers;
 			sourceTree = "<group>";
@@ -734,6 +737,7 @@
 				ECA738DE2BE610A000A4542E /* ViewPortRenderPass.swift in Sources */,
 				EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */,
 				ECA738A02BE601E400A4542E /* ViewPortVertex.swift in Sources */,
+				EC0D14282BF7BF20009BFE5F /* ContextMenuableViewModifier.swift in Sources */,
 				ECA738BC2BE60E0300A4542E /* Tool.swift in Sources */,
 				ECA738972BE6014200A4542E /* Graphic.metal in Sources */,
 				ECA7388A2BE6006A00A4542E /* PipelineStates.swift in Sources */,

@@ -15,6 +15,9 @@ public class Tool: NSObject, ObservableObject {
     @Published var pens: [Pen] = []
     @Published var selectedPen: Pen?
     @Published var draggedPen: Pen?
+    @Published var isReordering: Bool = false
+    @Published var isShaking: Bool = false
+    @Published var shakingId: UUID = UUID()
 
     init(object: ToolObject) {
         self.object = object
@@ -45,6 +48,9 @@ public class Tool: NSObject, ObservableObject {
 
     func unselectPen(_ pen: Pen) {
         pen.isSelected = false
+        withAnimation {
+            selectedPen = nil
+        }
     }
 
     func addPen(_ pen: Pen) {
@@ -54,6 +60,17 @@ public class Tool: NSObject, ObservableObject {
         selectPen(pen)
         if let _pen = pen.object {
             object.pens.add(_pen)
+        }
+    }
+
+    func removePen(_ pen: Pen) {
+        guard let index = pens.firstIndex(where: { $0 === pen }) else { return }
+        let deletedPen = withAnimation {
+            pens.remove(at: index)
+        }
+        if let _pen = deletedPen.object {
+            _pen.tool = nil
+            object.pens.remove(_pen)
         }
     }
 }
