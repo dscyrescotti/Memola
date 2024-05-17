@@ -14,18 +14,22 @@ class EraserRenderPass: RenderPass {
     var descriptor: MTLRenderPassDescriptor?
 
     var eraserPipelineState: MTLRenderPipelineState?
+    var quadPipelineState: MTLComputePipelineState?
 
     var stroke: Stroke?
     weak var graphicTexture: MTLTexture?
 
     init(renderer: Renderer) {
         eraserPipelineState = PipelineStates.createEraserPipelineState(from: renderer)
+        quadPipelineState = PipelineStates.createQuadPipelineState(from: renderer)
     }
 
     func resize(on view: MTKView, to size: CGSize, with renderer: Renderer) { }
 
     func draw(on canvas: Canvas, with renderer: Renderer) {
         guard let descriptor else { return }
+
+        generateVertexBuffer(on: canvas, with: renderer)
 
         guard let commandBuffer = renderer.commandQueue.makeCommandBuffer() else { return }
         commandBuffer.label = "Eraser Command Buffer"
@@ -41,5 +45,31 @@ class EraserRenderPass: RenderPass {
 
         renderEncoder.endEncoding()
         commandBuffer.commit()
+    }
+
+    private func generateVertexBuffer(on canvas: Canvas, with renderer: Renderer) {
+        guard let stroke, !stroke.quads.isEmpty, let quadPipelineState else { return }
+        guard let quadCommandBuffer = renderer.commandQueue.makeCommandBuffer() else { return }
+        guard let computeEncoder = quadCommandBuffer.makeComputeCommandEncoder() else { return }
+
+        computeEncoder.label = "Quad Render Pass"
+
+        let quadCount = stroke.quads.endIndex
+        var quads = stroke.quads
+        let quadBuffer = renderer.device.makeBuffer(bytes: &quads, length: MemoryLayout<Quad>.stride * quadCount, options: [])
+        let vertexBuffer = renderer.device.makeBuffer(length: MemoryLayout<QuadVertex>.stride * quadCount * 6, options: [])
+
+        computeEncoder.setComputePipelineState(quadPipelineState)
+        computeEncoder.setBuffer(quadBuffer, offset: 0, index: 0)
+        computeEncoder.setBuffer(vertexBuffer, offset: 0, index: 1)
+
+        stroke.vertexBuffer = vertexBuffer
+
+        let threadsPerGroup = MTLSize(width: 1, height: 1, depth: 1)
+        let numThreadgroups = MTLSize(width: quadCount + 1, height: 1, depth: 1)
+        computeEncoder.dispatchThreadgroups(numThreadgroups, threadsPerThreadgroup: threadsPerGroup)
+        computeEncoder.endEncoding()
+        quadCommandBuffer.commit()
+        quadCommandBuffer.waitUntilCompleted()
     }
 }

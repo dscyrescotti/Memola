@@ -129,6 +129,7 @@ struct PenToolView: View {
                 .font(.title2)
                 .contentShape(.circle)
         }
+        .foregroundStyle(.green)
         .hoverEffect(.lift)
         .padding(10)
     }
