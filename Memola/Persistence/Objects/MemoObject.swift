@@ -10,9 +10,10 @@ import Foundation
 
 @objc(MemoObject)
 final class MemoObject: NSManagedObject, Identifiable {
-    @NSManaged var title: String
     @NSManaged var data: Data
+    @NSManaged var title: String
     @NSManaged var createdAt: Date
     @NSManaged var updatedAt: Date
+    @NSManaged var tool: ToolObject
     @NSManaged var canvas: CanvasObject
 }

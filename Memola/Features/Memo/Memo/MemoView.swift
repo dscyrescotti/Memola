@@ -10,9 +10,8 @@ import CoreData
 
 struct MemoView: View {
     @Environment(\.dismiss) var dismiss
-    @Environment(\.managedObjectContext) var managedObjectContext
 
-    @StateObject var tool = Tool()
+    @StateObject var tool: Tool
     @StateObject var canvas: Canvas
     @StateObject var history = History()
 
@@ -20,6 +19,7 @@ struct MemoView: View {
 
     init(memo: MemoObject) {
         self.memo = memo
+        self._tool = StateObject(wrappedValue: Tool(object: memo.tool))
         self._canvas = StateObject(wrappedValue: Canvas(size: memo.canvas.size, canvasID: memo.canvas.objectID))
     }
 
@@ -97,13 +97,8 @@ struct MemoView: View {
     }
 
     func closeMemo() {
-        history.resetRedo()
-        if managedObjectContext.hasChanges {
-            do {
-                try managedObjectContext.save()
-            } catch {
-                NSLog("[Memola] - \(error.localizedDescription)")
-            }
+        withPersistenceSync(\.viewContext) { context in
+            try context.saveIfNeeded()
         }
         dismiss()
     }

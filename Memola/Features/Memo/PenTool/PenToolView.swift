@@ -82,11 +82,11 @@ struct PenToolView: View {
         .onTapGesture {
             if tool.selectedPen === pen {
                 withAnimation {
-                    tool.selectedPen = nil
+                    tool.unselectPen(pen)
                 }
             } else {
                 withAnimation {
-                    tool.changePen(pen)
+                    tool.selectPen(pen)
                 }
             }
         }
@@ -95,9 +95,13 @@ struct PenToolView: View {
 
     var newPenButton: some View {
         Button(action: {
-            let pen = Pen(for: .marker)
+            let pen = PenObject.createObject(\.viewContext, penStyle: .marker)
             pen.color = [Color.red, Color.blue, Color.green, Color.black, Color.orange].randomElement()!.components
-            tool.addPen(pen)
+            pen.isSelected = true
+            pen.tool = tool.object
+            pen.orderIndex = Int16(tool.pens.count)
+            let _pen = Pen(object: pen)
+            tool.addPen(_pen)
         }) {
             Image(systemName: "plus")
                 .font(.title3)

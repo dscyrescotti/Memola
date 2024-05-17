@@ -183,6 +183,7 @@ extension CanvasViewController {
 
 extension CanvasViewController {
     func loadMemo() {
+        tool.load()
         canvas.load()
     }
 

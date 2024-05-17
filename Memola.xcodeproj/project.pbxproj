@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EC0D14212BF79C73009BFE5F /* ToolObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14202BF79C73009BFE5F /* ToolObject.swift */; };
+		EC0D14242BF79C98009BFE5F /* MemolaModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14222BF79C98009BFE5F /* MemolaModel.xcdatamodeld */; };
+		EC0D14262BF7A8C9009BFE5F /* PenObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14252BF7A8C9009BFE5F /* PenObject.swift */; };
 		EC3565522BEFC65F00A4E0BF /* NSManagedObjectContext++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565512BEFC65F00A4E0BF /* NSManagedObjectContext++.swift */; };
 		EC3565542BEFC6AD00A4E0BF /* View++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565532BEFC6AD00A4E0BF /* View++.swift */; };
 		EC3565562BEFC7B300A4E0BF /* NSManagedObject++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */; };
@@ -70,7 +73,6 @@
 		ECA738F42BE612A000A4542E /* Array++.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738F32BE612A000A4542E /* Array++.swift */; };
 		ECA738F62BE612B700A4542E /* MTLDevice++.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738F52BE612B700A4542E /* MTLDevice++.swift */; };
 		ECA738FC2BE61C5200A4542E /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738FB2BE61C5200A4542E /* Persistence.swift */; };
-		ECA739012BE61D9C00A4542E /* MemolaModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ECA738FF2BE61D9C00A4542E /* MemolaModel.xcdatamodeld */; };
 		ECA739082BE623F300A4542E /* PenToolView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA739072BE623F300A4542E /* PenToolView.swift */; };
 		ECEC01A82BEE11BA006DA24C /* QuadShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC01A72BEE11BA006DA24C /* QuadShape.swift */; };
 		ECFA15202BEF21EF00455818 /* MemoObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA151F2BEF21EF00455818 /* MemoObject.swift */; };
@@ -81,6 +83,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EC0D14202BF79C73009BFE5F /* ToolObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolObject.swift; sourceTree = "<group>"; };
+		EC0D14232BF79C98009BFE5F /* MemolaModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MemolaModel.xcdatamodel; sourceTree = "<group>"; };
+		EC0D14252BF7A8C9009BFE5F /* PenObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenObject.swift; sourceTree = "<group>"; };
 		EC3565512BEFC65F00A4E0BF /* NSManagedObjectContext++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext++.swift"; sourceTree = "<group>"; };
 		EC3565532BEFC6AD00A4E0BF /* View++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View++.swift"; sourceTree = "<group>"; };
 		EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObject++.swift"; sourceTree = "<group>"; };
@@ -146,7 +151,6 @@
 		ECA738F32BE612A000A4542E /* Array++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array++.swift"; sourceTree = "<group>"; };
 		ECA738F52BE612B700A4542E /* MTLDevice++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MTLDevice++.swift"; sourceTree = "<group>"; };
 		ECA738FB2BE61C5200A4542E /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
-		ECA739002BE61D9C00A4542E /* MemolaModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MemolaModel.xcdatamodel; sourceTree = "<group>"; };
 		ECA739072BE623F300A4542E /* PenToolView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenToolView.swift; sourceTree = "<group>"; };
 		ECEC01A72BEE11BA006DA24C /* QuadShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuadShape.swift; sourceTree = "<group>"; };
 		ECFA151F2BEF21EF00455818 /* MemoObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoObject.swift; sourceTree = "<group>"; };
@@ -556,7 +560,7 @@
 		ECA738FE2BE61D5700A4542E /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				ECA738FF2BE61D9C00A4542E /* MemolaModel.xcdatamodeld */,
+				EC0D14222BF79C98009BFE5F /* MemolaModel.xcdatamodeld */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -586,6 +590,8 @@
 				ECFA15232BEF223300455818 /* GraphicContextObject.swift */,
 				ECFA15252BEF224900455818 /* StrokeObject.swift */,
 				ECFA15272BEF225000455818 /* QuadObject.swift */,
+				EC0D14202BF79C73009BFE5F /* ToolObject.swift */,
+				EC0D14252BF7A8C9009BFE5F /* PenObject.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -696,8 +702,9 @@
 				ECA738EE2BE6125D00A4542E /* simd_float4x4++.swift in Sources */,
 				ECA7388C2BE6009600A4542E /* Textures.swift in Sources */,
 				ECA738B82BE60DDC00A4542E /* HistoryEvent.swift in Sources */,
+				EC0D14262BF7A8C9009BFE5F /* PenObject.swift in Sources */,
 				ECA738952BE6012D00A4542E /* ViewPort.metal in Sources */,
-				ECA739012BE61D9C00A4542E /* MemolaModel.xcdatamodeld in Sources */,
+				EC0D14242BF79C98009BFE5F /* MemolaModel.xcdatamodeld in Sources */,
 				ECA738F02BE6127700A4542E /* CGSize++.swift in Sources */,
 				ECFA15242BEF223300455818 /* GraphicContextObject.swift in Sources */,
 				EC3565562BEFC7B300A4E0BF /* NSManagedObject++.swift in Sources */,
@@ -710,6 +717,7 @@
 				ECA7388F2BE600DA00A4542E /* Grid.metal in Sources */,
 				ECA738C92BE60EF700A4542E /* GraphicContext.swift in Sources */,
 				ECA738F62BE612B700A4542E /* MTLDevice++.swift in Sources */,
+				EC0D14212BF79C73009BFE5F /* ToolObject.swift in Sources */,
 				EC50500D2BF6674400B4D86E /* DraggableViewModifier.swift in Sources */,
 				ECA7389E2BE601CB00A4542E /* QuadVertex.swift in Sources */,
 				ECA738B32BE60D9E00A4542E /* CanvasView.swift in Sources */,
@@ -944,13 +952,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		ECA738FF2BE61D9C00A4542E /* MemolaModel.xcdatamodeld */ = {
+		EC0D14222BF79C98009BFE5F /* MemolaModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				ECA739002BE61D9C00A4542E /* MemolaModel.xcdatamodel */,
+				EC0D14232BF79C98009BFE5F /* MemolaModel.xcdatamodel */,
 			);
-			currentVersion = ECA739002BE61D9C00A4542E /* MemolaModel.xcdatamodel */;
-			path = MemolaModel.xcdatamodeld;
+			currentVersion = EC0D14232BF79C98009BFE5F /* MemolaModel.xcdatamodel */;
+			name = MemolaModel.xcdatamodeld;
+			path = /Users/dscyrescotti/Documents/Projects/Memola/Memola/Resources/Models/MemolaModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

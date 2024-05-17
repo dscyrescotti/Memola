@@ -62,28 +62,45 @@ struct MemosView: View {
     }
 
     func createMemo(title: String) {
-        do {
-            let memoObject = MemoObject(context: managedObjectContext)
-            memoObject.title = title
-            memoObject.createdAt = .now
-            memoObject.updatedAt = .now
+        let memoObject = MemoObject(\.viewContext)
+        memoObject.title = title
+        memoObject.createdAt = .now
+        memoObject.updatedAt = .now
 
-            let canvasObject = CanvasObject(context: managedObjectContext)
-            canvasObject.width = 8_000
-            canvasObject.height = 8_000
+        let canvasObject = CanvasObject(context: managedObjectContext)
+        canvasObject.width = 8_000
+        canvasObject.height = 8_000
 
-            let graphicContextObject = GraphicContextObject(context: managedObjectContext)
-            graphicContextObject.strokes = []
+        let toolObject = ToolObject(\.viewContext)
+        toolObject.pens = []
 
-            memoObject.canvas = canvasObject
-            canvasObject.memo = memoObject
-            canvasObject.graphicContext = graphicContextObject
-            graphicContextObject.canvas = canvasObject
+        let eraserPenObject = PenObject.createObject(\.viewContext, penStyle: .eraser)
+        eraserPenObject.orderIndex = 0
+        let markerPenObject = PenObject.createObject(\.viewContext, penStyle: .marker)
+        markerPenObject.orderIndex = 1
 
-            try managedObjectContext.save()
-            openMemo(for: memoObject)
-        } catch {
-            NSLog("[Memola] - \(error.localizedDescription)")
+        let graphicContextObject = GraphicContextObject(\.viewContext)
+        graphicContextObject.strokes = []
+
+        memoObject.canvas = canvasObject
+        memoObject.tool = toolObject
+
+        canvasObject.memo = memoObject
+        canvasObject.graphicContext = graphicContextObject
+
+        toolObject.memo = memoObject
+        toolObject.pens = [eraserPenObject, markerPenObject]
+
+        eraserPenObject.tool = toolObject
+        markerPenObject.tool = toolObject
+
+        graphicContextObject.canvas = canvasObject
+
+        withPersistenceSync(\.viewContext) { context in
+            try context.save()
+            DispatchQueue.main.async {
+                openMemo(for: memoObject)
+            }
         }
     }
 

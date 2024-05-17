@@ -10,32 +10,41 @@ import Foundation
 import UniformTypeIdentifiers
 
 class Pen: NSObject, ObservableObject, Identifiable {
-    let id: String
-    @Published var style: any PenStyle
-    @Published var color: [CGFloat]
-    @Published var thickness: CGFloat
+    var object: PenObject?
 
-    init(style: any PenStyle, color: [CGFloat], thickness: CGFloat) {
-        self.id = UUID().uuidString
-        self.style = style
-        self.color = color
-        self.thickness = thickness
+    let id: String
+    @Published var style: any PenStyle {
+        didSet {
+            object?.style = strokeStyle.rawValue
+        }
+    }
+    @Published var color: [CGFloat] {
+        didSet {
+            object?.color = color
+        }
+    }
+    @Published var thickness: CGFloat {
+        didSet {
+            object?.thickness = thickness
+        }
+    }
+    @Published var isSelected: Bool {
+        didSet {
+            object?.isSelected = isSelected
+        }
+    }
+
+    init(object: PenObject) {
+        self.object = object
+        self.id = object.objectID.uriRepresentation().absoluteString
+        self.style = (Stroke.Style(rawValue: object.style) ?? .marker).anyPenStyle
+        self.color = object.color
+        self.thickness = object.thickness
+        self.isSelected = object.isSelected
+        super.init()
     }
 
     var strokeStyle: Stroke.Style {
-        switch style {
-        case is MarkerPenStyle:
-            return .marker
-        case is EraserPenStyle:
-            return .eraser
-        default:
-            return .marker
-        }
-    }
-}
-
-extension Pen {
-    convenience init(for style: any PenStyle) {
-        self.init(style: style, color: style.color, thickness: style.thinkness.min)
+        style.strokeStyle
     }
 }
