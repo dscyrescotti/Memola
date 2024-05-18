@@ -18,35 +18,7 @@ struct PenDockView: View {
         VStack(alignment: .trailing) {
             if let pen = tool.selectedPen {
                 VStack(spacing: 10) {
-                    Button {
-                        tool.opensColorPicker = true
-                    } label: {
-                        let hsba = pen.color.hsba
-                        Color(hue: hsba.hue, saturation: hsba.saturation, brightness: hsba.brightness)
-                            .overlay {
-                                Image("transparent-grid-square")
-                                    .resizable()
-                                    .scaleEffect(1.8)
-                                    .aspectRatio(contentMode: .fill)
-                                    .opacity(0.5)
-                                    .overlay {
-                                        pen.color
-                                    }
-                                    .clipShape(Triangle())
-                            }
-                            .clipShape(Capsule())
-                            .overlay {
-                                Capsule()
-                                    .stroke(Color.gray, lineWidth: 0.2)
-                            }
-                            .frame(height: 20)
-                            .drawingGroup()
-                    }
-                    .hoverEffect(.lift)
-                    .popover(isPresented: $tool.opensColorPicker) {
-                        ColorPicker(pen: pen)
-                            .presentationCompactAdaptation(.popover)
-                    }
+                    penColorButton(pen)
                     Capsule()
                         .frame(height: 20)
                 }
@@ -61,48 +33,52 @@ struct PenDockView: View {
                 Color.clear
                     .frame(width: width * factor - 18, height: 50)
             }
-            ScrollViewReader { proxy in
-                ScrollView(.vertical, showsIndicators: false) {
-                    LazyVStack(spacing: 0) {
-                        ForEach(tool.pens) { pen in
-                            penView(pen)
-                                .id(pen.id)
-                                .scrollTransition { content, phase in
-                                    content
-                                        .scaleEffect(phase.isIdentity ? 1 : 0.04, anchor: .trailing)
-                                }
-                        }
-                    }
-                    .padding(.vertical, 10)
-                    .padding(.leading, 40)
-                }
-                .onReceive(tool.scrollPublisher) { id in
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        withAnimation {
-                            proxy.scrollTo(id)
-                        }
-                    }
-                }
-            }
-            .frame(maxHeight:( (height * factor + 10) * 6) + 20)
-            .fixedSize()
-            .background(alignment: .trailing) {
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(.regularMaterial)
-                    .frame(width: width * factor - 18)
-            }
-            .clipShape(.rect(cornerRadii: .init(bottomTrailing: 20, topTrailing: 20)))
-            .overlay(alignment: .bottomLeading) {
-                newPenButton
-                    .offset(x: 60, y: 10)
-            }
+            penScrollView
         }
         .fixedSize()
     }
 
-    @ViewBuilder
+    var penScrollView: some View {
+        ScrollViewReader { proxy in
+            ScrollView(.vertical, showsIndicators: false) {
+                LazyVStack(spacing: 0) {
+                    ForEach(tool.pens) { pen in
+                        penView(pen)
+                            .id(pen.id)
+                            .scrollTransition { content, phase in
+                                content
+                                    .scaleEffect(phase.isIdentity ? 1 : 0.04, anchor: .trailing)
+                            }
+                    }
+                }
+                .padding(.vertical, 10)
+                .padding(.leading, 40)
+            }
+            .onReceive(tool.scrollPublisher) { id in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    withAnimation {
+                        proxy.scrollTo(id)
+                    }
+                }
+            }
+        }
+        .frame(maxHeight:( (height * factor + 10) * 6) + 20)
+        .fixedSize()
+        .background(alignment: .trailing) {
+            RoundedRectangle(cornerRadius: 20)
+                .fill(.regularMaterial)
+                .frame(width: width * factor - 18)
+        }
+        .clipShape(.rect(cornerRadii: .init(bottomTrailing: 20, topTrailing: 20)))
+        .overlay(alignment: .bottomLeading) {
+            newPenButton
+                .offset(x: 60, y: 10)
+        }
+    }
+
     func penView(_ pen: Pen) -> some View {
         ZStack {
+            penShadow(pen)
             if let tip = pen.style.icon.tip {
                 Image(tip)
                     .resizable()
@@ -161,6 +137,38 @@ struct PenDockView: View {
         .offset(x: tool.selectedPen === pen ? 0 : 25)
     }
 
+    func penColorButton(_ pen: Pen) -> some View {
+        Button {
+            tool.opensColorPicker = true
+        } label: {
+            let hsba = pen.color.hsba
+            Color(hue: hsba.hue, saturation: hsba.saturation, brightness: hsba.brightness)
+                .overlay {
+                    Image("transparent-grid-square")
+                        .resizable()
+                        .scaleEffect(1.8)
+                        .aspectRatio(contentMode: .fill)
+                        .clipShape(Triangle())
+                    pen.color
+                        .clipShape(Triangle())
+                }
+                .background(.white)
+                .clipShape(Capsule())
+                .frame(height: 20)
+                .overlay {
+                    Capsule()
+                        .stroke(Color.gray, lineWidth: 0.4)
+                }
+                .padding(0.2)
+                .drawingGroup()
+        }
+        .hoverEffect(.lift)
+        .popover(isPresented: $tool.opensColorPicker) {
+            ColorPicker(pen: pen)
+                .presentationCompactAdaptation(.popover)
+        }
+    }
+
     var newPenButton: some View {
         Button {
             let pen = PenObject.createObject(\.viewContext, penStyle: .marker)
@@ -198,5 +206,30 @@ struct PenDockView: View {
         .frame(width: width * factor, height: height * factor)
         .padding(.vertical, 5)
         .padding(.leading, 10)
+    }
+
+    func penShadow(_ pen: Pen) -> some View {
+        ZStack {
+            Group {
+                if let tip = pen.style.icon.tip {
+                    Image(tip)
+                        .resizable()
+                        .renderingMode(.template)
+                }
+                Image(pen.style.icon.base)
+                    .resizable()
+                    .renderingMode(.template)
+            }
+            .drawingGroup()
+            .foregroundStyle(.black.opacity(0.2))
+            .blur(radius: 3)
+            if let tip = pen.style.icon.tip {
+                Image(tip)
+                    .resizable()
+                    .renderingMode(.template)
+                    .foregroundStyle(Color(red: pen.rgba[0], green: pen.rgba[1], blue: pen.rgba[2]))
+                    .blur(radius: 0.5)
+            }
+        }
     }
 }

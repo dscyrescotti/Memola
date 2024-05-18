@@ -29,10 +29,8 @@ struct ColorPicker: View {
                             .resizable()
                             .scaleEffect(1.8)
                             .aspectRatio(contentMode: .fill)
-                            .opacity(0.5)
-                            .overlay {
-                                pen.color
-                            }
+                            .clipShape(Triangle())
+                        pen.color
                             .clipShape(Triangle())
                     }
                     .frame(width: size * 2 + 10)
@@ -170,7 +168,6 @@ struct ColorPicker: View {
                     Image("transparent-grid-rect")
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .opacity(0.5)
                         .background(.white)
                 }
                 color
