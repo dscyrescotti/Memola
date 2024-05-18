@@ -16,6 +16,7 @@ public class Tool: NSObject, ObservableObject {
     @Published var pens: [Pen] = []
     @Published var selectedPen: Pen?
     @Published var draggedPen: Pen?
+    @Published var opensColorPicker: Bool = false
 
     let scrollPublisher = PassthroughSubject<String, Never>()
 
@@ -32,6 +33,7 @@ public class Tool: NSObject, ObservableObject {
             }
             if let selectedPen = pens.first(where: { $0.isSelected }) {
                 selectPen(selectedPen)
+                scrollPublisher.send(selectedPen.id)
             }
         }
     }

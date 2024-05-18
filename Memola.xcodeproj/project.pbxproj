@@ -81,6 +81,8 @@
 		ECFA15242BEF223300455818 /* GraphicContextObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA15232BEF223300455818 /* GraphicContextObject.swift */; };
 		ECFA15262BEF224900455818 /* StrokeObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA15252BEF224900455818 /* StrokeObject.swift */; };
 		ECFA15282BEF225000455818 /* QuadObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA15272BEF225000455818 /* QuadObject.swift */; };
+		ECFC51272BF8885700D0D051 /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFC51262BF8885700D0D051 /* ColorPicker.swift */; };
+		ECFC512A2BF8BBD800D0D051 /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFC51292BF8BBD800D0D051 /* Triangle.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -160,6 +162,8 @@
 		ECFA15232BEF223300455818 /* GraphicContextObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphicContextObject.swift; sourceTree = "<group>"; };
 		ECFA15252BEF224900455818 /* StrokeObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeObject.swift; sourceTree = "<group>"; };
 		ECFA15272BEF225000455818 /* QuadObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuadObject.swift; sourceTree = "<group>"; };
+		ECFC51262BF8885700D0D051 /* ColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
+		ECFC51292BF8BBD800D0D051 /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -225,6 +229,7 @@
 		EC50500A2BF6672000B4D86E /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				ECFC51282BF8BBD000D0D051 /* Shapes */,
 				EC50500B2BF6673300B4D86E /* ViewModifiers */,
 			);
 			path = Components;
@@ -315,6 +320,7 @@
 		ECA7387B2BE5EF3500A4542E /* Memo */ = {
 			isa = PBXGroup;
 			children = (
+				ECFC51252BF8885000D0D051 /* ColorPicker */,
 				EC5050082BF65D0500B4D86E /* Memo */,
 				EC5050052BF65CCD00B4D86E /* PenDock */,
 			);
@@ -599,6 +605,22 @@
 			path = Objects;
 			sourceTree = "<group>";
 		};
+		ECFC51252BF8885000D0D051 /* ColorPicker */ = {
+			isa = PBXGroup;
+			children = (
+				ECFC51262BF8885700D0D051 /* ColorPicker.swift */,
+			);
+			path = ColorPicker;
+			sourceTree = "<group>";
+		};
+		ECFC51282BF8BBD000D0D051 /* Shapes */ = {
+			isa = PBXGroup;
+			children = (
+				ECFC51292BF8BBD800D0D051 /* Triangle.swift */,
+			);
+			path = Shapes;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -672,6 +694,7 @@
 				ECA738B02BE60D0B00A4542E /* CanvasViewController.swift in Sources */,
 				ECA738E42BE6110800A4542E /* Drawable.swift in Sources */,
 				ECA738AD2BE60CC600A4542E /* DrawingView.swift in Sources */,
+				ECFC512A2BF8BBD800D0D051 /* Triangle.swift in Sources */,
 				ECA738E02BE610B900A4542E /* EraserRenderPass.swift in Sources */,
 				EC35655A2BF060D900A4E0BF /* Quad.metal in Sources */,
 				ECA738912BE600F500A4542E /* Cache.metal in Sources */,
@@ -704,6 +727,7 @@
 				ECA738CB2BE60F1900A4542E /* ViewPortContext.swift in Sources */,
 				ECA738EE2BE6125D00A4542E /* simd_float4x4++.swift in Sources */,
 				ECA7388C2BE6009600A4542E /* Textures.swift in Sources */,
+				ECFC51272BF8885700D0D051 /* ColorPicker.swift in Sources */,
 				ECA738B82BE60DDC00A4542E /* HistoryEvent.swift in Sources */,
 				EC0D14262BF7A8C9009BFE5F /* PenObject.swift in Sources */,
 				ECA738952BE6012D00A4542E /* ViewPort.metal in Sources */,

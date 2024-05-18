@@ -18,6 +18,18 @@ extension Color {
     }
 }
 
+extension Color {
+    var hsba: (hue: Double, saturation: Double, brightness: Double, alpha: Double) {
+        let uiColor = UIColor(self)
+        var hue: CGFloat = 0
+        var saturation: CGFloat = 0
+        var brightness: CGFloat = 0
+        var alpha: CGFloat = 0
+        uiColor.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
+        return (hue, saturation, brightness, alpha)
+    }
+}
+
 extension UIColor {
     var components: [CGFloat] {
         let uiColor: UIColor = self

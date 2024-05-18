@@ -18,9 +18,9 @@ class Pen: NSObject, ObservableObject, Identifiable {
             object?.style = strokeStyle.rawValue
         }
     }
-    @Published var color: [CGFloat] {
+    @Published var rgba: [CGFloat] {
         didSet {
-            object?.color = color
+            object?.color = rgba
         }
     }
     @Published var thickness: CGFloat {
@@ -33,12 +33,18 @@ class Pen: NSObject, ObservableObject, Identifiable {
             object?.isSelected = isSelected
         }
     }
+    var color: Color {
+        get { Color.rgba(from: rgba) }
+        set {
+            rgba = newValue.components
+        }
+    }
 
     init(object: PenObject) {
         self.object = object
         self.id = object.objectID.uriRepresentation().absoluteString
         self.style = (Stroke.Style(rawValue: object.style) ?? .marker).anyPenStyle
-        self.color = object.color
+        self.rgba = object.color
         self.thickness = object.thickness
         self.isSelected = object.isSelected
         super.init()
