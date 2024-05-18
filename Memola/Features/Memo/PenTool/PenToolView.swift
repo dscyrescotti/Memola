@@ -21,6 +21,10 @@ struct PenToolView: View {
                     ForEach(tool.pens) { pen in
                         penView(pen)
                             .id(pen.id)
+                            .scrollTransition { content, phase in
+                                content
+                                    .scaleEffect(phase.isIdentity ? 1 : 0.04, anchor: .trailing)
+                            }
                     }
                 }
                 .padding(.vertical, 10)
@@ -64,7 +68,6 @@ struct PenToolView: View {
         }
         .frame(width: width * factor, height: height * factor)
         .padding(.vertical, 5)
-        .padding(.leading, 10)
         .contentShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10)))
         .onTapGesture {
             if tool.selectedPen === pen {
@@ -108,6 +111,7 @@ struct PenToolView: View {
                 .contentShape(.dragPreview, .rect(cornerRadius: 10))
         }
         .onDrop(of: [.item], delegate: PenDropDelegate(id: pen.id, tool: tool))
+        .padding(.leading, 10)
         .offset(x: tool.selectedPen === pen ? 0 : 28)
     }
 
