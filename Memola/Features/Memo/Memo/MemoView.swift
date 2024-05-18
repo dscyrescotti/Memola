@@ -27,11 +27,13 @@ struct MemoView: View {
         CanvasView()
             .ignoresSafeArea()
             .overlay(alignment: .topTrailing) {
-                VStack(alignment: .trailing, spacing: 20) {
-                    historyTool
-                    PenToolView()
-                }
-                .padding()
+                historyTool
+                    .padding()
+            }
+            .overlay(alignment: .trailing) {
+                PenDockView()
+                    .frame(maxHeight: .infinity)
+                    .padding()
             }
             .overlay(alignment: .topLeading) {
                 Button {

@@ -1,5 +1,5 @@
 //
-//  PenToolView.swift
+//  PenDockView.swift
 //  Memola
 //
 //  Created by Dscyre Scotti on 5/4/24.
@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct PenToolView: View {
+struct PenDockView: View {
     @EnvironmentObject var tool: Tool
 
-    let width: CGFloat = 80
+    let width: CGFloat = 90
     let height: CGFloat = 30
-    let factor: CGFloat = 1.22
+    let factor: CGFloat = 0.95
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -40,12 +40,10 @@ struct PenToolView: View {
         }
         .frame(maxHeight:( (height * factor + 10) * 7) + 20)
         .fixedSize()
-        .background {
-            HStack(spacing: 0) {
-                Spacer(minLength: 70)
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(.regularMaterial)
-            }
+        .background(alignment: .trailing) {
+            RoundedRectangle(cornerRadius: 20)
+                .fill(.regularMaterial)
+                .frame(width: width * factor - 15)
         }
         .clipShape(.rect(cornerRadii: .init(bottomTrailing: 20, topTrailing: 20)))
         .overlay(alignment: .bottomLeading) {
@@ -112,7 +110,7 @@ struct PenToolView: View {
         }
         .onDrop(of: [.item], delegate: PenDropDelegate(id: pen.id, tool: tool))
         .padding(.leading, 10)
-        .offset(x: tool.selectedPen === pen ? 0 : 28)
+        .offset(x: tool.selectedPen === pen ? 0 : 25)
     }
 
     var newPenButton: some View {
