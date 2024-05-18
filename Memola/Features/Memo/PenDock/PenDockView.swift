@@ -35,6 +35,10 @@ struct PenDockView: View {
                                     .clipShape(Triangle())
                             }
                             .clipShape(Capsule())
+                            .overlay {
+                                Capsule()
+                                    .stroke(Color.gray, lineWidth: 0.2)
+                            }
                             .frame(height: 20)
                             .drawingGroup()
                     }

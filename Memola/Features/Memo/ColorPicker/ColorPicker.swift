@@ -16,7 +16,7 @@ struct ColorPicker: View {
     @State var brightness: Double = 1
     @State var alpha: Double = 1
 
-    let size: CGFloat = 15
+    let size: CGFloat = 18
 
     var body: some View {
         VStack(spacing: 10) {
@@ -37,7 +37,11 @@ struct ColorPicker: View {
                     }
                     .frame(width: size * 2 + 10)
                     .cornerRadius(5)
-                VStack(spacing: 10) {
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(Color.gray, lineWidth: 0.2)
+                    }
+                VStack(spacing: 15) {
                     hueSlider
                     alphaSlider
                 }
@@ -76,13 +80,22 @@ struct ColorPicker: View {
             }
             .cornerRadius(5)
             .drawingGroup()
+            .overlay {
+                RoundedRectangle(cornerRadius: 5)
+                    .stroke(Color.gray, lineWidth: 0.2)
+            }
             .overlay(alignment: .bottomLeading) {
                 Color(hue: hue, saturation: saturation, brightness: brightness)
                     .frame(width: size, height: size)
                     .clipShape(Circle())
+                    .padding(1)
                     .overlay {
                         Circle()
                             .strokeBorder(.white, lineWidth: 2)
+                    }
+                    .overlay {
+                        Circle()
+                            .stroke(Color.gray, lineWidth: 0.2)
                     }
                     .offset(x: -size + 5, y: size - 5)
                     .offset(x: max(proxy.size.width * saturation, size - 10), y: min(proxy.size.height * -brightness, -size + 10))
@@ -109,16 +122,25 @@ struct ColorPicker: View {
                 )
                 Color(hue: hue, saturation: 1, brightness: 1)
                     .frame(width: size, height: size)
+                    .clipShape(Circle())
+                    .padding(1)
                     .overlay {
                         Circle()
                             .strokeBorder(.white, lineWidth: 2)
                     }
-                    .clipShape(Circle())
+                    .overlay {
+                        Circle()
+                            .stroke(Color.gray, lineWidth: 0.2)
+                    }
                     .offset(x: -size)
-                    .offset(x: max(size, proxy.size.width * hue))
+                    .offset(x: max(size, proxy.size.width * hue - 2))
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
             .clipShape(Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(Color.gray, lineWidth: 0.2)
+            }
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
@@ -153,16 +175,25 @@ struct ColorPicker: View {
                 }
                 color
                     .frame(width: size, height: size)
+                    .clipShape(Circle())
+                    .padding(1)
                     .overlay {
                         Circle()
                             .strokeBorder(.white, lineWidth: 2)
                     }
-                    .clipShape(Circle())
+                    .overlay {
+                        Circle()
+                            .stroke(Color.gray, lineWidth: 0.2)
+                    }
                     .offset(x: -size)
-                    .offset(x: max(size, proxy.size.width * alpha))
+                    .offset(x: max(size, proxy.size.width * alpha - 2))
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
             .clipShape(Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(Color.gray, lineWidth: 0.2)
+            }
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
