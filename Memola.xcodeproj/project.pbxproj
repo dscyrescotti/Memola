@@ -10,7 +10,7 @@
 		EC0D14212BF79C73009BFE5F /* ToolObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14202BF79C73009BFE5F /* ToolObject.swift */; };
 		EC0D14242BF79C98009BFE5F /* MemolaModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14222BF79C98009BFE5F /* MemolaModel.xcdatamodeld */; };
 		EC0D14262BF7A8C9009BFE5F /* PenObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14252BF7A8C9009BFE5F /* PenObject.swift */; };
-		EC0D14282BF7BF20009BFE5F /* ContextMenuableViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14272BF7BF20009BFE5F /* ContextMenuableViewModifier.swift */; };
+		EC0D14282BF7BF20009BFE5F /* ContextMenuViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14272BF7BF20009BFE5F /* ContextMenuViewModifier.swift */; };
 		EC3565522BEFC65F00A4E0BF /* NSManagedObjectContext++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565512BEFC65F00A4E0BF /* NSManagedObjectContext++.swift */; };
 		EC3565542BEFC6AD00A4E0BF /* View++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565532BEFC6AD00A4E0BF /* View++.swift */; };
 		EC3565562BEFC7B300A4E0BF /* NSManagedObject++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */; };
@@ -18,7 +18,7 @@
 		EC35655C2BF0712A00A4E0BF /* Float++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC35655B2BF0712A00A4E0BF /* Float++.swift */; };
 		EC4538892BEBCAE000A86FEC /* Quad.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4538882BEBCAE000A86FEC /* Quad.swift */; };
 		EC5050072BF65CED00B4D86E /* PenDropDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5050062BF65CED00B4D86E /* PenDropDelegate.swift */; };
-		EC50500D2BF6674400B4D86E /* DraggableViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC50500C2BF6674400B4D86E /* DraggableViewModifier.swift */; };
+		EC50500D2BF6674400B4D86E /* OnDragViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC50500C2BF6674400B4D86E /* OnDragViewModifier.swift */; };
 		EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */; };
 		EC7F6BF02BE5E6E400A34A7B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */; };
 		EC7F6BF32BE5E6E400A34A7B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BF22BE5E6E400A34A7B /* Preview Assets.xcassets */; };
@@ -87,7 +87,7 @@
 		EC0D14202BF79C73009BFE5F /* ToolObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolObject.swift; sourceTree = "<group>"; };
 		EC0D14232BF79C98009BFE5F /* MemolaModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MemolaModel.xcdatamodel; sourceTree = "<group>"; };
 		EC0D14252BF7A8C9009BFE5F /* PenObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenObject.swift; sourceTree = "<group>"; };
-		EC0D14272BF7BF20009BFE5F /* ContextMenuableViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenuableViewModifier.swift; sourceTree = "<group>"; };
+		EC0D14272BF7BF20009BFE5F /* ContextMenuViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenuViewModifier.swift; sourceTree = "<group>"; };
 		EC3565512BEFC65F00A4E0BF /* NSManagedObjectContext++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext++.swift"; sourceTree = "<group>"; };
 		EC3565532BEFC6AD00A4E0BF /* View++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View++.swift"; sourceTree = "<group>"; };
 		EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObject++.swift"; sourceTree = "<group>"; };
@@ -95,7 +95,7 @@
 		EC35655B2BF0712A00A4E0BF /* Float++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float++.swift"; sourceTree = "<group>"; };
 		EC4538882BEBCAE000A86FEC /* Quad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quad.swift; sourceTree = "<group>"; };
 		EC5050062BF65CED00B4D86E /* PenDropDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenDropDelegate.swift; sourceTree = "<group>"; };
-		EC50500C2BF6674400B4D86E /* DraggableViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraggableViewModifier.swift; sourceTree = "<group>"; };
+		EC50500C2BF6674400B4D86E /* OnDragViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDragViewModifier.swift; sourceTree = "<group>"; };
 		EC50500E2BF670EA00B4D86E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EC7F6BE82BE5E6E300A34A7B /* Memola.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Memola.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemolaApp.swift; sourceTree = "<group>"; };
@@ -233,8 +233,8 @@
 		EC50500B2BF6673300B4D86E /* ViewModifiers */ = {
 			isa = PBXGroup;
 			children = (
-				EC50500C2BF6674400B4D86E /* DraggableViewModifier.swift */,
-				EC0D14272BF7BF20009BFE5F /* ContextMenuableViewModifier.swift */,
+				EC50500C2BF6674400B4D86E /* OnDragViewModifier.swift */,
+				EC0D14272BF7BF20009BFE5F /* ContextMenuViewModifier.swift */,
 			);
 			path = ViewModifiers;
 			sourceTree = "<group>";
@@ -721,7 +721,7 @@
 				ECA738C92BE60EF700A4542E /* GraphicContext.swift in Sources */,
 				ECA738F62BE612B700A4542E /* MTLDevice++.swift in Sources */,
 				EC0D14212BF79C73009BFE5F /* ToolObject.swift in Sources */,
-				EC50500D2BF6674400B4D86E /* DraggableViewModifier.swift in Sources */,
+				EC50500D2BF6674400B4D86E /* OnDragViewModifier.swift in Sources */,
 				ECA7389E2BE601CB00A4542E /* QuadVertex.swift in Sources */,
 				ECA738B32BE60D9E00A4542E /* CanvasView.swift in Sources */,
 				ECA738C42BE60E8800A4542E /* MarkerPenStyle.swift in Sources */,
@@ -737,7 +737,7 @@
 				ECA738DE2BE610A000A4542E /* ViewPortRenderPass.swift in Sources */,
 				EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */,
 				ECA738A02BE601E400A4542E /* ViewPortVertex.swift in Sources */,
-				EC0D14282BF7BF20009BFE5F /* ContextMenuableViewModifier.swift in Sources */,
+				EC0D14282BF7BF20009BFE5F /* ContextMenuViewModifier.swift in Sources */,
 				ECA738BC2BE60E0300A4542E /* Tool.swift in Sources */,
 				ECA738972BE6014200A4542E /* Graphic.metal in Sources */,
 				ECA7388A2BE6006A00A4542E /* PipelineStates.swift in Sources */,

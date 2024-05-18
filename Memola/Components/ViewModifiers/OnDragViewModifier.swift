@@ -1,5 +1,5 @@
 //
-//  DraggableViewModifier.swift
+//  OnDragViewModifier.swift
 //  Memola
 //
 //  Created by Dscyre Scotti on 5/16/24.
@@ -8,7 +8,7 @@
 import SwiftUI
 import Foundation
 
-struct DraggableViewModifier<Preview: View>: ViewModifier {
+struct OnDragViewModifier<Preview: View>: ViewModifier {
     let condition: Bool
     let data: () -> NSItemProvider
     let preview: () -> Preview
@@ -25,6 +25,6 @@ struct DraggableViewModifier<Preview: View>: ViewModifier {
 
 public extension View {
     func onDrag<Preview: View>(if condition: Bool, data: @escaping () -> NSItemProvider, @ViewBuilder preview: @escaping () -> Preview) -> some View {
-        modifier(DraggableViewModifier(condition: condition, data: data, preview: preview))
+        modifier(OnDragViewModifier(condition: condition, data: data, preview: preview))
     }
 }

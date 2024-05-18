@@ -16,9 +16,6 @@ public class Tool: NSObject, ObservableObject {
     @Published var pens: [Pen] = []
     @Published var selectedPen: Pen?
     @Published var draggedPen: Pen?
-    @Published var isReordering: Bool = false
-    @Published var isShaking: Bool = false
-    @Published var shakingId: UUID = UUID()
 
     let scrollPublisher = PassthroughSubject<String, Never>()
 
@@ -47,12 +44,32 @@ public class Tool: NSObject, ObservableObject {
             selectedPen = pen
         }
         selectedPen?.isSelected = true
+        withPersistence(\.viewContext) { context in
+            try context.saveIfNeeded()
+        }
     }
 
     func unselectPen(_ pen: Pen) {
         pen.isSelected = false
         withAnimation {
             selectedPen = nil
+        }
+        withPersistence(\.viewContext) { context in
+            try context.saveIfNeeded()
+        }
+    }
+
+    func duplicatePen(_ pen: Pen, of originalPen: Pen) {
+        guard let index = pens.firstIndex(where: { originalPen === $0 }) else { return }
+        withAnimation {
+            pens.insert(pen, at: index + 1)
+        }
+        selectPen(pen)
+        withPersistence(\.viewContext) { [pens] context in
+            for (index, pen) in pens.enumerated() {
+                pen.object?.orderIndex = Int16(index)
+            }
+            try context.saveIfNeeded()
         }
     }
 
@@ -65,6 +82,9 @@ public class Tool: NSObject, ObservableObject {
             object.pens.add(_pen)
         }
         scrollPublisher.send(pen.id)
+        withPersistence(\.viewContext) { context in
+            try context.saveIfNeeded()
+        }
     }
 
     func removePen(_ pen: Pen) {
@@ -75,6 +95,9 @@ public class Tool: NSObject, ObservableObject {
         if let _pen = deletedPen.object {
             _pen.tool = nil
             object.pens.remove(_pen)
+        }
+        withPersistence(\.viewContext) { context in
+            try context.saveIfNeeded()
         }
     }
 }

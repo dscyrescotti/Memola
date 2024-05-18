@@ -1,5 +1,5 @@
 //
-//  ContextMenuableViewModifier.swift
+//  ContextMenuViewModifier.swift
 //  Memola
 //
 //  Created by Dscyre Scotti on 5/17/24.
@@ -8,7 +8,7 @@
 import SwiftUI
 import Foundation
 
-struct ContextMenuableViewModifier<MenuContent: View>: ViewModifier {
+struct ContextMenuViewModifier<MenuContent: View>: ViewModifier {
     let condition: Bool
     let menuItems: () -> MenuContent
 
@@ -24,6 +24,6 @@ struct ContextMenuableViewModifier<MenuContent: View>: ViewModifier {
 
 public extension View {
     func contextMenu<MenuContent: View>(if condition: Bool, @ViewBuilder menuItems: @escaping () -> MenuContent) -> some View {
-        modifier(ContextMenuableViewModifier(condition: condition, menuItems: menuItems))
+        modifier(ContextMenuViewModifier(condition: condition, menuItems: menuItems))
     }
 }

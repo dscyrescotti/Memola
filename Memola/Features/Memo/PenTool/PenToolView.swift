@@ -17,37 +17,14 @@ struct PenToolView: View {
     var body: some View {
         ScrollViewReader { proxy in
             ScrollView(.vertical, showsIndicators: false) {
-                if tool.isReordering {
-                    LazyVStack(spacing: 0) {
-                        ForEach(tool.pens) { pen in
-                            if pen.strokeStyle == .marker {
-                                penView(pen)
-                                    .offset(y: tool.isShaking ? 1.5 : -1.5)
-                                    .id(pen.id)
-                            } else {
-                                penView(pen)
-                                    .id(pen.id)
-                            }
-                        }
+                LazyVStack(spacing: 0) {
+                    ForEach(tool.pens) { pen in
+                        penView(pen)
+                            .id(pen.id)
                     }
-                    .padding(.vertical, 10)
-                    .padding(.leading, 40)
-                    .onAppear {
-                        withAnimation(.easeInOut.repeatForever().speed(5)) {
-                            tool.isShaking.toggle()
-                        }
-                    }
-                    .id(tool.shakingId)
-                } else {
-                    LazyVStack(spacing: 0) {
-                        ForEach(tool.pens) { pen in
-                            penView(pen)
-                                .id(pen.id)
-                        }
-                    }
-                    .padding(.vertical, 10)
-                    .padding(.leading, 40)
                 }
+                .padding(.vertical, 10)
+                .padding(.leading, 40)
             }
             .onReceive(tool.scrollPublisher) { id in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -68,14 +45,8 @@ struct PenToolView: View {
         }
         .clipShape(.rect(cornerRadii: .init(bottomTrailing: 20, topTrailing: 20)))
         .overlay(alignment: .bottomLeading) {
-            Group {
-                if tool.isReordering {
-                    doneButton
-                } else {
-                    newPenButton
-                }
-            }
-            .offset(x: 60, y: 10)
+            newPenButton
+                .offset(x: 60, y: 10)
         }
     }
 
@@ -102,20 +73,34 @@ struct PenToolView: View {
                 tool.selectPen(pen)
             }
         }
-        .disabled(tool.isReordering)
-        .contextMenu(if: pen.strokeStyle != .eraser && !tool.isReordering) {
-            Button {
-                tool.isReordering = true
-            } label: {
-                Label("Rearrange", systemImage: "arrow.up.arrow.down.circle")
+        .contextMenu(if: pen.strokeStyle != .eraser) {
+            ControlGroup {
+                Button {
+                    let originalPen = pen
+                    let pen = PenObject.createObject(\.viewContext, penStyle: originalPen.style)
+                    pen.color = originalPen.color
+                    pen.isSelected = true
+                    pen.tool = tool.object
+                    let _pen = Pen(object: pen)
+                    tool.duplicatePen(_pen, of: originalPen)
+                } label: {
+                    Label(
+                        title: { Text("Duplicate") },
+                        icon: { Image(systemName: "plus.square.on.square") }
+                    )
+                }
+                Button(role: .destructive) {
+                    tool.removePen(pen)
+                } label: {
+                    Label(
+                        title: { Text("Remove") },
+                        icon: { Image(systemName: "trash") }
+                    )
+                }
             }
-            Button(role: .destructive) {
-                tool.removePen(pen)
-            } label: {
-                Label("Delete", systemImage: "trash")
-            }
+            .controlGroupStyle(.menu)
         }
-        .onDrag(if: pen.strokeStyle != .eraser && tool.isReordering) {
+        .onDrag(if: pen.strokeStyle != .eraser) {
             tool.draggedPen = pen
             return NSItemProvider(contentsOf: URL(string: pen.id)) ?? NSItemProvider()
         } preview: {
@@ -146,22 +131,6 @@ struct PenToolView: View {
                 }
         }
         .foregroundStyle(.green)
-        .hoverEffect(.lift)
-    }
-
-    var doneButton: some View {
-        Button {
-            tool.isReordering = false
-        } label: {
-            Image(systemName: "xmark.circle")
-                .font(.title2)
-                .padding(1)
-                .contentShape(.circle)
-                .background {
-                    Circle()
-                        .fill(.white)
-                }
-        }
         .hoverEffect(.lift)
     }
 
