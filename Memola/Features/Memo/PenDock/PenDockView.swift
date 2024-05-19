@@ -116,6 +116,7 @@ struct PenDockView: View {
                     let originalPen = pen
                     let pen = PenObject.createObject(\.viewContext, penStyle: originalPen.style)
                     pen.color = originalPen.rgba
+                    pen.thickness = originalPen.thickness
                     pen.isSelected = true
                     pen.tool = tool.object
                     let _pen = Pen(object: pen)
