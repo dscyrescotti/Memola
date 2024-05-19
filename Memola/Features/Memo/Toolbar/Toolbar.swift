@@ -12,13 +12,17 @@ struct Toolbar: View {
     @Environment(\.dismiss) var dismiss
     
     @EnvironmentObject var history: History
-    
+    @EnvironmentObject var canvas: Canvas
+
     @State var memo: MemoObject
     @State var title: String
     @FocusState var textFieldState: Bool
 
-    init(memo: MemoObject) {
+    let size: CGFloat
+
+    init(memo: MemoObject, size: CGFloat) {
         self.memo = memo
+        self.size = size
         self.title = memo.title
     }
     
@@ -27,7 +31,7 @@ struct Toolbar: View {
             closeButton
             titleField
             Spacer()
-            historyTool
+            historyControl
         }
         .font(.subheadline)
         .padding(10)
@@ -39,7 +43,7 @@ struct Toolbar: View {
         } label: {
             Image(systemName: "xmark")
                 .contentShape(.circle)
-                .padding(10)
+                .frame(width: size, height: size)
                 .background(.regularMaterial)
                 .clipShape(.rect(cornerRadius: 8))
         }
@@ -51,9 +55,8 @@ struct Toolbar: View {
         TextField("", text: $title)
             .focused($textFieldState)
             .textFieldStyle(.plain)
-            .padding(.vertical, 5)
-            .padding(.horizontal, 10)
-            .frame(width: 120)
+            .padding(.horizontal, size / 2.5)
+            .frame(width: 140, height: size)
             .background(.regularMaterial)
             .clipShape(.rect(cornerRadius: 8))
             .onChange(of: textFieldState) { oldValue, newValue in
@@ -67,12 +70,13 @@ struct Toolbar: View {
             }
     }
 
-    var historyTool: some View {
+    var historyControl: some View {
         HStack {
             Button {
                 history.historyPublisher.send(.undo)
             } label: {
                 Image(systemName: "arrow.uturn.backward.circle")
+
                     .contentShape(.circle)
             }
             .hoverEffect(.lift)
@@ -86,7 +90,7 @@ struct Toolbar: View {
             .hoverEffect(.lift)
             .disabled(history.redoDisabled)
         }
-        .padding(10)
+        .frame(width: size * 2, height: size)
         .background(.regularMaterial)
         .clipShape(.rect(cornerRadius: 8))
         .disabled(textFieldState)

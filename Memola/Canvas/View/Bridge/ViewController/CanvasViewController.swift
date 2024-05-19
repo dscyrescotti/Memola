@@ -162,6 +162,12 @@ extension CanvasViewController {
             }
             .store(in: &cancellables)
 
+        canvas.zoomPublisher
+            .sink { [weak self] zoomScale in
+                self?.zoomChanged(zoomScale)
+            }
+            .store(in: &cancellables)
+
         tool.$selectedPen
             .sink { [weak self] pen in
                 self?.penChanged(to: pen)
@@ -295,6 +301,12 @@ extension CanvasViewController {
         scrollView.isScrollEnabled = !isPenSelected
         drawingView.isUserInteractionEnabled = isPenSelected
         isPenSelected ? drawingView.enableUserInteraction() : drawingView.disableUserInteraction()
+    }
+}
+
+extension CanvasViewController {
+    func zoomChanged(_ zoomScale: CGFloat) {
+        scrollView.setZoomScale(zoomScale, animated: true)
     }
 }
 

@@ -17,6 +17,8 @@ struct MemoView: View {
     @State var title: String
     @FocusState var textFieldState: Bool
 
+    let size: CGFloat = 32
+
     init(memo: MemoObject) {
         self.memo = memo
         self.title = memo.title
@@ -30,9 +32,12 @@ struct MemoView: View {
             .overlay(alignment: .trailing) {
                 PenDock()
             }
+            .overlay(alignment: .bottomLeading) {
+                zoomControl
+            }
             .disabled(textFieldState)
             .overlay(alignment: .top) {
-                Toolbar(memo: memo)
+                Toolbar(memo: memo, size: size)
             }
             .disabled(canvas.state == .loading || canvas.state == .closing)
             .overlay {
@@ -48,6 +53,40 @@ struct MemoView: View {
             .environmentObject(tool)
             .environmentObject(canvas)
             .environmentObject(history)
+    }
+
+    @ViewBuilder
+    var zoomControl: some View {
+        let upperBound: CGFloat = 400
+        let lowerBound: CGFloat = 10
+        let zoomScale: CGFloat = (((canvas.zoomScale - canvas.minimumZoomScale) * (upperBound - lowerBound) / (canvas.maximumZoomScale - canvas.minimumZoomScale)) + lowerBound).rounded()
+        let zoomScales: [Int] = [400, 200, 100, 75, 50, 25, 10]
+        Menu {
+            ForEach(zoomScales, id: \.self) { scale in
+                Button {
+                    let zoomScale = ((CGFloat(scale) - lowerBound) * (canvas.maximumZoomScale - canvas.minimumZoomScale) / (upperBound - lowerBound)) + canvas.minimumZoomScale
+                    canvas.zoomPublisher.send(zoomScale)
+                } label: {
+                    Label {
+                        Text(scale, format: .percent)
+                    } icon: {
+                        if CGFloat(scale) == zoomScale {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                    .font(.headline)
+                }
+            }
+        } label: {
+            Text(zoomScale / 100, format: .percent)
+                .frame(width: 45)
+                .font(.subheadline)
+                .padding(.horizontal, size / 2.5)
+                .frame(height: size)
+                .background(.regularMaterial)
+                .clipShape(.rect(cornerRadius: 8))
+                .padding(10)
+        }
     }
 
     func loadingIndicator(_ title: String) -> some View {
