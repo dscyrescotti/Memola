@@ -105,6 +105,14 @@ struct PenDockView: View {
         .contextMenu(if: pen.strokeStyle != .eraser) {
             ControlGroup {
                 Button {
+                    tool.selectPen(pen)
+                } label: {
+                    Label(
+                        title: { Text("Select") },
+                        icon: { Image(systemName: "pencil.tip.crop.circle") }
+                    )
+                }
+                Button {
                     let originalPen = pen
                     let pen = PenObject.createObject(\.viewContext, penStyle: originalPen.style)
                     pen.color = originalPen.rgba
@@ -126,8 +134,13 @@ struct PenDockView: View {
                         icon: { Image(systemName: "trash") }
                     )
                 }
+                .disabled(tool.markers.count <= 1)
             }
             .controlGroupStyle(.menu)
+        } preview: {
+            penPreviewView(pen)
+                .drawingGroup()
+                .contentShape(.contextMenuPreview, .rect(cornerRadius: 10))
         }
         .onDrag(if: pen.strokeStyle != .eraser) {
             tool.draggedPen = pen

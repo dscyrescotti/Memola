@@ -18,6 +18,9 @@ public class Tool: NSObject, ObservableObject {
     @Published var draggedPen: Pen?
 
     let scrollPublisher = PassthroughSubject<String, Never>()
+    var markers: [Pen] {
+        pens.filter { $0.strokeStyle == .marker }
+    }
 
     init(object: ToolObject) {
         self.object = object
@@ -93,12 +96,14 @@ public class Tool: NSObject, ObservableObject {
         let deletedPen = withAnimation {
             pens.remove(at: index)
         }
+        unselectPen(deletedPen)
         if let _pen = deletedPen.object {
             _pen.tool = nil
             object.pens.remove(_pen)
-        }
-        withPersistence(\.viewContext) { context in
-            try context.saveIfNeeded()
+            withPersistence(\.viewContext) { context in
+                context.delete(_pen)
+                try context.saveIfNeeded()
+            }
         }
     }
 }
