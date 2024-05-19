@@ -221,7 +221,7 @@ struct PenDock: View {
         )
         Picker("", selection: selection) {
             ForEach(pen.style.thicknessSteps, id: \.self) { step in
-                let size = ((step - minimum) * (end - start) / (maximum - minimum)) + start - (1 / step)
+                let size = ((step - minimum) * (end - start) / (maximum - minimum)) + start - (0.5 / step)
                 Circle()
                     .fill(.black)
                     .frame(width: size, height: size)
