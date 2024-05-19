@@ -10,40 +10,22 @@ import Foundation
 
 struct ColorPicker: View {
     @ObservedObject var pen: Pen
+    @EnvironmentObject var tool: Tool
 
     @State var hue: Double = 1
     @State var saturation: Double = 0
     @State var brightness: Double = 1
     @State var alpha: Double = 1
 
-    let size: CGFloat = 18
+    let size: CGFloat = 20
 
     var body: some View {
         VStack(spacing: 10) {
             colorPicker
-                .frame(width: 180, height: 180)
+                .frame(width: 200, height: 200)
             HStack(spacing: 10) {
-                Color(hue: hue, saturation: saturation, brightness: brightness)
-                    .overlay {
-                        Image("transparent-grid-square")
-                            .resizable()
-                            .scaleEffect(1.8)
-                            .aspectRatio(contentMode: .fill)
-                            .clipShape(Triangle())
-                        pen.color
-                            .clipShape(Triangle())
-                    }
-                    .frame(width: size * 2 + 10)
-                    .cornerRadius(5)
-                    .drawingGroup()
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 5)
-                            .stroke(Color.gray, lineWidth: 0.2)
-                    }
-                VStack(spacing: 15) {
-                    hueSlider
-                    alphaSlider
-                }
+                hueSlider
+                alphaSlider
             }
         }
         .padding(10)
@@ -135,11 +117,6 @@ struct ColorPicker: View {
                     .offset(x: max(size, proxy.size.width * hue - 2))
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
-            .clipShape(Capsule())
-            .overlay {
-                Capsule()
-                    .stroke(Color.gray, lineWidth: 0.2)
-            }
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
@@ -151,6 +128,12 @@ struct ColorPicker: View {
                         updateBaseColor()
                     }
             )
+            .clipShape(Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(Color.gray, lineWidth: 0.2)
+            }
+            .frame(height: proxy.size.height)
         }
         .frame(height: size)
     }
@@ -187,11 +170,6 @@ struct ColorPicker: View {
                     .offset(x: max(size, proxy.size.width * alpha - 2))
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
-            .clipShape(Capsule())
-            .overlay {
-                Capsule()
-                    .stroke(Color.gray, lineWidth: 0.2)
-            }
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
@@ -203,11 +181,18 @@ struct ColorPicker: View {
                         updateBaseColor()
                     }
             )
+            .clipShape(Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(Color.gray, lineWidth: 0.2)
+            }
+            .frame(height: proxy.size.height)
         }
         .frame(height: size)
     }
 
     func updateBaseColor() {
         pen.color = Color(hue: hue, saturation: saturation, brightness: brightness).opacity(0.7 * alpha + 0.3)
+        tool.objectWillChange.send()
     }
 }

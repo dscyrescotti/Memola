@@ -17,7 +17,7 @@ struct PenDockView: View {
     var body: some View {
         VStack(alignment: .trailing) {
             if let pen = tool.selectedPen {
-                VStack(spacing: 15) {
+                VStack(spacing: 5) {
                     penColorView(pen)
                     penThicknessView(pen)
                 }
@@ -141,25 +141,30 @@ struct PenDockView: View {
             tool.opensColorPicker = true
         } label: {
             let hsba = pen.color.hsba
-            Color(hue: hsba.hue, saturation: hsba.saturation, brightness: hsba.brightness)
-                .overlay {
+            let baseColor = Color(hue: hsba.hue, saturation: hsba.saturation, brightness: hsba.brightness)
+            GeometryReader { proxy in
+                HStack(spacing: 0) {
+                    baseColor
+                        .frame(width: proxy.size.width / 2)
                     Image("transparent-grid-square")
                         .resizable()
-                        .scaleEffect(1.8)
+                        .scaleEffect(3)
                         .aspectRatio(contentMode: .fill)
-                        .clipShape(Triangle())
-                    pen.color
-                        .clipShape(Triangle())
+                        .opacity(1 - hsba.alpha)
+                        .frame(width: proxy.size.width / 2)
+                        .clipped()
                 }
-                .background(.white)
-                .clipShape(Capsule())
-                .frame(height: 25)
-                .overlay {
-                    Capsule()
-                        .stroke(Color.gray, lineWidth: 0.4)
-                }
-                .padding(0.2)
-                .drawingGroup()
+            }
+            .background(baseColor)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .frame(height: 28)
+            .overlay {
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(Color.gray, lineWidth: 0.4)
+            }
+            .padding(0.2)
+            .padding(.top, 4)
+            .drawingGroup()
         }
         .hoverEffect(.lift)
         .popover(isPresented: $tool.opensColorPicker) {
