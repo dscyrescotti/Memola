@@ -11,6 +11,7 @@
 		EC0D14242BF79C98009BFE5F /* MemolaModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14222BF79C98009BFE5F /* MemolaModel.xcdatamodeld */; };
 		EC0D14262BF7A8C9009BFE5F /* PenObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14252BF7A8C9009BFE5F /* PenObject.swift */; };
 		EC0D14282BF7BF20009BFE5F /* ContextMenuViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14272BF7BF20009BFE5F /* ContextMenuViewModifier.swift */; };
+		EC1B783D2BFA0AC9005A34E2 /* Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1B783C2BFA0AC9005A34E2 /* Toolbar.swift */; };
 		EC3565522BEFC65F00A4E0BF /* NSManagedObjectContext++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565512BEFC65F00A4E0BF /* NSManagedObjectContext++.swift */; };
 		EC3565542BEFC6AD00A4E0BF /* View++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565532BEFC6AD00A4E0BF /* View++.swift */; };
 		EC3565562BEFC7B300A4E0BF /* NSManagedObject++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */; };
@@ -89,6 +90,7 @@
 		EC0D14232BF79C98009BFE5F /* MemolaModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MemolaModel.xcdatamodel; sourceTree = "<group>"; };
 		EC0D14252BF7A8C9009BFE5F /* PenObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenObject.swift; sourceTree = "<group>"; };
 		EC0D14272BF7BF20009BFE5F /* ContextMenuViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenuViewModifier.swift; sourceTree = "<group>"; };
+		EC1B783C2BFA0AC9005A34E2 /* Toolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toolbar.swift; sourceTree = "<group>"; };
 		EC3565512BEFC65F00A4E0BF /* NSManagedObjectContext++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext++.swift"; sourceTree = "<group>"; };
 		EC3565532BEFC6AD00A4E0BF /* View++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View++.swift"; sourceTree = "<group>"; };
 		EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObject++.swift"; sourceTree = "<group>"; };
@@ -197,6 +199,14 @@
 				ECFC51252BF8885000D0D051 /* ColorPicker */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		EC1B783B2BFA0AAC005A34E2 /* Toolbar */ = {
+			isa = PBXGroup;
+			children = (
+				EC1B783C2BFA0AC9005A34E2 /* Toolbar.swift */,
+			);
+			path = Toolbar;
 			sourceTree = "<group>";
 		};
 		EC5050042BF65CBC00B4D86E /* Core */ = {
@@ -326,6 +336,7 @@
 		ECA7387B2BE5EF3500A4542E /* Memo */ = {
 			isa = PBXGroup;
 			children = (
+				EC1B783B2BFA0AAC005A34E2 /* Toolbar */,
 				EC5050082BF65D0500B4D86E /* Memo */,
 				EC5050052BF65CCD00B4D86E /* PenDock */,
 			);
@@ -691,6 +702,7 @@
 				ECA738B02BE60D0B00A4542E /* CanvasViewController.swift in Sources */,
 				ECA738E42BE6110800A4542E /* Drawable.swift in Sources */,
 				ECA738AD2BE60CC600A4542E /* DrawingView.swift in Sources */,
+				EC1B783D2BFA0AC9005A34E2 /* Toolbar.swift in Sources */,
 				ECA738E02BE610B900A4542E /* EraserRenderPass.swift in Sources */,
 				EC35655A2BF060D900A4E0BF /* Quad.metal in Sources */,
 				ECA738912BE600F500A4542E /* Cache.metal in Sources */,

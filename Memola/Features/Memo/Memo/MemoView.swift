@@ -9,16 +9,17 @@ import SwiftUI
 import CoreData
 
 struct MemoView: View {
-    @Environment(\.dismiss) var dismiss
-
     @StateObject var tool: Tool
     @StateObject var canvas: Canvas
     @StateObject var history = History()
 
-    let memo: MemoObject
+    @State var memo: MemoObject
+    @State var title: String
+    @FocusState var textFieldState: Bool
 
     init(memo: MemoObject) {
         self.memo = memo
+        self.title = memo.title
         self._tool = StateObject(wrappedValue: Tool(object: memo.tool))
         self._canvas = StateObject(wrappedValue: Canvas(size: memo.canvas.size, canvasID: memo.canvas.objectID))
     }
@@ -26,27 +27,14 @@ struct MemoView: View {
     var body: some View {
         CanvasView()
             .ignoresSafeArea()
-            .overlay(alignment: .topTrailing) {
-                historyTool
-                    .padding()
-            }
             .overlay(alignment: .trailing) {
                 PenDockView()
                     .frame(maxHeight: .infinity)
                     .padding()
             }
-            .overlay(alignment: .topLeading) {
-                Button {
-                    closeMemo()
-                } label: {
-                    Image(systemName: "xmark")
-                        .contentShape(.circle)
-                        .padding(15)
-                        .background(.regularMaterial)
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                }
-                .hoverEffect(.lift)
-                .padding()
+            .disabled(textFieldState)
+            .overlay(alignment: .top) {
+                Toolbar(memo: memo)
             }
             .disabled(canvas.state == .loading || canvas.state == .closing)
             .overlay {
@@ -64,30 +52,6 @@ struct MemoView: View {
             .environmentObject(history)
     }
 
-    var historyTool: some View {
-        HStack {
-            Button {
-                history.historyPublisher.send(.undo)
-            } label: {
-                Image(systemName: "arrow.uturn.backward.circle")
-                    .contentShape(.circle)
-            }
-            .hoverEffect(.lift)
-            .disabled(history.undoDisabled)
-            Button {
-                history.historyPublisher.send(.redo)
-            } label: {
-                Image(systemName: "arrow.uturn.forward.circle")
-                    .contentShape(.circle)
-            }
-            .hoverEffect(.lift)
-            .disabled(history.redoDisabled)
-        }
-        .padding(15)
-        .background(.regularMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 20))
-    }
-
     func progressView(_ title: String) -> some View {
         ProgressView {
             Text(title)
@@ -96,12 +60,5 @@ struct MemoView: View {
         .padding(20)
         .background(.regularMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 20))
-    }
-
-    func closeMemo() {
-        withPersistenceSync(\.viewContext) { context in
-            try context.saveIfNeeded()
-        }
-        dismiss()
     }
 }
