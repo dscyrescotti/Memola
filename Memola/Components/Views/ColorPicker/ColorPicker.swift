@@ -9,13 +9,12 @@ import SwiftUI
 import Foundation
 
 struct ColorPicker: View {
-    @ObservedObject var pen: Pen
-    @EnvironmentObject var tool: Tool
-
     @State var hue: Double = 1
     @State var saturation: Double = 0
     @State var brightness: Double = 1
     @State var alpha: Double = 1
+
+    @Binding var color: Color
 
     let size: CGFloat = 20
 
@@ -35,7 +34,7 @@ struct ColorPicker: View {
                 .ignoresSafeArea(.all)
         }
         .onAppear {
-            let hsba = pen.color.hsba
+            let hsba = color.hsba
             hue = hsba.hue
             saturation = hsba.saturation
             brightness = hsba.brightness
@@ -86,7 +85,7 @@ struct ColorPicker: View {
                     .onChanged { value in
                         saturation = min(1, max(value.location.x / proxy.size.width, 0))
                         brightness = 1 - min(1, max(value.location.y / proxy.size.height, 0))
-                        updateBaseColor()
+                        updateColor()
                     }
             )
         }
@@ -121,11 +120,11 @@ struct ColorPicker: View {
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
                         hue = min(1, max(value.location.x / proxy.size.width, 0))
-                        updateBaseColor()
+                        updateColor()
                     }
                     .onEnded { value in
                         hue = min(1, max(value.location.x / proxy.size.width, 0))
-                        updateBaseColor()
+                        updateColor()
                     }
             )
             .clipShape(Capsule())
@@ -174,11 +173,11 @@ struct ColorPicker: View {
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
                         alpha = min(1, max(value.location.x / proxy.size.width, 0))
-                        updateBaseColor()
+                        updateColor()
                     }
                     .onEnded { value in
                         alpha = min(1, max(value.location.x / proxy.size.width, 0))
-                        updateBaseColor()
+                        updateColor()
                     }
             )
             .clipShape(Capsule())
@@ -191,8 +190,7 @@ struct ColorPicker: View {
         .frame(height: size)
     }
 
-    func updateBaseColor() {
-        pen.color = Color(hue: hue, saturation: saturation, brightness: brightness).opacity(0.7 * alpha + 0.3)
-        tool.objectWillChange.send()
+    func updateColor() {
+        color = Color(hue: hue, saturation: saturation, brightness: brightness).opacity(0.7 * alpha + 0.3)
     }
 }

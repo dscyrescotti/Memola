@@ -172,7 +172,14 @@ struct PenDockView: View {
         }
         .hoverEffect(.lift)
         .popover(isPresented: $opensColorPicker) {
-            ColorPicker(pen: pen)
+            let color = Binding(
+                get: { pen.color },
+                set: {
+                    pen.color = $0
+                    tool.objectWillChange.send()
+                }
+            )
+            ColorPicker(color: color)
                 .presentationCompactAdaptation(.popover)
         }
     }
@@ -211,7 +218,9 @@ struct PenDockView: View {
     var newPenButton: some View {
         Button {
             let pen = PenObject.createObject(\.viewContext, penStyle: .marker)
-            pen.color = [Color.red, Color.blue, Color.green, Color.black, Color.orange].randomElement()!.components
+            if let color = (tool.selectedPen ?? tool.pens.last)?.rgba {
+                pen.color = color
+            }
             pen.isSelected = true
             pen.tool = tool.object
             pen.orderIndex = Int16(tool.pens.count)

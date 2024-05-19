@@ -191,6 +191,14 @@
 			path = ViewController;
 			sourceTree = "<group>";
 		};
+		EC1B783A2BF9C68C005A34E2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				ECFC51252BF8885000D0D051 /* ColorPicker */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		EC5050042BF65CBC00B4D86E /* Core */ = {
 			isa = PBXGroup;
 			children = (
@@ -227,6 +235,7 @@
 		EC50500A2BF6672000B4D86E /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				EC1B783A2BF9C68C005A34E2 /* Views */,
 				EC50500B2BF6673300B4D86E /* ViewModifiers */,
 			);
 			path = Components;
@@ -317,7 +326,6 @@
 		ECA7387B2BE5EF3500A4542E /* Memo */ = {
 			isa = PBXGroup;
 			children = (
-				ECFC51252BF8885000D0D051 /* ColorPicker */,
 				EC5050082BF65D0500B4D86E /* Memo */,
 				EC5050052BF65CCD00B4D86E /* PenDock */,
 			);
