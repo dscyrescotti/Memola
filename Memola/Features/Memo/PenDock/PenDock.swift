@@ -1,5 +1,5 @@
 //
-//  PenDockView.swift
+//  PenDock.swift
 //  Memola
 //
 //  Created by Dscyre Scotti on 5/4/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PenDockView: View {
+struct PenDock: View {
     @EnvironmentObject var tool: Tool
 
     let width: CGFloat = 90
@@ -19,33 +19,18 @@ struct PenDockView: View {
 
     var body: some View {
         VStack(alignment: .trailing) {
-            if let pen = tool.selectedPen {
-                VStack(spacing: 5) {
-                    penColorView(pen)
-                    penThicknessView(pen)
-                }
-                .padding(10)
-                .frame(width: width * factor - 18)
-                .background {
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(.regularMaterial)
-                }
-                .transition(.move(edge: .trailing).combined(with: .opacity))
-            } else {
-                Color.clear
-                    .frame(width: width * factor - 18, height: 50)
-            }
-            penScrollView
+            penPropertyTool
+            penItemList
         }
         .fixedSize()
     }
 
-    var penScrollView: some View {
+    var penItemList: some View {
         ScrollViewReader { proxy in
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0) {
                     ForEach(tool.pens) { pen in
-                        penView(pen)
+                        penItemRow(pen)
                             .id(pen.id)
                             .scrollTransition { content, phase in
                                 content
@@ -79,9 +64,9 @@ struct PenDockView: View {
         }
     }
 
-    func penView(_ pen: Pen) -> some View {
+    func penItemRow(_ pen: Pen) -> some View {
         ZStack {
-            penShadowView(pen)
+            penShadow(pen)
             if let tip = pen.style.icon.tip {
                 Image(tip)
                     .resizable()
@@ -139,7 +124,7 @@ struct PenDockView: View {
             }
             .controlGroupStyle(.menu)
         } preview: {
-            penPreviewView(pen)
+            penPreview(pen)
                 .drawingGroup()
                 .contentShape(.contextMenuPreview, .rect(cornerRadius: 10))
         }
@@ -147,14 +132,34 @@ struct PenDockView: View {
             tool.draggedPen = pen
             return NSItemProvider(contentsOf: URL(string: pen.id)) ?? NSItemProvider()
         } preview: {
-            penPreviewView(pen)
+            penPreview(pen)
                 .contentShape(.dragPreview, .rect(cornerRadius: 10))
         }
         .onDrop(of: [.item], delegate: PenDropDelegate(id: pen.id, tool: tool, action: { refreshScrollId = UUID() }))
         .offset(x: tool.selectedPen === pen ? 0 : 25)
     }
 
-    func penColorView(_ pen: Pen) -> some View {
+    @ViewBuilder
+    var penPropertyTool: some View {
+        if let pen = tool.selectedPen {
+            VStack(spacing: 5) {
+                penColorPicker(pen)
+                penThicknessPicker(pen)
+            }
+            .padding(10)
+            .frame(width: width * factor - 18)
+            .background {
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(.regularMaterial)
+            }
+            .transition(.move(edge: .trailing).combined(with: .opacity))
+        } else {
+            Color.clear
+                .frame(width: width * factor - 18, height: 50)
+        }
+    }
+
+    func penColorPicker(_ pen: Pen) -> some View {
         Button {
             opensColorPicker = true
         } label: {
@@ -199,7 +204,7 @@ struct PenDockView: View {
     }
 
     @ViewBuilder
-    func penThicknessView(_ pen: Pen) -> some View {
+    func penThicknessPicker(_ pen: Pen) -> some View {
         let minimum: CGFloat = pen.style.thickness.min
         let maximum: CGFloat = pen.style.thickness.max
         let start: CGFloat = 5
@@ -254,7 +259,7 @@ struct PenDockView: View {
         .hoverEffect(.lift)
     }
 
-    func penPreviewView(_ pen: Pen) -> some View {
+    func penPreview(_ pen: Pen) -> some View {
         ZStack {
             if let tip = pen.style.icon.tip {
                 Image(tip)
@@ -270,7 +275,7 @@ struct PenDockView: View {
         .padding(.leading, 10)
     }
 
-    func penShadowView(_ pen: Pen) -> some View {
+    func penShadow(_ pen: Pen) -> some View {
         ZStack {
             Group {
                 if let tip = pen.style.icon.tip {

@@ -75,7 +75,7 @@
 		ECA738F42BE612A000A4542E /* Array++.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738F32BE612A000A4542E /* Array++.swift */; };
 		ECA738F62BE612B700A4542E /* MTLDevice++.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738F52BE612B700A4542E /* MTLDevice++.swift */; };
 		ECA738FC2BE61C5200A4542E /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738FB2BE61C5200A4542E /* Persistence.swift */; };
-		ECA739082BE623F300A4542E /* PenDockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA739072BE623F300A4542E /* PenDockView.swift */; };
+		ECA739082BE623F300A4542E /* PenDock.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA739072BE623F300A4542E /* PenDock.swift */; };
 		ECEC01A82BEE11BA006DA24C /* QuadShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC01A72BEE11BA006DA24C /* QuadShape.swift */; };
 		ECFA15202BEF21EF00455818 /* MemoObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA151F2BEF21EF00455818 /* MemoObject.swift */; };
 		ECFA15222BEF21F500455818 /* CanvasObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA15212BEF21F500455818 /* CanvasObject.swift */; };
@@ -156,7 +156,7 @@
 		ECA738F32BE612A000A4542E /* Array++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array++.swift"; sourceTree = "<group>"; };
 		ECA738F52BE612B700A4542E /* MTLDevice++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MTLDevice++.swift"; sourceTree = "<group>"; };
 		ECA738FB2BE61C5200A4542E /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
-		ECA739072BE623F300A4542E /* PenDockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenDockView.swift; sourceTree = "<group>"; };
+		ECA739072BE623F300A4542E /* PenDock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenDock.swift; sourceTree = "<group>"; };
 		ECEC01A72BEE11BA006DA24C /* QuadShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuadShape.swift; sourceTree = "<group>"; };
 		ECFA151F2BEF21EF00455818 /* MemoObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoObject.swift; sourceTree = "<group>"; };
 		ECFA15212BEF21F500455818 /* CanvasObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasObject.swift; sourceTree = "<group>"; };
@@ -220,7 +220,7 @@
 		EC5050052BF65CCD00B4D86E /* PenDock */ = {
 			isa = PBXGroup;
 			children = (
-				ECA739072BE623F300A4542E /* PenDockView.swift */,
+				ECA739072BE623F300A4542E /* PenDock.swift */,
 				EC5050062BF65CED00B4D86E /* PenDropDelegate.swift */,
 			);
 			path = PenDock;
@@ -731,7 +731,7 @@
 				ECA738862BE5FF2500A4542E /* Canvas.swift in Sources */,
 				ECA738882BE5FF4400A4542E /* Renderer.swift in Sources */,
 				ECA738D42BE60F9100A4542E /* StrokeGenerator.swift in Sources */,
-				ECA739082BE623F300A4542E /* PenDockView.swift in Sources */,
+				ECA739082BE623F300A4542E /* PenDock.swift in Sources */,
 				ECA738CB2BE60F1900A4542E /* ViewPortContext.swift in Sources */,
 				ECA738EE2BE6125D00A4542E /* simd_float4x4++.swift in Sources */,
 				ECA7388C2BE6009600A4542E /* Textures.swift in Sources */,

@@ -28,7 +28,7 @@ struct MemoView: View {
         CanvasView()
             .ignoresSafeArea()
             .overlay(alignment: .trailing) {
-                PenDockView()
+                PenDock()
                     .frame(maxHeight: .infinity)
                     .padding()
             }
@@ -40,9 +40,9 @@ struct MemoView: View {
             .overlay {
                 switch canvas.state {
                 case .loading:
-                    progressView("Loading memo...")
+                    loadingIndicator("Loading memo...")
                 case .closing:
-                    progressView("Saving memo...")
+                    loadingIndicator("Saving memo...")
                 default:
                     EmptyView()
                 }
@@ -52,7 +52,7 @@ struct MemoView: View {
             .environmentObject(history)
     }
 
-    func progressView(_ title: String) -> some View {
+    func loadingIndicator(_ title: String) -> some View {
         ProgressView {
             Text(title)
         }
