@@ -7,12 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EC0D14212BF79C73009BFE5F /* ToolObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14202BF79C73009BFE5F /* ToolObject.swift */; };
+		EC0D14242BF79C98009BFE5F /* MemolaModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14222BF79C98009BFE5F /* MemolaModel.xcdatamodeld */; };
+		EC0D14262BF7A8C9009BFE5F /* PenObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14252BF7A8C9009BFE5F /* PenObject.swift */; };
+		EC0D14282BF7BF20009BFE5F /* ContextMenuViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14272BF7BF20009BFE5F /* ContextMenuViewModifier.swift */; };
 		EC3565522BEFC65F00A4E0BF /* NSManagedObjectContext++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565512BEFC65F00A4E0BF /* NSManagedObjectContext++.swift */; };
 		EC3565542BEFC6AD00A4E0BF /* View++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565532BEFC6AD00A4E0BF /* View++.swift */; };
 		EC3565562BEFC7B300A4E0BF /* NSManagedObject++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */; };
 		EC35655A2BF060D900A4E0BF /* Quad.metal in Sources */ = {isa = PBXBuildFile; fileRef = EC3565592BF060D900A4E0BF /* Quad.metal */; };
 		EC35655C2BF0712A00A4E0BF /* Float++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC35655B2BF0712A00A4E0BF /* Float++.swift */; };
 		EC4538892BEBCAE000A86FEC /* Quad.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4538882BEBCAE000A86FEC /* Quad.swift */; };
+		EC5050072BF65CED00B4D86E /* PenDropDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5050062BF65CED00B4D86E /* PenDropDelegate.swift */; };
+		EC50500D2BF6674400B4D86E /* OnDragViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC50500C2BF6674400B4D86E /* OnDragViewModifier.swift */; };
 		EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */; };
 		EC7F6BF02BE5E6E400A34A7B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */; };
 		EC7F6BF32BE5E6E400A34A7B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BF22BE5E6E400A34A7B /* Preview Assets.xcassets */; };
@@ -68,23 +74,30 @@
 		ECA738F42BE612A000A4542E /* Array++.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738F32BE612A000A4542E /* Array++.swift */; };
 		ECA738F62BE612B700A4542E /* MTLDevice++.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738F52BE612B700A4542E /* MTLDevice++.swift */; };
 		ECA738FC2BE61C5200A4542E /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738FB2BE61C5200A4542E /* Persistence.swift */; };
-		ECA739012BE61D9C00A4542E /* MemolaModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ECA738FF2BE61D9C00A4542E /* MemolaModel.xcdatamodeld */; };
-		ECA739082BE623F300A4542E /* PenToolView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA739072BE623F300A4542E /* PenToolView.swift */; };
+		ECA739082BE623F300A4542E /* PenDockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA739072BE623F300A4542E /* PenDockView.swift */; };
 		ECEC01A82BEE11BA006DA24C /* QuadShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC01A72BEE11BA006DA24C /* QuadShape.swift */; };
 		ECFA15202BEF21EF00455818 /* MemoObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA151F2BEF21EF00455818 /* MemoObject.swift */; };
 		ECFA15222BEF21F500455818 /* CanvasObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA15212BEF21F500455818 /* CanvasObject.swift */; };
 		ECFA15242BEF223300455818 /* GraphicContextObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA15232BEF223300455818 /* GraphicContextObject.swift */; };
 		ECFA15262BEF224900455818 /* StrokeObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA15252BEF224900455818 /* StrokeObject.swift */; };
 		ECFA15282BEF225000455818 /* QuadObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA15272BEF225000455818 /* QuadObject.swift */; };
+		ECFC51272BF8885700D0D051 /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFC51262BF8885700D0D051 /* ColorPicker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EC0D14202BF79C73009BFE5F /* ToolObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolObject.swift; sourceTree = "<group>"; };
+		EC0D14232BF79C98009BFE5F /* MemolaModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MemolaModel.xcdatamodel; sourceTree = "<group>"; };
+		EC0D14252BF7A8C9009BFE5F /* PenObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenObject.swift; sourceTree = "<group>"; };
+		EC0D14272BF7BF20009BFE5F /* ContextMenuViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenuViewModifier.swift; sourceTree = "<group>"; };
 		EC3565512BEFC65F00A4E0BF /* NSManagedObjectContext++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext++.swift"; sourceTree = "<group>"; };
 		EC3565532BEFC6AD00A4E0BF /* View++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View++.swift"; sourceTree = "<group>"; };
 		EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObject++.swift"; sourceTree = "<group>"; };
 		EC3565592BF060D900A4E0BF /* Quad.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Quad.metal; sourceTree = "<group>"; };
 		EC35655B2BF0712A00A4E0BF /* Float++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float++.swift"; sourceTree = "<group>"; };
 		EC4538882BEBCAE000A86FEC /* Quad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quad.swift; sourceTree = "<group>"; };
+		EC5050062BF65CED00B4D86E /* PenDropDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenDropDelegate.swift; sourceTree = "<group>"; };
+		EC50500C2BF6674400B4D86E /* OnDragViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDragViewModifier.swift; sourceTree = "<group>"; };
+		EC50500E2BF670EA00B4D86E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EC7F6BE82BE5E6E300A34A7B /* Memola.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Memola.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemolaApp.swift; sourceTree = "<group>"; };
 		EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -141,14 +154,14 @@
 		ECA738F32BE612A000A4542E /* Array++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array++.swift"; sourceTree = "<group>"; };
 		ECA738F52BE612B700A4542E /* MTLDevice++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MTLDevice++.swift"; sourceTree = "<group>"; };
 		ECA738FB2BE61C5200A4542E /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
-		ECA739002BE61D9C00A4542E /* MemolaModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MemolaModel.xcdatamodel; sourceTree = "<group>"; };
-		ECA739072BE623F300A4542E /* PenToolView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenToolView.swift; sourceTree = "<group>"; };
+		ECA739072BE623F300A4542E /* PenDockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenDockView.swift; sourceTree = "<group>"; };
 		ECEC01A72BEE11BA006DA24C /* QuadShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuadShape.swift; sourceTree = "<group>"; };
 		ECFA151F2BEF21EF00455818 /* MemoObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoObject.swift; sourceTree = "<group>"; };
 		ECFA15212BEF21F500455818 /* CanvasObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasObject.swift; sourceTree = "<group>"; };
 		ECFA15232BEF223300455818 /* GraphicContextObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphicContextObject.swift; sourceTree = "<group>"; };
 		ECFA15252BEF224900455818 /* StrokeObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeObject.swift; sourceTree = "<group>"; };
 		ECFA15272BEF225000455818 /* QuadObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuadObject.swift; sourceTree = "<group>"; };
+		ECFC51262BF8885700D0D051 /* ColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -178,6 +191,73 @@
 			path = ViewController;
 			sourceTree = "<group>";
 		};
+		EC1B783A2BF9C68C005A34E2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				ECFC51252BF8885000D0D051 /* ColorPicker */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		EC5050042BF65CBC00B4D86E /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				ECA738BB2BE60E0300A4542E /* Tool.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		EC5050052BF65CCD00B4D86E /* PenDock */ = {
+			isa = PBXGroup;
+			children = (
+				ECA739072BE623F300A4542E /* PenDockView.swift */,
+				EC5050062BF65CED00B4D86E /* PenDropDelegate.swift */,
+			);
+			path = PenDock;
+			sourceTree = "<group>";
+		};
+		EC5050082BF65D0500B4D86E /* Memo */ = {
+			isa = PBXGroup;
+			children = (
+				ECA7387C2BE5EF4B00A4542E /* MemoView.swift */,
+			);
+			path = Memo;
+			sourceTree = "<group>";
+		};
+		EC5050092BF65D5700B4D86E /* Canvas */ = {
+			isa = PBXGroup;
+			children = (
+				ECA738B22BE60D9E00A4542E /* CanvasView.swift */,
+			);
+			path = Canvas;
+			sourceTree = "<group>";
+		};
+		EC50500A2BF6672000B4D86E /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				EC1B783A2BF9C68C005A34E2 /* Views */,
+				EC50500B2BF6673300B4D86E /* ViewModifiers */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		EC50500B2BF6673300B4D86E /* ViewModifiers */ = {
+			isa = PBXGroup;
+			children = (
+				EC50500C2BF6674400B4D86E /* OnDragViewModifier.swift */,
+				EC0D14272BF7BF20009BFE5F /* ContextMenuViewModifier.swift */,
+			);
+			path = ViewModifiers;
+			sourceTree = "<group>";
+		};
+		EC5050102BF670EE00B4D86E /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				EC50500E2BF670EA00B4D86E /* Info.plist */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
 		EC7F6BDF2BE5E6E300A34A7B = {
 			isa = PBXGroup;
 			children = (
@@ -199,6 +279,8 @@
 			children = (
 				ECA738762BE5EE4E00A4542E /* App */,
 				ECA7387E2BE5FE4200A4542E /* Canvas */,
+				EC5050102BF670EE00B4D86E /* Config */,
+				EC50500A2BF6672000B4D86E /* Components */,
 				ECA738A12BE601F700A4542E /* Extensions */,
 				ECA738772BE5EEE800A4542E /* Features */,
 				ECA738FA2BE61B1700A4542E /* Persistence */,
@@ -244,8 +326,8 @@
 		ECA7387B2BE5EF3500A4542E /* Memo */ = {
 			isa = PBXGroup;
 			children = (
-				ECA7387C2BE5EF4B00A4542E /* MemoView.swift */,
-				ECA739072BE623F300A4542E /* PenToolView.swift */,
+				EC5050082BF65D0500B4D86E /* Memo */,
+				EC5050052BF65CCD00B4D86E /* PenDock */,
 			);
 			path = Memo;
 			sourceTree = "<group>";
@@ -371,8 +453,8 @@
 		ECA738AB2BE60CB500A4542E /* View */ = {
 			isa = PBXGroup;
 			children = (
+				EC5050092BF65D5700B4D86E /* Canvas */,
 				ECA738AE2BE60CEC00A4542E /* Bridge */,
-				ECA738B22BE60D9E00A4542E /* CanvasView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -389,8 +471,8 @@
 		ECA738B12BE60D8800A4542E /* Tool */ = {
 			isa = PBXGroup;
 			children = (
+				EC5050042BF65CBC00B4D86E /* Core */,
 				ECA738BD2BE60E2800A4542E /* Pen */,
-				ECA738BB2BE60E0300A4542E /* Tool.swift */,
 			);
 			path = Tool;
 			sourceTree = "<group>";
@@ -492,7 +574,7 @@
 		ECA738FE2BE61D5700A4542E /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				ECA738FF2BE61D9C00A4542E /* MemolaModel.xcdatamodeld */,
+				EC0D14222BF79C98009BFE5F /* MemolaModel.xcdatamodeld */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -522,8 +604,18 @@
 				ECFA15232BEF223300455818 /* GraphicContextObject.swift */,
 				ECFA15252BEF224900455818 /* StrokeObject.swift */,
 				ECFA15272BEF225000455818 /* QuadObject.swift */,
+				EC0D14202BF79C73009BFE5F /* ToolObject.swift */,
+				EC0D14252BF7A8C9009BFE5F /* PenObject.swift */,
 			);
 			path = Objects;
+			sourceTree = "<group>";
+		};
+		ECFC51252BF8885000D0D051 /* ColorPicker */ = {
+			isa = PBXGroup;
+			children = (
+				ECFC51262BF8885700D0D051 /* ColorPicker.swift */,
+			);
+			path = ColorPicker;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -627,13 +719,15 @@
 				ECA738862BE5FF2500A4542E /* Canvas.swift in Sources */,
 				ECA738882BE5FF4400A4542E /* Renderer.swift in Sources */,
 				ECA738D42BE60F9100A4542E /* StrokeGenerator.swift in Sources */,
-				ECA739082BE623F300A4542E /* PenToolView.swift in Sources */,
+				ECA739082BE623F300A4542E /* PenDockView.swift in Sources */,
 				ECA738CB2BE60F1900A4542E /* ViewPortContext.swift in Sources */,
 				ECA738EE2BE6125D00A4542E /* simd_float4x4++.swift in Sources */,
 				ECA7388C2BE6009600A4542E /* Textures.swift in Sources */,
+				ECFC51272BF8885700D0D051 /* ColorPicker.swift in Sources */,
 				ECA738B82BE60DDC00A4542E /* HistoryEvent.swift in Sources */,
+				EC0D14262BF7A8C9009BFE5F /* PenObject.swift in Sources */,
 				ECA738952BE6012D00A4542E /* ViewPort.metal in Sources */,
-				ECA739012BE61D9C00A4542E /* MemolaModel.xcdatamodeld in Sources */,
+				EC0D14242BF79C98009BFE5F /* MemolaModel.xcdatamodeld in Sources */,
 				ECA738F02BE6127700A4542E /* CGSize++.swift in Sources */,
 				ECFA15242BEF223300455818 /* GraphicContextObject.swift in Sources */,
 				EC3565562BEFC7B300A4E0BF /* NSManagedObject++.swift in Sources */,
@@ -646,6 +740,8 @@
 				ECA7388F2BE600DA00A4542E /* Grid.metal in Sources */,
 				ECA738C92BE60EF700A4542E /* GraphicContext.swift in Sources */,
 				ECA738F62BE612B700A4542E /* MTLDevice++.swift in Sources */,
+				EC0D14212BF79C73009BFE5F /* ToolObject.swift in Sources */,
+				EC50500D2BF6674400B4D86E /* OnDragViewModifier.swift in Sources */,
 				ECA7389E2BE601CB00A4542E /* QuadVertex.swift in Sources */,
 				ECA738B32BE60D9E00A4542E /* CanvasView.swift in Sources */,
 				ECA738C42BE60E8800A4542E /* MarkerPenStyle.swift in Sources */,
@@ -655,11 +751,13 @@
 				ECA738B62BE60DCD00A4542E /* History.swift in Sources */,
 				ECA738D22BE60F7B00A4542E /* Stroke.swift in Sources */,
 				ECA738F22BE6128F00A4542E /* Collection++.swift in Sources */,
+				EC5050072BF65CED00B4D86E /* PenDropDelegate.swift in Sources */,
 				ECA738A32BE6020A00A4542E /* CGFloat++.swift in Sources */,
 				ECA738C12BE60E5300A4542E /* PenStyle.swift in Sources */,
 				ECA738DE2BE610A000A4542E /* ViewPortRenderPass.swift in Sources */,
 				EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */,
 				ECA738A02BE601E400A4542E /* ViewPortVertex.swift in Sources */,
+				EC0D14282BF7BF20009BFE5F /* ContextMenuViewModifier.swift in Sources */,
 				ECA738BC2BE60E0300A4542E /* Tool.swift in Sources */,
 				ECA738972BE6014200A4542E /* Graphic.metal in Sources */,
 				ECA7388A2BE6006A00A4542E /* PipelineStates.swift in Sources */,
@@ -798,7 +896,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Memola/Preview Content\"";
 				DEVELOPMENT_TEAM = 9TYSSFKV5U;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Memola/Config/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -830,7 +929,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Memola/Preview Content\"";
 				DEVELOPMENT_TEAM = 9TYSSFKV5U;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Memola/Config/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -876,13 +976,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		ECA738FF2BE61D9C00A4542E /* MemolaModel.xcdatamodeld */ = {
+		EC0D14222BF79C98009BFE5F /* MemolaModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				ECA739002BE61D9C00A4542E /* MemolaModel.xcdatamodel */,
+				EC0D14232BF79C98009BFE5F /* MemolaModel.xcdatamodel */,
 			);
-			currentVersion = ECA739002BE61D9C00A4542E /* MemolaModel.xcdatamodel */;
-			path = MemolaModel.xcdatamodeld;
+			currentVersion = EC0D14232BF79C98009BFE5F /* MemolaModel.xcdatamodel */;
+			name = MemolaModel.xcdatamodeld;
+			path = /Users/dscyrescotti/Documents/Projects/Memola/Memola/Resources/Models/MemolaModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

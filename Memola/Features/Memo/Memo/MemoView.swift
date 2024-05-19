@@ -10,9 +10,8 @@ import CoreData
 
 struct MemoView: View {
     @Environment(\.dismiss) var dismiss
-    @Environment(\.managedObjectContext) var managedObjectContext
 
-    @StateObject var tool = Tool()
+    @StateObject var tool: Tool
     @StateObject var canvas: Canvas
     @StateObject var history = History()
 
@@ -20,18 +19,20 @@ struct MemoView: View {
 
     init(memo: MemoObject) {
         self.memo = memo
+        self._tool = StateObject(wrappedValue: Tool(object: memo.tool))
         self._canvas = StateObject(wrappedValue: Canvas(size: memo.canvas.size, canvasID: memo.canvas.objectID))
     }
 
     var body: some View {
         CanvasView()
             .ignoresSafeArea()
-            .overlay(alignment: .bottomTrailing) {
-                PenToolView()
-                    .padding()
-            }
             .overlay(alignment: .topTrailing) {
                 historyTool
+                    .padding()
+            }
+            .overlay(alignment: .trailing) {
+                PenDockView()
+                    .frame(maxHeight: .infinity)
                     .padding()
             }
             .overlay(alignment: .topLeading) {
@@ -39,6 +40,7 @@ struct MemoView: View {
                     closeMemo()
                 } label: {
                     Image(systemName: "xmark")
+                        .contentShape(.circle)
                         .padding(15)
                         .background(.regularMaterial)
                         .clipShape(RoundedRectangle(cornerRadius: 20))
@@ -68,6 +70,7 @@ struct MemoView: View {
                 history.historyPublisher.send(.undo)
             } label: {
                 Image(systemName: "arrow.uturn.backward.circle")
+                    .contentShape(.circle)
             }
             .hoverEffect(.lift)
             .disabled(history.undoDisabled)
@@ -75,6 +78,7 @@ struct MemoView: View {
                 history.historyPublisher.send(.redo)
             } label: {
                 Image(systemName: "arrow.uturn.forward.circle")
+                    .contentShape(.circle)
             }
             .hoverEffect(.lift)
             .disabled(history.redoDisabled)
@@ -95,13 +99,8 @@ struct MemoView: View {
     }
 
     func closeMemo() {
-        history.resetRedo()
-        if managedObjectContext.hasChanges {
-            do {
-                try managedObjectContext.save()
-            } catch {
-                NSLog("[Memola] - \(error.localizedDescription)")
-            }
+        withPersistenceSync(\.viewContext) { context in
+            try context.saveIfNeeded()
         }
         dismiss()
     }

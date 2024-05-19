@@ -15,6 +15,15 @@
         <attribute name="title" attributeType="String"/>
         <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="canvas" maxCount="1" deletionRule="Cascade" destinationEntity="CanvasObject" inverseName="memo" inverseEntity="CanvasObject"/>
+        <relationship name="tool" maxCount="1" deletionRule="Cascade" destinationEntity="ToolObject" inverseName="memo" inverseEntity="ToolObject"/>
+    </entity>
+    <entity name="PenObject" representedClassName="PenObject" syncable="YES">
+        <attribute name="color" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
+        <attribute name="isSelected" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="orderIndex" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="style" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="thickness" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="tool" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ToolObject" inverseName="pens" inverseEntity="ToolObject"/>
     </entity>
     <entity name="QuadObject" representedClassName="QuadObject" syncable="YES">
         <attribute name="color" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
@@ -33,5 +42,9 @@
         <attribute name="thickness" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="graphicContext" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GraphicContextObject" inverseName="strokes" inverseEntity="GraphicContextObject"/>
         <relationship name="quads" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="QuadObject" inverseName="stroke" inverseEntity="QuadObject"/>
+    </entity>
+    <entity name="ToolObject" representedClassName="ToolObject" syncable="YES">
+        <relationship name="memo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MemoObject" inverseName="tool" inverseEntity="MemoObject"/>
+        <relationship name="pens" toMany="YES" deletionRule="Cascade" destinationEntity="PenObject" inverseName="tool" inverseEntity="PenObject"/>
     </entity>
 </model>

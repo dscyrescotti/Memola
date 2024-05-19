@@ -11,7 +11,8 @@ import Foundation
 protocol PenStyle {
     var icon: (base: String, tip: String?) { get }
     var textureName: String { get }
-    var thinkness: (min: CGFloat, max: CGFloat) { get }
+    var thickness: (min: CGFloat, max: CGFloat) { get }
+    var thicknessSteps: [CGFloat] { get }
     var color: [CGFloat] { get }
     var stepRate: CGFloat { get }
     var generator: any StrokeGenerator { get }
@@ -21,5 +22,16 @@ extension PenStyle {
     @discardableResult
     func loadTexture(on device: MTLDevice) -> MTLTexture? {
         Textures.createPenTexture(with: textureName, on: device)
+    }
+
+    var strokeStyle: Stroke.Style {
+        switch self {
+        case is MarkerPenStyle:
+            return .marker
+        case is EraserPenStyle:
+            return .eraser
+        default:
+            return .marker
+        }
     }
 }

@@ -117,7 +117,7 @@ extension GraphicContext {
     func beginStroke(at point: CGPoint, pen: Pen) -> Stroke {
         let stroke = Stroke(
             bounds: [point.x - pen.thickness, point.y - pen.thickness, point.x + pen.thickness, point.y + pen.thickness],
-            color: pen.color,
+            color: pen.rgba,
             style: pen.strokeStyle.rawValue,
             createdAt: .now,
             thickness: pen.thickness
