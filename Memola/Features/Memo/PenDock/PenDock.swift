@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PenDock: View {
     @EnvironmentObject var tool: Tool
+    @EnvironmentObject var canvas: Canvas
 
     let width: CGFloat = 90
     let height: CGFloat = 30
@@ -18,13 +19,16 @@ struct PenDock: View {
     @State var opensColorPicker: Bool = false
 
     var body: some View {
-        VStack(alignment: .trailing) {
-            penPropertyTool
-            penItemList
+        if !canvas.locksCanvas {
+            VStack(alignment: .trailing) {
+                penPropertyTool
+                penItemList
+            }
+            .fixedSize()
+            .frame(maxHeight: .infinity)
+            .padding(10)
+            .transition(.move(edge: .trailing).combined(with: .blurReplace))
         }
-        .fixedSize()
-        .frame(maxHeight: .infinity)
-        .padding(10)
     }
 
     var penItemList: some View {
@@ -156,7 +160,7 @@ struct PenDock: View {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(.regularMaterial)
             }
-            .transition(.move(edge: .trailing).combined(with: .opacity))
+            .transition(.move(edge: .trailing).combined(with: .blurReplace))
         } else {
             Color.clear
                 .frame(width: width * factor - 18, height: 50)

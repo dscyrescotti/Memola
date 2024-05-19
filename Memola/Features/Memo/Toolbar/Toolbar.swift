@@ -28,10 +28,15 @@ struct Toolbar: View {
     
     var body: some View {
         HStack(spacing: 5) {
-            closeButton
-            titleField
+            if !canvas.locksCanvas {
+                closeButton
+                titleField
+            }
             Spacer()
-            historyControl
+            if !canvas.locksCanvas {
+                historyControl
+            }
+            lockButton
         }
         .font(.subheadline)
         .padding(10)
@@ -49,6 +54,7 @@ struct Toolbar: View {
         }
         .hoverEffect(.lift)
         .disabled(textFieldState)
+        .transition(.move(edge: .top).combined(with: .blurReplace))
     }
 
     var titleField: some View {
@@ -68,6 +74,7 @@ struct Toolbar: View {
                     }
                 }
             }
+            .transition(.move(edge: .top).combined(with: .blurReplace))
     }
 
     var historyControl: some View {
@@ -94,6 +101,30 @@ struct Toolbar: View {
         .background(.regularMaterial)
         .clipShape(.rect(cornerRadius: 8))
         .disabled(textFieldState)
+        .transition(.move(edge: .top).combined(with: .blurReplace))
+    }
+
+    var lockButton: some View {
+        Button {
+            withAnimation {
+                canvas.locksCanvas.toggle()
+            }
+        } label: {
+            ZStack {
+                if canvas.locksCanvas {
+                    Image(systemName: "lock.open")
+                        .transition(.move(edge: .trailing).combined(with: .blurReplace))
+                } else {
+                    Image(systemName: "lock")
+                        .transition(.move(edge: .leading).combined(with: .blurReplace))
+                }
+            }
+            .contentShape(.circle)
+            .frame(width: size, height: size)
+            .background(.regularMaterial)
+            .clipShape(.rect(cornerRadius: 8))
+        }
+        .hoverEffect(.lift)
     }
 
     func closeMemo() {

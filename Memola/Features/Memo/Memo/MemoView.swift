@@ -61,31 +61,34 @@ struct MemoView: View {
         let lowerBound: CGFloat = 10
         let zoomScale: CGFloat = (((canvas.zoomScale - canvas.minimumZoomScale) * (upperBound - lowerBound) / (canvas.maximumZoomScale - canvas.minimumZoomScale)) + lowerBound).rounded()
         let zoomScales: [Int] = [400, 200, 100, 75, 50, 25, 10]
-        Menu {
-            ForEach(zoomScales, id: \.self) { scale in
-                Button {
-                    let zoomScale = ((CGFloat(scale) - lowerBound) * (canvas.maximumZoomScale - canvas.minimumZoomScale) / (upperBound - lowerBound)) + canvas.minimumZoomScale
-                    canvas.zoomPublisher.send(zoomScale)
-                } label: {
-                    Label {
-                        Text(scale, format: .percent)
-                    } icon: {
-                        if CGFloat(scale) == zoomScale {
-                            Image(systemName: "checkmark")
+        if !canvas.locksCanvas {
+            Menu {
+                ForEach(zoomScales, id: \.self) { scale in
+                    Button {
+                        let zoomScale = ((CGFloat(scale) - lowerBound) * (canvas.maximumZoomScale - canvas.minimumZoomScale) / (upperBound - lowerBound)) + canvas.minimumZoomScale
+                        canvas.zoomPublisher.send(zoomScale)
+                    } label: {
+                        Label {
+                            Text(scale, format: .percent)
+                        } icon: {
+                            if CGFloat(scale) == zoomScale {
+                                Image(systemName: "checkmark")
+                            }
                         }
+                        .font(.headline)
                     }
-                    .font(.headline)
                 }
+            } label: {
+                Text(zoomScale / 100, format: .percent)
+                    .frame(width: 45)
+                    .font(.subheadline)
+                    .padding(.horizontal, size / 2.5)
+                    .frame(height: size)
+                    .background(.regularMaterial)
+                    .clipShape(.rect(cornerRadius: 8))
+                    .padding(10)
             }
-        } label: {
-            Text(zoomScale / 100, format: .percent)
-                .frame(width: 45)
-                .font(.subheadline)
-                .padding(.horizontal, size / 2.5)
-                .frame(height: size)
-                .background(.regularMaterial)
-                .clipShape(.rect(cornerRadius: 8))
-                .padding(10)
+            .transition(.move(edge: .bottom).combined(with: .blurReplace))
         }
     }
 
