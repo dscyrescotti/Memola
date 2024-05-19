@@ -35,6 +35,7 @@ struct ColorPicker: View {
                     }
                     .frame(width: size * 2 + 10)
                     .cornerRadius(5)
+                    .drawingGroup()
                     .overlay {
                         RoundedRectangle(cornerRadius: 5)
                             .stroke(Color.gray, lineWidth: 0.2)

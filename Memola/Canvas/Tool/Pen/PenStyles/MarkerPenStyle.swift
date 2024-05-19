@@ -12,7 +12,9 @@ struct MarkerPenStyle: PenStyle {
 
     var textureName: String = "point-texture"
 
-    var thinkness: (min: CGFloat, max: CGFloat) = (0.5, 120)
+    var thickness: (min: CGFloat, max: CGFloat) = (0.5, 125)
+
+    var thicknessSteps: [CGFloat] = [0.5, 1, 2, 5, 10, 20, 50, 75, 100, 120]
 
     var color: [CGFloat] = [1, 0.38, 0.38, 1]
 

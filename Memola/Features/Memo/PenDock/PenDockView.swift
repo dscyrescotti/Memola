@@ -17,12 +17,11 @@ struct PenDockView: View {
     var body: some View {
         VStack(alignment: .trailing) {
             if let pen = tool.selectedPen {
-                VStack(spacing: 10) {
-                    penColorButton(pen)
-                    Capsule()
-                        .frame(height: 20)
+                VStack(spacing: 15) {
+                    penColorView(pen)
+                    penThicknessView(pen)
                 }
-                .padding()
+                .padding(10)
                 .frame(width: width * factor - 18)
                 .background {
                     RoundedRectangle(cornerRadius: 20)
@@ -137,7 +136,7 @@ struct PenDockView: View {
         .offset(x: tool.selectedPen === pen ? 0 : 25)
     }
 
-    func penColorButton(_ pen: Pen) -> some View {
+    func penColorView(_ pen: Pen) -> some View {
         Button {
             tool.opensColorPicker = true
         } label: {
@@ -154,7 +153,7 @@ struct PenDockView: View {
                 }
                 .background(.white)
                 .clipShape(Capsule())
-                .frame(height: 20)
+                .frame(height: 25)
                 .overlay {
                     Capsule()
                         .stroke(Color.gray, lineWidth: 0.4)
@@ -167,6 +166,37 @@ struct PenDockView: View {
             ColorPicker(pen: pen)
                 .presentationCompactAdaptation(.popover)
         }
+    }
+
+    @ViewBuilder
+    func penThicknessView(_ pen: Pen) -> some View {
+        let minimum: CGFloat = pen.style.thickness.min
+        let maximum: CGFloat = pen.style.thickness.max
+        let start: CGFloat = 5
+        let end: CGFloat = 15
+        let selection = Binding(
+            get: { pen.thickness },
+            set: { 
+                pen.thickness = $0
+                tool.objectWillChange.send()
+            }
+        )
+        Picker("", selection: selection) {
+            ForEach(pen.style.thicknessSteps, id: \.self) { step in
+                let size = ((step - minimum) * (end - start) / (maximum - minimum)) + start - (1 / step)
+                if pen.thickness == step {
+                    Circle()
+                        .fill(.black)
+                        .frame(width: size, height: size)
+                } else {
+                    Circle()
+                        .stroke(Color.black, lineWidth: 1)
+                        .frame(width: size, height: size)
+                }
+            }
+        }
+        .pickerStyle(.wheel)
+        .frame(width: width * factor - 18, height: 40)
     }
 
     var newPenButton: some View {

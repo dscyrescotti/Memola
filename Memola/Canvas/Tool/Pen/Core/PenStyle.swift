@@ -11,7 +11,8 @@ import Foundation
 protocol PenStyle {
     var icon: (base: String, tip: String?) { get }
     var textureName: String { get }
-    var thinkness: (min: CGFloat, max: CGFloat) { get }
+    var thickness: (min: CGFloat, max: CGFloat) { get }
+    var thicknessSteps: [CGFloat] { get }
     var color: [CGFloat] { get }
     var stepRate: CGFloat { get }
     var generator: any StrokeGenerator { get }

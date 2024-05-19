@@ -24,7 +24,7 @@ extension PenObject {
         object.color = penStyle.color
         object.style = penStyle.strokeStyle.rawValue
         object.isSelected = false
-        object.thickness = penStyle.thinkness.min
+        object.thickness = penStyle.thickness.min
         return object
     }
 }
