@@ -645,6 +645,8 @@
 			dependencies = (
 			);
 			name = Memola;
+			packageProductDependencies = (
+			);
 			productName = Memola;
 			productReference = EC7F6BE82BE5E6E300A34A7B /* Memola.app */;
 			productType = "com.apple.product-type.application";
@@ -673,6 +675,8 @@
 				Base,
 			);
 			mainGroup = EC7F6BDF2BE5E6E300A34A7B;
+			packageReferences = (
+			);
 			productRefGroup = EC7F6BE92BE5E6E300A34A7B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";

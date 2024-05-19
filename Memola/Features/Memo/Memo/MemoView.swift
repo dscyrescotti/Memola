@@ -29,8 +29,6 @@ struct MemoView: View {
             .ignoresSafeArea()
             .overlay(alignment: .trailing) {
                 PenDock()
-                    .frame(maxHeight: .infinity)
-                    .padding()
             }
             .disabled(textFieldState)
             .overlay(alignment: .top) {

@@ -12,7 +12,7 @@ struct PenDock: View {
 
     let width: CGFloat = 90
     let height: CGFloat = 30
-    let factor: CGFloat = 0.95
+    let factor: CGFloat = 0.9
 
     @State var refreshScrollId: UUID = UUID()
     @State var opensColorPicker: Bool = false
@@ -23,6 +23,8 @@ struct PenDock: View {
             penItemList
         }
         .fixedSize()
+        .frame(maxHeight: .infinity)
+        .padding(10)
     }
 
     var penItemList: some View {
@@ -53,11 +55,11 @@ struct PenDock: View {
         .frame(maxHeight:( (height * factor + 10) * 6) + 20)
         .fixedSize()
         .background(alignment: .trailing) {
-            RoundedRectangle(cornerRadius: 20)
+            RoundedRectangle(cornerRadius: 8)
                 .fill(.regularMaterial)
                 .frame(width: width * factor - 18)
         }
-        .clipShape(.rect(cornerRadii: .init(bottomTrailing: 20, topTrailing: 20)))
+        .clipShape(.rect(cornerRadii: .init(bottomTrailing: 8, topTrailing: 8)))
         .overlay(alignment: .bottomLeading) {
             newPenButton
                 .offset(x: 60, y: 10)
@@ -143,13 +145,15 @@ struct PenDock: View {
     var penPropertyTool: some View {
         if let pen = tool.selectedPen {
             VStack(spacing: 5) {
-                penColorPicker(pen)
+                if pen.strokeStyle == .marker {
+                    penColorPicker(pen)
+                }
                 penThicknessPicker(pen)
             }
             .padding(10)
             .frame(width: width * factor - 18)
             .background {
-                RoundedRectangle(cornerRadius: 20)
+                RoundedRectangle(cornerRadius: 8)
                     .fill(.regularMaterial)
             }
             .transition(.move(edge: .trailing).combined(with: .opacity))
@@ -179,14 +183,13 @@ struct PenDock: View {
                 }
             }
             .background(baseColor)
-            .clipShape(RoundedRectangle(cornerRadius: 10))
-            .frame(height: 28)
+            .clipShape(.rect(cornerRadius: 8))
+            .frame(height: 25)
             .overlay {
-                RoundedRectangle(cornerRadius: 10)
+                RoundedRectangle(cornerRadius: 8)
                     .stroke(Color.gray, lineWidth: 0.4)
             }
             .padding(0.2)
-            .padding(.top, 4)
             .drawingGroup()
         }
         .hoverEffect(.lift)
@@ -207,8 +210,8 @@ struct PenDock: View {
     func penThicknessPicker(_ pen: Pen) -> some View {
         let minimum: CGFloat = pen.style.thickness.min
         let maximum: CGFloat = pen.style.thickness.max
-        let start: CGFloat = 5
-        let end: CGFloat = 15
+        let start: CGFloat = 4
+        let end: CGFloat = 10
         let selection = Binding(
             get: { pen.thickness },
             set: { 
@@ -219,19 +222,14 @@ struct PenDock: View {
         Picker("", selection: selection) {
             ForEach(pen.style.thicknessSteps, id: \.self) { step in
                 let size = ((step - minimum) * (end - start) / (maximum - minimum)) + start - (1 / step)
-                if pen.thickness == step {
-                    Circle()
-                        .fill(.black)
-                        .frame(width: size, height: size)
-                } else {
-                    Circle()
-                        .stroke(Color.black, lineWidth: 1)
-                        .frame(width: size, height: size)
-                }
+                Circle()
+                    .fill(.black)
+                    .frame(width: size, height: size)
+                    .frame(width: size + 2, height: size + 2)
             }
         }
         .pickerStyle(.wheel)
-        .frame(width: width * factor - 18, height: 40)
+        .frame(width: width * factor - 18, height: 35)
     }
 
     var newPenButton: some View {
