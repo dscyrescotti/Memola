@@ -1,5 +1,5 @@
 //
-//  PenDockView.swift
+//  PenDock.swift
 //  Memola
 //
 //  Created by Dscyre Scotti on 5/4/24.
@@ -7,45 +7,36 @@
 
 import SwiftUI
 
-struct PenDockView: View {
+struct PenDock: View {
     @EnvironmentObject var tool: Tool
+    @EnvironmentObject var canvas: Canvas
 
     let width: CGFloat = 90
     let height: CGFloat = 30
-    let factor: CGFloat = 0.95
+    let factor: CGFloat = 0.9
 
     @State var refreshScrollId: UUID = UUID()
     @State var opensColorPicker: Bool = false
 
     var body: some View {
-        VStack(alignment: .trailing) {
-            if let pen = tool.selectedPen {
-                VStack(spacing: 5) {
-                    penColorView(pen)
-                    penThicknessView(pen)
-                }
-                .padding(10)
-                .frame(width: width * factor - 18)
-                .background {
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(.regularMaterial)
-                }
-                .transition(.move(edge: .trailing).combined(with: .opacity))
-            } else {
-                Color.clear
-                    .frame(width: width * factor - 18, height: 50)
+        if !canvas.locksCanvas {
+            VStack(alignment: .trailing) {
+                penPropertyTool
+                penItemList
             }
-            penScrollView
+            .fixedSize()
+            .frame(maxHeight: .infinity)
+            .padding(10)
+            .transition(.move(edge: .trailing).combined(with: .blurReplace))
         }
-        .fixedSize()
     }
 
-    var penScrollView: some View {
+    var penItemList: some View {
         ScrollViewReader { proxy in
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0) {
                     ForEach(tool.pens) { pen in
-                        penView(pen)
+                        penItemRow(pen)
                             .id(pen.id)
                             .scrollTransition { content, phase in
                                 content
@@ -68,20 +59,20 @@ struct PenDockView: View {
         .frame(maxHeight:( (height * factor + 10) * 6) + 20)
         .fixedSize()
         .background(alignment: .trailing) {
-            RoundedRectangle(cornerRadius: 20)
+            RoundedRectangle(cornerRadius: 8)
                 .fill(.regularMaterial)
                 .frame(width: width * factor - 18)
         }
-        .clipShape(.rect(cornerRadii: .init(bottomTrailing: 20, topTrailing: 20)))
+        .clipShape(.rect(cornerRadii: .init(bottomTrailing: 8, topTrailing: 8)))
         .overlay(alignment: .bottomLeading) {
             newPenButton
                 .offset(x: 60, y: 10)
         }
     }
 
-    func penView(_ pen: Pen) -> some View {
+    func penItemRow(_ pen: Pen) -> some View {
         ZStack {
-            penShadowView(pen)
+            penShadow(pen)
             if let tip = pen.style.icon.tip {
                 Image(tip)
                     .resizable()
@@ -139,7 +130,7 @@ struct PenDockView: View {
             }
             .controlGroupStyle(.menu)
         } preview: {
-            penPreviewView(pen)
+            penPreview(pen)
                 .drawingGroup()
                 .contentShape(.contextMenuPreview, .rect(cornerRadius: 10))
         }
@@ -147,14 +138,36 @@ struct PenDockView: View {
             tool.draggedPen = pen
             return NSItemProvider(contentsOf: URL(string: pen.id)) ?? NSItemProvider()
         } preview: {
-            penPreviewView(pen)
+            penPreview(pen)
                 .contentShape(.dragPreview, .rect(cornerRadius: 10))
         }
         .onDrop(of: [.item], delegate: PenDropDelegate(id: pen.id, tool: tool, action: { refreshScrollId = UUID() }))
         .offset(x: tool.selectedPen === pen ? 0 : 25)
     }
 
-    func penColorView(_ pen: Pen) -> some View {
+    @ViewBuilder
+    var penPropertyTool: some View {
+        if let pen = tool.selectedPen {
+            VStack(spacing: 5) {
+                if pen.strokeStyle == .marker {
+                    penColorPicker(pen)
+                }
+                penThicknessPicker(pen)
+            }
+            .padding(10)
+            .frame(width: width * factor - 18)
+            .background {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(.regularMaterial)
+            }
+            .transition(.move(edge: .trailing).combined(with: .blurReplace))
+        } else {
+            Color.clear
+                .frame(width: width * factor - 18, height: 50)
+        }
+    }
+
+    func penColorPicker(_ pen: Pen) -> some View {
         Button {
             opensColorPicker = true
         } label: {
@@ -174,16 +187,16 @@ struct PenDockView: View {
                 }
             }
             .background(baseColor)
-            .clipShape(RoundedRectangle(cornerRadius: 10))
-            .frame(height: 28)
+            .clipShape(.rect(cornerRadius: 8))
+            .frame(height: 25)
             .overlay {
-                RoundedRectangle(cornerRadius: 10)
+                RoundedRectangle(cornerRadius: 8)
                     .stroke(Color.gray, lineWidth: 0.4)
             }
             .padding(0.2)
-            .padding(.top, 4)
             .drawingGroup()
         }
+        .buttonStyle(.plain)
         .hoverEffect(.lift)
         .popover(isPresented: $opensColorPicker) {
             let color = Binding(
@@ -195,15 +208,20 @@ struct PenDockView: View {
             )
             ColorPicker(color: color)
                 .presentationCompactAdaptation(.popover)
+                .onDisappear {
+                    withPersistence(\.viewContext) { context in
+                        try context.saveIfNeeded()
+                    }
+                }
         }
     }
 
     @ViewBuilder
-    func penThicknessView(_ pen: Pen) -> some View {
+    func penThicknessPicker(_ pen: Pen) -> some View {
         let minimum: CGFloat = pen.style.thickness.min
         let maximum: CGFloat = pen.style.thickness.max
-        let start: CGFloat = 5
-        let end: CGFloat = 15
+        let start: CGFloat = 4
+        let end: CGFloat = 10
         let selection = Binding(
             get: { pen.thickness },
             set: { 
@@ -213,20 +231,20 @@ struct PenDockView: View {
         )
         Picker("", selection: selection) {
             ForEach(pen.style.thicknessSteps, id: \.self) { step in
-                let size = ((step - minimum) * (end - start) / (maximum - minimum)) + start - (1 / step)
-                if pen.thickness == step {
-                    Circle()
-                        .fill(.black)
-                        .frame(width: size, height: size)
-                } else {
-                    Circle()
-                        .stroke(Color.black, lineWidth: 1)
-                        .frame(width: size, height: size)
-                }
+                let size = ((step - minimum) * (end - start) / (maximum - minimum)) + start - (0.5 / step)
+                Circle()
+                    .fill(.black)
+                    .frame(width: size, height: size)
+                    .frame(width: size + 2, height: size + 2)
             }
         }
         .pickerStyle(.wheel)
-        .frame(width: width * factor - 18, height: 40)
+        .frame(width: width * factor - 18, height: 35)
+        .onChange(of: pen.thickness) { _, _ in
+            withPersistence(\.viewContext) { context in
+                try context.saveIfNeeded()
+            }
+        }
     }
 
     var newPenButton: some View {
@@ -254,7 +272,7 @@ struct PenDockView: View {
         .hoverEffect(.lift)
     }
 
-    func penPreviewView(_ pen: Pen) -> some View {
+    func penPreview(_ pen: Pen) -> some View {
         ZStack {
             if let tip = pen.style.icon.tip {
                 Image(tip)
@@ -270,7 +288,7 @@ struct PenDockView: View {
         .padding(.leading, 10)
     }
 
-    func penShadowView(_ pen: Pen) -> some View {
+    func penShadow(_ pen: Pen) -> some View {
         ZStack {
             Group {
                 if let tip = pen.style.icon.tip {

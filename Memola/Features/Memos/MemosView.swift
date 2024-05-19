@@ -76,8 +76,12 @@ struct MemosView: View {
 
         let eraserPenObject = PenObject.createObject(\.viewContext, penStyle: .eraser)
         eraserPenObject.orderIndex = 0
-        let markerPenObject = PenObject.createObject(\.viewContext, penStyle: .marker)
-        markerPenObject.orderIndex = 1
+        let markerPenObjects = [Color.red, Color.blue, Color.yellow, Color.black].enumerated().map { (index, color) in
+            let penObject = PenObject.createObject(\.viewContext, penStyle: .marker)
+            penObject.orderIndex = Int16(index) + 1
+            penObject.color = color.components
+            return penObject
+        }
 
         let graphicContextObject = GraphicContextObject(\.viewContext)
         graphicContextObject.strokes = []
@@ -89,10 +93,10 @@ struct MemosView: View {
         canvasObject.graphicContext = graphicContextObject
 
         toolObject.memo = memoObject
-        toolObject.pens = [eraserPenObject, markerPenObject]
+        toolObject.pens = .init(array: [eraserPenObject] + markerPenObjects)
 
         eraserPenObject.tool = toolObject
-        markerPenObject.tool = toolObject
+        markerPenObjects.forEach { $0.tool = toolObject }
 
         graphicContextObject.canvas = canvasObject
 

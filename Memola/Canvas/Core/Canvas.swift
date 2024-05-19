@@ -24,16 +24,19 @@ final class Canvas: ObservableObject, Identifiable, @unchecked Sendable {
 
     var transform: simd_float4x4 = .init()
     var clipBounds: CGRect = .zero
-    var zoomScale: CGFloat = .zero
     var bounds: CGRect = .zero
     var uniformsBuffer: MTLBuffer?
+
+    @Published var state: State = .initial
+    @Published var zoomScale: CGFloat = .zero
+    @Published var locksCanvas: Bool = false
+
+    let zoomPublisher = PassthroughSubject<CGFloat, Never>()
 
     init(size: CGSize, canvasID: NSManagedObjectID) {
         self.size = size
         self.canvasID = canvasID
     }
-
-    @Published var state: State = .initial
 
     var hasValidStroke: Bool {
         if let currentStroke = graphicContext.currentStroke {
@@ -92,7 +95,10 @@ extension Canvas {
 // MARK: - Zoom Scale
 extension Canvas {
     func setZoomScale(_ zoomScale: CGFloat) {
-        self.zoomScale = zoomScale
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.zoomScale = min(max(zoomScale, minimumZoomScale), maximumZoomScale)
+        }
     }
 }
 
