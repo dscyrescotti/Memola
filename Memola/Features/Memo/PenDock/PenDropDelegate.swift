@@ -11,9 +11,11 @@ import Foundation
 struct PenDropDelegate: DropDelegate {
     let id: String
     @ObservedObject var tool: Tool
+    let action: () -> Void
 
     func performDrop(info: DropInfo) -> Bool {
         tool.draggedPen = nil
+        action()
         return true
     }
 

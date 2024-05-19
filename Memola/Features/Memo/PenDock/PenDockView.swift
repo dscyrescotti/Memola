@@ -14,6 +14,9 @@ struct PenDockView: View {
     let height: CGFloat = 30
     let factor: CGFloat = 0.95
 
+    @State var refreshScrollId: UUID = UUID()
+    @State var opensColorPicker: Bool = false
+
     var body: some View {
         VStack(alignment: .trailing) {
             if let pen = tool.selectedPen {
@@ -52,6 +55,7 @@ struct PenDockView: View {
                 }
                 .padding(.vertical, 10)
                 .padding(.leading, 40)
+                .id(refreshScrollId)
             }
             .onReceive(tool.scrollPublisher) { id in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -77,7 +81,7 @@ struct PenDockView: View {
 
     func penView(_ pen: Pen) -> some View {
         ZStack {
-            penShadow(pen)
+            penShadowView(pen)
             if let tip = pen.style.icon.tip {
                 Image(tip)
                     .resizable()
@@ -129,16 +133,16 @@ struct PenDockView: View {
             tool.draggedPen = pen
             return NSItemProvider(contentsOf: URL(string: pen.id)) ?? NSItemProvider()
         } preview: {
-            penPreview(pen)
+            penPreviewView(pen)
                 .contentShape(.dragPreview, .rect(cornerRadius: 10))
         }
-        .onDrop(of: [.item], delegate: PenDropDelegate(id: pen.id, tool: tool))
+        .onDrop(of: [.item], delegate: PenDropDelegate(id: pen.id, tool: tool, action: { refreshScrollId = UUID() }))
         .offset(x: tool.selectedPen === pen ? 0 : 25)
     }
 
     func penColorView(_ pen: Pen) -> some View {
         Button {
-            tool.opensColorPicker = true
+            opensColorPicker = true
         } label: {
             let hsba = pen.color.hsba
             let baseColor = Color(hue: hsba.hue, saturation: hsba.saturation, brightness: hsba.brightness)
@@ -167,7 +171,7 @@ struct PenDockView: View {
             .drawingGroup()
         }
         .hoverEffect(.lift)
-        .popover(isPresented: $tool.opensColorPicker) {
+        .popover(isPresented: $opensColorPicker) {
             ColorPicker(pen: pen)
                 .presentationCompactAdaptation(.popover)
         }
@@ -227,7 +231,7 @@ struct PenDockView: View {
         .hoverEffect(.lift)
     }
 
-    func penPreview(_ pen: Pen) -> some View {
+    func penPreviewView(_ pen: Pen) -> some View {
         ZStack {
             if let tip = pen.style.icon.tip {
                 Image(tip)
@@ -243,7 +247,7 @@ struct PenDockView: View {
         .padding(.leading, 10)
     }
 
-    func penShadow(_ pen: Pen) -> some View {
+    func penShadowView(_ pen: Pen) -> some View {
         ZStack {
             Group {
                 if let tip = pen.style.icon.tip {

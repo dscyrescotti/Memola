@@ -16,7 +16,6 @@ public class Tool: NSObject, ObservableObject {
     @Published var pens: [Pen] = []
     @Published var selectedPen: Pen?
     @Published var draggedPen: Pen?
-    @Published var opensColorPicker: Bool = false
 
     let scrollPublisher = PassthroughSubject<String, Never>()
 

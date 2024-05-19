@@ -82,7 +82,6 @@
 		ECFA15262BEF224900455818 /* StrokeObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA15252BEF224900455818 /* StrokeObject.swift */; };
 		ECFA15282BEF225000455818 /* QuadObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA15272BEF225000455818 /* QuadObject.swift */; };
 		ECFC51272BF8885700D0D051 /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFC51262BF8885700D0D051 /* ColorPicker.swift */; };
-		ECFC512A2BF8BBD800D0D051 /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFC51292BF8BBD800D0D051 /* Triangle.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -163,7 +162,6 @@
 		ECFA15252BEF224900455818 /* StrokeObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeObject.swift; sourceTree = "<group>"; };
 		ECFA15272BEF225000455818 /* QuadObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuadObject.swift; sourceTree = "<group>"; };
 		ECFC51262BF8885700D0D051 /* ColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
-		ECFC51292BF8BBD800D0D051 /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -229,7 +227,6 @@
 		EC50500A2BF6672000B4D86E /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				ECFC51282BF8BBD000D0D051 /* Shapes */,
 				EC50500B2BF6673300B4D86E /* ViewModifiers */,
 			);
 			path = Components;
@@ -613,14 +610,6 @@
 			path = ColorPicker;
 			sourceTree = "<group>";
 		};
-		ECFC51282BF8BBD000D0D051 /* Shapes */ = {
-			isa = PBXGroup;
-			children = (
-				ECFC51292BF8BBD800D0D051 /* Triangle.swift */,
-			);
-			path = Shapes;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -694,7 +683,6 @@
 				ECA738B02BE60D0B00A4542E /* CanvasViewController.swift in Sources */,
 				ECA738E42BE6110800A4542E /* Drawable.swift in Sources */,
 				ECA738AD2BE60CC600A4542E /* DrawingView.swift in Sources */,
-				ECFC512A2BF8BBD800D0D051 /* Triangle.swift in Sources */,
 				ECA738E02BE610B900A4542E /* EraserRenderPass.swift in Sources */,
 				EC35655A2BF060D900A4E0BF /* Quad.metal in Sources */,
 				ECA738912BE600F500A4542E /* Cache.metal in Sources */,
