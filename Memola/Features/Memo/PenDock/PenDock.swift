@@ -192,6 +192,7 @@ struct PenDock: View {
             .padding(0.2)
             .drawingGroup()
         }
+        .buttonStyle(.plain)
         .hoverEffect(.lift)
         .popover(isPresented: $opensColorPicker) {
             let color = Binding(
@@ -203,6 +204,11 @@ struct PenDock: View {
             )
             ColorPicker(color: color)
                 .presentationCompactAdaptation(.popover)
+                .onDisappear {
+                    withPersistence(\.viewContext) { context in
+                        try context.saveIfNeeded()
+                    }
+                }
         }
     }
 
@@ -230,6 +236,11 @@ struct PenDock: View {
         }
         .pickerStyle(.wheel)
         .frame(width: width * factor - 18, height: 35)
+        .onChange(of: pen.thickness) { _, _ in
+            withPersistence(\.viewContext) { context in
+                try context.saveIfNeeded()
+            }
+        }
     }
 
     var newPenButton: some View {
