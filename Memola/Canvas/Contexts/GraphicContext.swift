@@ -153,8 +153,10 @@ extension GraphicContext {
     func endStroke(at point: CGPoint) {
         guard currentPoint != nil, let currentStroke else { return }
         currentStroke.finish(at: point)
-        withPersistence(\.backgroundContext) { [currentStroke] context in
-            currentStroke.object?.bounds = currentStroke.bounds
+        let batchIndex = currentStroke.batchIndex
+        let quads = Array(currentStroke.quads[batchIndex..<currentStroke.quads.count])
+        currentStroke.saveQuads(for: quads)
+        withPersistence(\.backgroundContext) { context in
             try context.saveIfNeeded()
             if let stroke = currentStroke.object {
                 context.refresh(stroke, mergeChanges: false)

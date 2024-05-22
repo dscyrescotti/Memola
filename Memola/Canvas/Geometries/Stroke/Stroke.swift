@@ -116,20 +116,38 @@ extension Stroke {
             color: color
         )
         quads.append(quad)
-        withPersistence(\.backgroundContext) { [weak self, _quad = quad, object, bounds] context in
-            let quad = QuadObject(\.backgroundContext)
-            quad.originX = _quad.originX.cgFloat
-            quad.originY = _quad.originY.cgFloat
-            quad.size = _quad.size.cgFloat
-            quad.rotation = _quad.rotation.cgFloat
-            quad.shape = _quad.shape
-            quad.color = _quad.getColor()
-            quad.stroke = object
-            object?.quads.add(quad)
-            self?.bounds[0] = min(_quad.originX.cgFloat, bounds[0])
-            self?.bounds[1] = min(_quad.originY.cgFloat, bounds[1])
-            self?.bounds[2] = max(_quad.originX.cgFloat, bounds[2])
-            self?.bounds[3] = max(_quad.originY.cgFloat, bounds[3])
+    }
+
+    func removeQuads(from index: Int) {
+        let dropCount = quads.endIndex - max(1, index)
+        quads.removeLast(dropCount)
+        let quads = Array(quads[batchIndex..<index])
+        batchIndex = index
+        saveQuads(for: quads)
+    }
+
+    func saveQuads(for quads: [Quad]) {
+        var topLeft: CGPoint = CGPoint(x: bounds[0], y: bounds[1])
+        var bottomRight: CGPoint = CGPoint(x: bounds[2], y: bounds[3])
+        withPersistence(\.backgroundContext) { [weak self, object] context in
+            guard let self else { return }
+            for _quad in quads {
+                let quad = QuadObject(\.backgroundContext)
+                quad.originX = _quad.originX.cgFloat
+                quad.originY = _quad.originY.cgFloat
+                quad.size = _quad.size.cgFloat
+                quad.rotation = _quad.rotation.cgFloat
+                quad.shape = _quad.shape
+                quad.color = _quad.getColor()
+                quad.stroke = object
+                object?.quads.add(quad)
+                topLeft.x = min(quad.originX, topLeft.x)
+                topLeft.y = min(quad.originY, topLeft.y)
+                bottomRight.x = max(quad.originX, bottomRight.x)
+                bottomRight.y = max(quad.originY, bottomRight.y)
+            }
+            bounds = [topLeft.x, topLeft.y, bottomRight.x, bottomRight.y]
+            object?.bounds = bounds
         }
     }
 }

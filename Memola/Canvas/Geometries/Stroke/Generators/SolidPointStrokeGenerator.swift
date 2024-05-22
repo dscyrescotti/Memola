@@ -29,6 +29,7 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
             let control = CGPoint.middle(p1: start, p2: end)
             addCurve(from: start, to: end, by: control, on: stroke)
         case 3:
+            stroke.removeQuads(from: stroke.quadIndex + 1)
             let index = stroke.keyPoints.endIndex - 1
             var start = stroke.keyPoints[index - 2]
             var end = CGPoint.middle(p1: stroke.keyPoints[index - 2], p2: stroke.keyPoints[index - 1])
@@ -39,7 +40,7 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
             end = CGPoint.middle(p1: stroke.keyPoints[index - 1], p2: stroke.keyPoints[index])
             addCurve(from: start, to: end, by: control, on: stroke)
         default:
-            adjustKeyPoint(on: stroke)
+            smoothOutPath(on: stroke)
             let index = stroke.keyPoints.endIndex - 1
             let start = CGPoint.middle(p1: stroke.keyPoints[index - 2], p2: stroke.keyPoints[index - 1])
             let control = stroke.keyPoints[index - 1]
@@ -55,6 +56,27 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
         default:
             append(to: point, on: stroke)
         }
+    }
+
+    private func smoothOutPath(on stroke: Stroke) {
+        stroke.removeQuads(from: stroke.quadIndex + 1)
+        adjustKeyPoint(on: stroke)
+        switch stroke.keyPoints.endIndex {
+        case 4:
+            let index = stroke.keyPoints.endIndex - 2
+            let start = stroke.keyPoints[index - 2]
+            let end = CGPoint.middle(p1: stroke.keyPoints[index - 2], p2: stroke.keyPoints[index - 1])
+            let control = CGPoint.middle(p1: start, p2: end)
+            addCurve(from: start, to: end, by: control, on: stroke)
+            fallthrough
+        default:
+            let index = stroke.keyPoints.endIndex - 2
+            let start = CGPoint.middle(p1: stroke.keyPoints[index - 2], p2: stroke.keyPoints[index - 1])
+            let control = stroke.keyPoints[index - 1]
+            let end = CGPoint.middle(p1: stroke.keyPoints[index - 1], p2: stroke.keyPoints[index])
+            addCurve(from: start, to: end, by: control, on: stroke)
+        }
+        stroke.quadIndex = stroke.quads.endIndex - 1
     }
 
     private func adjustKeyPoint(on stroke: Stroke) {
