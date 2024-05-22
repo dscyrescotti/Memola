@@ -155,9 +155,8 @@ extension GraphicContext {
         currentStroke.finish(at: point)
         let batchIndex = currentStroke.batchIndex
         let quads = Array(currentStroke.quads[batchIndex..<currentStroke.quads.count])
-        withPersistence(\.backgroundContext) { [currentStroke, quads] context in
-            currentStroke.saveQuads(for: quads)
-            currentStroke.object?.bounds = currentStroke.bounds
+        currentStroke.saveQuads(for: quads)
+        withPersistence(\.backgroundContext) { context in
             try context.saveIfNeeded()
             if let stroke = currentStroke.object {
                 context.refresh(stroke, mergeChanges: false)

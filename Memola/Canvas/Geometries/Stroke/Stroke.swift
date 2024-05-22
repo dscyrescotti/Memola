@@ -54,6 +54,8 @@ final class Stroke: @unchecked Sendable {
     var keyPoints: [CGPoint] = []
     var thicknessFactor: CGFloat = 0.7
 
+    let movingAverage = MovingAverage(windowSize: 3)
+
     var vertexBuffer: MTLBuffer?
     var texture: MTLTexture?
 
@@ -105,7 +107,7 @@ extension Stroke {
         }
     }
 
-    func addQuad(at point: CGPoint, rotation: CGFloat, shape: QuadShape) -> Quad {
+    func addQuad(at point: CGPoint, rotation: CGFloat, shape: QuadShape) {
         let quad = Quad(
             origin: point,
             size: thickness,
@@ -114,7 +116,6 @@ extension Stroke {
             color: color
         )
         quads.append(quad)
-        return quad
     }
 
     func removeQuads(from index: Int) {
@@ -122,30 +123,32 @@ extension Stroke {
         quads.removeLast(dropCount)
         let quads = Array(quads[batchIndex..<index])
         batchIndex = index
-        withPersistence(\.backgroundContext) { [weak self, quads] context in
-            self?.saveQuads(for: quads)
-        }
+        saveQuads(for: quads)
     }
 
     func saveQuads(for quads: [Quad]) {
         var topLeft: CGPoint = CGPoint(x: bounds[0], y: bounds[1])
         var bottomRight: CGPoint = CGPoint(x: bounds[2], y: bounds[3])
-        for _quad in quads {
-            let quad = QuadObject(\.backgroundContext)
-            quad.originX = _quad.originX.cgFloat
-            quad.originY = _quad.originY.cgFloat
-            quad.size = _quad.size.cgFloat
-            quad.rotation = _quad.rotation.cgFloat
-            quad.shape = _quad.shape
-            quad.color = _quad.getColor()
-            quad.stroke = object
-            object?.quads.add(quad)
-            topLeft.x = min(quad.originX, topLeft.x)
-            topLeft.y = min(quad.originY, topLeft.y)
-            bottomRight.x = max(quad.originX, bottomRight.x)
-            bottomRight.y = max(quad.originY, bottomRight.y)
+        withPersistence(\.backgroundContext) { [weak self, object] context in
+            guard let self else { return }
+            for _quad in quads {
+                let quad = QuadObject(\.backgroundContext)
+                quad.originX = _quad.originX.cgFloat
+                quad.originY = _quad.originY.cgFloat
+                quad.size = _quad.size.cgFloat
+                quad.rotation = _quad.rotation.cgFloat
+                quad.shape = _quad.shape
+                quad.color = _quad.getColor()
+                quad.stroke = object
+                object?.quads.add(quad)
+                topLeft.x = min(quad.originX, topLeft.x)
+                topLeft.y = min(quad.originY, topLeft.y)
+                bottomRight.x = max(quad.originX, bottomRight.x)
+                bottomRight.y = max(quad.originY, bottomRight.y)
+            }
+            bounds = [topLeft.x, topLeft.y, bottomRight.x, bottomRight.y]
+            object?.bounds = bounds
         }
-        bounds = [topLeft.x, topLeft.y, bottomRight.x, bottomRight.y]
     }
 }
 

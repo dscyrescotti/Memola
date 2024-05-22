@@ -13,6 +13,11 @@ struct MemolaApp: App {
         WindowGroup {
             MemosView()
                 .persistence(\.viewContext)
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willTerminateNotification)) { _ in
+                    withPersistenceSync(\.backgroundContext) { context in
+                        try context.saveIfNeeded()
+                    }
+                }
         }
     }
 }

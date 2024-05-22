@@ -20,6 +20,7 @@
 		EC4538892BEBCAE000A86FEC /* Quad.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4538882BEBCAE000A86FEC /* Quad.swift */; };
 		EC5050072BF65CED00B4D86E /* PenDropDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5050062BF65CED00B4D86E /* PenDropDelegate.swift */; };
 		EC50500D2BF6674400B4D86E /* OnDragViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC50500C2BF6674400B4D86E /* OnDragViewModifier.swift */; };
+		EC5E83902BFDB69C00261D9C /* MovingAverage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5E838F2BFDB69C00261D9C /* MovingAverage.swift */; };
 		EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */; };
 		EC7F6BF02BE5E6E400A34A7B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */; };
 		EC7F6BF32BE5E6E400A34A7B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BF22BE5E6E400A34A7B /* Preview Assets.xcassets */; };
@@ -100,6 +101,7 @@
 		EC5050062BF65CED00B4D86E /* PenDropDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenDropDelegate.swift; sourceTree = "<group>"; };
 		EC50500C2BF6674400B4D86E /* OnDragViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDragViewModifier.swift; sourceTree = "<group>"; };
 		EC50500E2BF670EA00B4D86E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EC5E838F2BFDB69C00261D9C /* MovingAverage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovingAverage.swift; sourceTree = "<group>"; };
 		EC7F6BE82BE5E6E300A34A7B /* Memola.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Memola.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemolaApp.swift; sourceTree = "<group>"; };
 		EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -266,6 +268,14 @@
 				EC50500E2BF670EA00B4D86E /* Info.plist */,
 			);
 			path = Config;
+			sourceTree = "<group>";
+		};
+		EC5E838E2BFDB69000261D9C /* Algorithms */ = {
+			isa = PBXGroup;
+			children = (
+				EC5E838F2BFDB69C00261D9C /* MovingAverage.swift */,
+			);
+			path = Algorithms;
 			sourceTree = "<group>";
 		};
 		EC7F6BDF2BE5E6E300A34A7B = {
@@ -529,6 +539,7 @@
 		ECA738CE2BE60F5000A4542E /* Stroke */ = {
 			isa = PBXGroup;
 			children = (
+				EC5E838E2BFDB69000261D9C /* Algorithms */,
 				ECA738D52BE60FA200A4542E /* Generators */,
 				ECA738D12BE60F7B00A4542E /* Stroke.swift */,
 				ECA738D32BE60F9100A4542E /* StrokeGenerator.swift */,
@@ -713,6 +724,7 @@
 				ECA7389C2BE601AF00A4542E /* GridVertex.swift in Sources */,
 				ECA738A82BE6025900A4542E /* GraphicUniforms.swift in Sources */,
 				ECA738E62BE611FD00A4542E /* CGRect++.swift in Sources */,
+				EC5E83902BFDB69C00261D9C /* MovingAverage.swift in Sources */,
 				ECFA15262BEF224900455818 /* StrokeObject.swift in Sources */,
 				ECA738E82BE6120F00A4542E /* Color++.swift in Sources */,
 				ECA738FC2BE61C5200A4542E /* Persistence.swift in Sources */,
