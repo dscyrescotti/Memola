@@ -57,7 +57,7 @@ class EraserRenderPass: RenderPass {
         let quadCount = stroke.quads.endIndex
         var quads = stroke.quads
         let quadBuffer = renderer.device.makeBuffer(bytes: &quads, length: MemoryLayout<Quad>.stride * quadCount, options: [])
-        let indexBuffer = renderer.device.makeBuffer(length: MemoryLayout<UInt32>.stride * quadCount * 6, options: [])
+        let indexBuffer = renderer.device.makeBuffer(length: MemoryLayout<UInt>.stride * quadCount * 6, options: [])
         let vertexBuffer = renderer.device.makeBuffer(length: MemoryLayout<QuadVertex>.stride * quadCount * 4, options: [])
 
         computeEncoder.setComputePipelineState(quadPipelineState)

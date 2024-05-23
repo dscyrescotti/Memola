@@ -38,7 +38,7 @@ Vertex createVertex(Quad quad, float2 factor, float2 textCoord) {
 }
 
 kernel void generate_stroke_vertices(
-    device Quad *quads [[buffer(0)]],
+    constant Quad *quads [[buffer(0)]],
     device uint *indices [[buffer(1)]],
     device Vertex *vertices [[buffer(2)]],
     uint gid [[thread_position_in_grid]]
