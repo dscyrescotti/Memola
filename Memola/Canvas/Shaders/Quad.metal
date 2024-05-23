@@ -38,17 +38,24 @@ Vertex createVertex(Quad quad, float2 factor, float2 textCoord) {
 }
 
 kernel void generate_stroke_vertices(
-    device Quad *quads [[buffer(0)]],
-    device Vertex *vertices [[buffer(1)]],
+    constant Quad *quads [[buffer(0)]],
+    device uint *indices [[buffer(1)]],
+    device Vertex *vertices [[buffer(2)]],
     uint gid [[thread_position_in_grid]]
 ) {
-    uint index = gid * 6;
     Quad quad = quads[gid];
+    uint index = gid * 6;
+    uint vertexIndex = gid * 4;
     float halfSize = quad.size * 0.5;
-    vertices[index] = createVertex(quad, float2(-halfSize, -halfSize), float2(0, 0));
-    vertices[index + 1] = createVertex(quad, float2(halfSize, -halfSize), float2(1, 0));
-    vertices[index + 2] = createVertex(quad, float2(-halfSize, halfSize), float2(0, 1));
-    vertices[index + 3] = createVertex(quad, float2(halfSize, -halfSize), float2(1, 0));
-    vertices[index + 4] = createVertex(quad, float2(-halfSize, halfSize), float2(0, 1));
-    vertices[index + 5] = createVertex(quad, float2(halfSize, halfSize), float2(1, 1));
+    vertices[vertexIndex] = createVertex(quad, float2(-halfSize, -halfSize), float2(0, 0));
+    vertices[vertexIndex + 1] = createVertex(quad, float2(halfSize, -halfSize), float2(1, 0));
+    vertices[vertexIndex + 2] = createVertex(quad, float2(-halfSize, halfSize), float2(0, 1));
+    vertices[vertexIndex + 3] = createVertex(quad, float2(halfSize, halfSize), float2(1, 1));
+
+    indices[index] = vertexIndex;
+    indices[index + 1] = vertexIndex + 1;
+    indices[index + 2] = vertexIndex + 2;
+    indices[index + 3] = vertexIndex + 1;
+    indices[index + 4] = vertexIndex + 2;
+    indices[index + 5] = vertexIndex + 3;
 }

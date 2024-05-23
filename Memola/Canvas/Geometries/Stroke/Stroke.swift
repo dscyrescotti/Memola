@@ -56,8 +56,9 @@ final class Stroke: @unchecked Sendable {
 
     let movingAverage = MovingAverage(windowSize: 3)
 
-    var vertexBuffer: MTLBuffer?
     var texture: MTLTexture?
+    var indexBuffer: MTLBuffer?
+    var vertexBuffer: MTLBuffer?
 
     var isEmpty: Bool {
         quads.isEmpty
@@ -160,12 +161,19 @@ extension Stroke: Drawable {
     }
 
     func draw(device: MTLDevice, renderEncoder: MTLRenderCommandEncoder) {
-        guard !isEmpty else { return }
+        guard !isEmpty, let indexBuffer else { return }
         prepare(device: device)
         renderEncoder.setFragmentTexture(texture, index: 0)
         renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-        renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: quads.endIndex * 6)
-        vertexBuffer = nil
+        renderEncoder.drawIndexedPrimitives(
+            type: .triangle,
+            indexCount: quads.endIndex * 6,
+            indexType: .uint32,
+            indexBuffer: indexBuffer,
+            indexBufferOffset: 0
+        )
+        self.vertexBuffer = nil
+        self.indexBuffer = nil
     }
 }
 
