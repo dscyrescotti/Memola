@@ -57,7 +57,7 @@
 		ECA738C92BE60EF700A4542E /* GraphicContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738C82BE60EF700A4542E /* GraphicContext.swift */; };
 		ECA738CB2BE60F1900A4542E /* ViewPortContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738CA2BE60F1900A4542E /* ViewPortContext.swift */; };
 		ECA738CD2BE60F2F00A4542E /* GridContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738CC2BE60F2F00A4542E /* GridContext.swift */; };
-		ECA738D22BE60F7B00A4542E /* Stroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738D12BE60F7B00A4542E /* Stroke.swift */; };
+		ECA738D22BE60F7B00A4542E /* PenStroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738D12BE60F7B00A4542E /* PenStroke.swift */; };
 		ECA738D42BE60F9100A4542E /* StrokeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738D32BE60F9100A4542E /* StrokeGenerator.swift */; };
 		ECA738D72BE60FC100A4542E /* SolidPointStrokeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738D62BE60FC100A4542E /* SolidPointStrokeGenerator.swift */; };
 		ECA738DA2BE60FF100A4542E /* CacheRenderPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738D92BE60FF100A4542E /* CacheRenderPass.swift */; };
@@ -139,7 +139,7 @@
 		ECA738C82BE60EF700A4542E /* GraphicContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphicContext.swift; sourceTree = "<group>"; };
 		ECA738CA2BE60F1900A4542E /* ViewPortContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPortContext.swift; sourceTree = "<group>"; };
 		ECA738CC2BE60F2F00A4542E /* GridContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridContext.swift; sourceTree = "<group>"; };
-		ECA738D12BE60F7B00A4542E /* Stroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stroke.swift; sourceTree = "<group>"; };
+		ECA738D12BE60F7B00A4542E /* PenStroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenStroke.swift; sourceTree = "<group>"; };
 		ECA738D32BE60F9100A4542E /* StrokeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeGenerator.swift; sourceTree = "<group>"; };
 		ECA738D62BE60FC100A4542E /* SolidPointStrokeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolidPointStrokeGenerator.swift; sourceTree = "<group>"; };
 		ECA738D92BE60FF100A4542E /* CacheRenderPass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheRenderPass.swift; sourceTree = "<group>"; };
@@ -539,10 +539,10 @@
 		ECA738CE2BE60F5000A4542E /* Stroke */ = {
 			isa = PBXGroup;
 			children = (
+				ECE883B92C009DCA0045C53D /* Core */,
+				ECE883B82C009DC30045C53D /* Strokes */,
 				EC5E838E2BFDB69000261D9C /* Algorithms */,
 				ECA738D52BE60FA200A4542E /* Generators */,
-				ECA738D12BE60F7B00A4542E /* Stroke.swift */,
-				ECA738D32BE60F9100A4542E /* StrokeGenerator.swift */,
 			);
 			path = Stroke;
 			sourceTree = "<group>";
@@ -614,6 +614,22 @@
 			children = (
 				ECA738BE2BE60E3400A4542E /* Pen.swift */,
 				ECA738C02BE60E5300A4542E /* PenStyle.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		ECE883B82C009DC30045C53D /* Strokes */ = {
+			isa = PBXGroup;
+			children = (
+				ECA738D12BE60F7B00A4542E /* PenStroke.swift */,
+			);
+			path = Strokes;
+			sourceTree = "<group>";
+		};
+		ECE883B92C009DCA0045C53D /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				ECA738D32BE60F9100A4542E /* StrokeGenerator.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -777,7 +793,7 @@
 				ECFA15282BEF225000455818 /* QuadObject.swift in Sources */,
 				ECA738932BE6011100A4542E /* Stroke.metal in Sources */,
 				ECA738B62BE60DCD00A4542E /* History.swift in Sources */,
-				ECA738D22BE60F7B00A4542E /* Stroke.swift in Sources */,
+				ECA738D22BE60F7B00A4542E /* PenStroke.swift in Sources */,
 				ECA738F22BE6128F00A4542E /* Collection++.swift in Sources */,
 				EC5050072BF65CED00B4D86E /* PenDropDelegate.swift in Sources */,
 				ECA738A32BE6020A00A4542E /* CGFloat++.swift in Sources */,

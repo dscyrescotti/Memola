@@ -11,11 +11,11 @@ import CoreData
 import Foundation
 
 final class GraphicContext: @unchecked Sendable {
-    var strokes: [Stroke] = []
+    var strokes: [PenStroke] = []
     var object: GraphicContextObject?
 
-    var currentStroke: Stroke?
-    var previousStroke: Stroke?
+    var currentStroke: PenStroke?
+    var previousStroke: PenStroke?
     var currentPoint: CGPoint?
     var renderType: RenderType = .finished
     var vertices: [ViewPortVertex] = []
@@ -64,9 +64,9 @@ extension GraphicContext {
         guard let object else { return }
         let queue = OperationQueue()
         queue.qualityOfService = .userInteractive
-        self.strokes = object.strokes.compactMap { stroke -> Stroke? in
+        self.strokes = object.strokes.compactMap { stroke -> PenStroke? in
             guard let stroke = stroke as? StrokeObject else { return nil }
-            let _stroke = Stroke(object: stroke)
+            let _stroke = PenStroke(object: stroke)
             if _stroke.isVisible(in: bounds) {
                 let id = stroke.objectID
                 queue.addOperation {
@@ -91,7 +91,7 @@ extension GraphicContext {
 
     func loadQuads(_ bounds: CGRect) {
         for stroke in self.strokes {
-            guard stroke.isVisible(in: bounds), stroke.quads.isEmpty else { continue }
+            guard stroke.isVisible(in: bounds), stroke.isEmpty else { continue }
             stroke.loadQuads()
         }
     }
@@ -114,8 +114,8 @@ extension GraphicContext: Drawable {
 }
 
 extension GraphicContext {
-    func beginStroke(at point: CGPoint, pen: Pen) -> Stroke {
-        let stroke = Stroke(
+    func beginStroke(at point: CGPoint, pen: Pen) -> PenStroke {
+        let stroke = PenStroke(
             bounds: [point.x - pen.thickness, point.y - pen.thickness, point.x + pen.thickness, point.y + pen.thickness],
             color: pen.rgba,
             style: pen.strokeStyle.rawValue,

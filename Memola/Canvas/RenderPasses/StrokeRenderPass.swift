@@ -18,7 +18,7 @@ class StrokeRenderPass: RenderPass {
     var quadPipelineState: MTLComputePipelineState?
     weak var graphicPipelineState: MTLRenderPipelineState?
 
-    var stroke: Stroke?
+    var stroke: PenStroke?
     var strokeTexture: MTLTexture?
 
     init(renderer: Renderer) {
@@ -61,7 +61,7 @@ class StrokeRenderPass: RenderPass {
     }
 
     private func generateVertexBuffer(on canvas: Canvas, with renderer: Renderer) {
-        guard let stroke, !stroke.quads.isEmpty, let quadPipelineState else { return }
+        guard let stroke, !stroke.isEmpty, let quadPipelineState else { return }
         guard let quadCommandBuffer = renderer.commandQueue.makeCommandBuffer() else { return }
         guard let computeEncoder = quadCommandBuffer.makeComputeCommandEncoder() else { return }
 

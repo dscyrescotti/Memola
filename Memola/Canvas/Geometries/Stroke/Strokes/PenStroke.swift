@@ -1,5 +1,5 @@
 //
-//  Stroke.swift
+//  PenStroke.swift
 //  Memola
 //
 //  Created by Dscyre Scotti on 5/4/24.
@@ -9,7 +9,7 @@ import MetalKit
 import CoreData
 import Foundation
 
-final class Stroke: @unchecked Sendable {
+final class PenStroke: @unchecked Sendable {
     var object: StrokeObject?
     var bounds: [CGFloat]
     var color: [CGFloat]
@@ -17,6 +17,7 @@ final class Stroke: @unchecked Sendable {
     var createdAt: Date
     var thickness: CGFloat
     var quads: [Quad]
+    var penStyle: Style
 
     init(object: StrokeObject) {
         self.object = object
@@ -26,6 +27,7 @@ final class Stroke: @unchecked Sendable {
         self.createdAt = object.createdAt
         self.thickness = object.thickness
         self.quads = []
+        self.penStyle = Style(rawValue: style) ?? .marker
     }
 
     init(
@@ -42,17 +44,12 @@ final class Stroke: @unchecked Sendable {
         self.createdAt = createdAt
         self.thickness = thickness
         self.quads = quads
-    }
-
-    var angle: CGFloat = 0
-    var penStyle: Style {
-        Style(rawValue: style) ?? .marker
+        self.penStyle = Style(rawValue: style) ?? .marker
     }
 
     var batchIndex: Int = 0
     var quadIndex: Int = -1
     var keyPoints: [CGPoint] = []
-    var thicknessFactor: CGFloat = 0.7
 
     let movingAverage = MovingAverage(windowSize: 3)
 
@@ -60,12 +57,7 @@ final class Stroke: @unchecked Sendable {
     var indexBuffer: MTLBuffer?
     var vertexBuffer: MTLBuffer?
 
-    var isEmpty: Bool {
-        quads.isEmpty
-    }
-    var isEraserPenStyle: Bool {
-        penStyle == .eraser
-    }
+    var isEmpty: Bool { quads.isEmpty }
     var strokeBounds: CGRect {
         let x = bounds[0]
         let y = bounds[1]
@@ -92,7 +84,7 @@ final class Stroke: @unchecked Sendable {
     }
 }
 
-extension Stroke {
+extension PenStroke {
     func loadQuads() {
         guard let object else { return }
         quads = object.quads.compactMap { quad in
@@ -153,7 +145,7 @@ extension Stroke {
     }
 }
 
-extension Stroke: Drawable {
+extension PenStroke: Drawable {
     func prepare(device: MTLDevice) {
         if texture == nil {
             texture = penStyle.anyPenStyle.loadTexture(on: device)
@@ -177,7 +169,7 @@ extension Stroke: Drawable {
     }
 }
 
-extension Stroke {
+extension PenStroke {
     enum Style: Int16 {
         case marker
         case eraser

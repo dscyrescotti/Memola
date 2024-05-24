@@ -24,7 +24,7 @@ extension PenStyle {
         Textures.createPenTexture(with: textureName, on: device)
     }
 
-    var strokeStyle: Stroke.Style {
+    var strokeStyle: PenStroke.Style {
         switch self {
         case is MarkerPenStyle:
             return .marker

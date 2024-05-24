@@ -52,11 +52,12 @@ class GraphicRenderPass: RenderPass {
                 guard stroke.isVisible(in: canvas.bounds) else { continue }
                 descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
                 clearsTexture = false
-                if stroke.isEraserPenStyle {
+                switch stroke.penStyle {
+                case .eraser:
                     eraserRenderPass.stroke = stroke
                     eraserRenderPass.descriptor = descriptor
                     eraserRenderPass.draw(on: canvas, with: renderer)
-                } else {
+                case .marker:
                     canvas.setGraphicRenderType(.finished)
                     strokeRenderPass.stroke = stroke
                     strokeRenderPass.graphicDescriptor = descriptor
@@ -70,11 +71,12 @@ class GraphicRenderPass: RenderPass {
         if let stroke = graphicContext.previousStroke {
             descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
             clearsTexture = false
-            if stroke.isEraserPenStyle {
+            switch stroke.penStyle {
+            case .eraser:
                 eraserRenderPass.stroke = stroke
                 eraserRenderPass.descriptor = descriptor
                 eraserRenderPass.draw(on: canvas, with: renderer)
-            } else {
+            case .marker:
                 canvas.setGraphicRenderType(.newlyFinished)
                 strokeRenderPass.stroke = stroke
                 strokeRenderPass.graphicDescriptor = descriptor

@@ -8,5 +8,5 @@
 import Foundation
 
 enum HistoryEvent {
-    case stroke(Stroke)
+    case stroke(PenStroke)
 }

@@ -16,7 +16,7 @@ class EraserRenderPass: RenderPass {
     var eraserPipelineState: MTLRenderPipelineState?
     var quadPipelineState: MTLComputePipelineState?
 
-    var stroke: Stroke?
+    var stroke: PenStroke?
     weak var graphicTexture: MTLTexture?
 
     init(renderer: Renderer) {
@@ -48,7 +48,7 @@ class EraserRenderPass: RenderPass {
     }
 
     private func generateVertexBuffer(on canvas: Canvas, with renderer: Renderer) {
-        guard let stroke, !stroke.quads.isEmpty, let quadPipelineState else { return }
+        guard let stroke, !stroke.isEmpty, let quadPipelineState else { return }
         guard let quadCommandBuffer = renderer.commandQueue.makeCommandBuffer() else { return }
         guard let computeEncoder = quadCommandBuffer.makeComputeCommandEncoder() else { return }
 
