@@ -46,7 +46,7 @@ class CacheRenderPass: RenderPass {
 
         let graphicContext = canvas.graphicContext
         if let stroke = graphicContext.currentStroke {
-            switch stroke.penStyle {
+            switch stroke.style {
             case .eraser:
                 eraserRenderPass.stroke = stroke
                 eraserRenderPass.descriptor = descriptor

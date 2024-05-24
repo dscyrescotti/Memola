@@ -77,6 +77,9 @@
 		ECA738F62BE612B700A4542E /* MTLDevice++.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738F52BE612B700A4542E /* MTLDevice++.swift */; };
 		ECA738FC2BE61C5200A4542E /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738FB2BE61C5200A4542E /* Persistence.swift */; };
 		ECA739082BE623F300A4542E /* PenDock.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA739072BE623F300A4542E /* PenDock.swift */; };
+		ECE883BD2C00AA170045C53D /* EraserStroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE883BC2C00AA170045C53D /* EraserStroke.swift */; };
+		ECE883BF2C00AB440045C53D /* Stroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE883BE2C00AB440045C53D /* Stroke.swift */; };
+		ECE883C12C00C9CB0045C53D /* StrokeStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE883C02C00C9CB0045C53D /* StrokeStyle.swift */; };
 		ECEC01A82BEE11BA006DA24C /* QuadShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC01A72BEE11BA006DA24C /* QuadShape.swift */; };
 		ECFA15202BEF21EF00455818 /* MemoObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA151F2BEF21EF00455818 /* MemoObject.swift */; };
 		ECFA15222BEF21F500455818 /* CanvasObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA15212BEF21F500455818 /* CanvasObject.swift */; };
@@ -159,6 +162,9 @@
 		ECA738F52BE612B700A4542E /* MTLDevice++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MTLDevice++.swift"; sourceTree = "<group>"; };
 		ECA738FB2BE61C5200A4542E /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		ECA739072BE623F300A4542E /* PenDock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenDock.swift; sourceTree = "<group>"; };
+		ECE883BC2C00AA170045C53D /* EraserStroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EraserStroke.swift; sourceTree = "<group>"; };
+		ECE883BE2C00AB440045C53D /* Stroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stroke.swift; sourceTree = "<group>"; };
+		ECE883C02C00C9CB0045C53D /* StrokeStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeStyle.swift; sourceTree = "<group>"; };
 		ECEC01A72BEE11BA006DA24C /* QuadShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuadShape.swift; sourceTree = "<group>"; };
 		ECFA151F2BEF21EF00455818 /* MemoObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoObject.swift; sourceTree = "<group>"; };
 		ECFA15212BEF21F500455818 /* CanvasObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasObject.swift; sourceTree = "<group>"; };
@@ -622,6 +628,7 @@
 			isa = PBXGroup;
 			children = (
 				ECA738D12BE60F7B00A4542E /* PenStroke.swift */,
+				ECE883BC2C00AA170045C53D /* EraserStroke.swift */,
 			);
 			path = Strokes;
 			sourceTree = "<group>";
@@ -629,7 +636,9 @@
 		ECE883B92C009DCA0045C53D /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				ECE883BE2C00AB440045C53D /* Stroke.swift */,
 				ECA738D32BE60F9100A4542E /* StrokeGenerator.swift */,
+				ECE883C02C00C9CB0045C53D /* StrokeStyle.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -753,6 +762,7 @@
 				ECA738DA2BE60FF100A4542E /* CacheRenderPass.swift in Sources */,
 				ECA738CD2BE60F2F00A4542E /* GridContext.swift in Sources */,
 				ECFA15202BEF21EF00455818 /* MemoObject.swift in Sources */,
+				ECE883C12C00C9CB0045C53D /* StrokeStyle.swift in Sources */,
 				ECA738C62BE60E9D00A4542E /* EraserPenStyle.swift in Sources */,
 				ECA738EA2BE6122E00A4542E /* CGPoint++.swift in Sources */,
 				ECA738A62BE6023F00A4542E /* GridUniforms.swift in Sources */,
@@ -778,9 +788,11 @@
 				ECA738EC2BE6124E00A4542E /* CGAffineTransform++.swift in Sources */,
 				EC35655C2BF0712A00A4E0BF /* Float++.swift in Sources */,
 				ECA738E22BE610D000A4542E /* GraphicRenderPass.swift in Sources */,
+				ECE883BF2C00AB440045C53D /* Stroke.swift in Sources */,
 				ECA738DC2BE6108D00A4542E /* StrokeRenderPass.swift in Sources */,
 				ECA738F42BE612A000A4542E /* Array++.swift in Sources */,
 				EC4538892BEBCAE000A86FEC /* Quad.swift in Sources */,
+				ECE883BD2C00AA170045C53D /* EraserStroke.swift in Sources */,
 				ECA7388F2BE600DA00A4542E /* Grid.metal in Sources */,
 				ECA738C92BE60EF700A4542E /* GraphicContext.swift in Sources */,
 				ECA738F62BE612B700A4542E /* MTLDevice++.swift in Sources */,

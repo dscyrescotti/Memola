@@ -43,14 +43,14 @@ class Pen: NSObject, ObservableObject, Identifiable {
     init(object: PenObject) {
         self.object = object
         self.id = object.objectID.uriRepresentation().absoluteString
-        self.style = (PenStroke.Style(rawValue: object.style) ?? .marker).anyPenStyle
+        self.style = (StrokeStyle(rawValue: object.style) ?? .marker).penStyle
         self.rgba = object.color
         self.thickness = object.thickness
         self.isSelected = object.isSelected
         super.init()
     }
 
-    var strokeStyle: PenStroke.Style {
+    var strokeStyle: StrokeStyle {
         style.strokeStyle
     }
 }

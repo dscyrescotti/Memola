@@ -16,22 +16,12 @@ protocol PenStyle {
     var color: [CGFloat] { get }
     var stepRate: CGFloat { get }
     var generator: any StrokeGenerator { get }
+    var strokeStyle: StrokeStyle { get }
 }
 
 extension PenStyle {
     @discardableResult
     func loadTexture(on device: MTLDevice) -> MTLTexture? {
         Textures.createPenTexture(with: textureName, on: device)
-    }
-
-    var strokeStyle: PenStroke.Style {
-        switch self {
-        case is MarkerPenStyle:
-            return .marker
-        case is EraserPenStyle:
-            return .eraser
-        default:
-            return .marker
-        }
     }
 }

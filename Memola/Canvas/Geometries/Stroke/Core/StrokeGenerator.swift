@@ -12,7 +12,7 @@ protocol StrokeGenerator {
 
     var configuration: Configuration { get set }
 
-    func begin(at point: CGPoint, on stroke: PenStroke)
-    func append(to point: CGPoint, on stroke: PenStroke)
-    func finish(at point: CGPoint, on stroke: PenStroke)
+    func begin(at point: CGPoint, on stroke: Stroke)
+    func append(to point: CGPoint, on stroke: Stroke)
+    func finish(at point: CGPoint, on stroke: Stroke)
 }

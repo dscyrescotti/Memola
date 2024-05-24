@@ -118,7 +118,7 @@ extension GraphicContext {
         let stroke = PenStroke(
             bounds: [point.x - pen.thickness, point.y - pen.thickness, point.x + pen.thickness, point.y + pen.thickness],
             color: pen.rgba,
-            style: pen.strokeStyle.rawValue,
+            style: pen.strokeStyle,
             createdAt: .now,
             thickness: pen.thickness
         )
@@ -126,7 +126,7 @@ extension GraphicContext {
             let stroke = StrokeObject(\.backgroundContext)
             stroke.bounds = _stroke.bounds
             stroke.color = _stroke.color
-            stroke.style = _stroke.style
+            stroke.style = _stroke.style.rawValue
             stroke.thickness = _stroke.thickness
             stroke.createdAt = _stroke.createdAt
             stroke.quads = []
@@ -143,7 +143,7 @@ extension GraphicContext {
 
     func appendStroke(with point: CGPoint) {
         guard let currentStroke else { return }
-        guard let currentPoint, point.distance(to: currentPoint) > currentStroke.thickness * currentStroke.penStyle.anyPenStyle.stepRate else {
+        guard let currentPoint, point.distance(to: currentPoint) > currentStroke.thickness * currentStroke.penStyle.stepRate else {
             return
         }
         currentStroke.append(to: point)
@@ -153,9 +153,7 @@ extension GraphicContext {
     func endStroke(at point: CGPoint) {
         guard currentPoint != nil, let currentStroke else { return }
         currentStroke.finish(at: point)
-        let batchIndex = currentStroke.batchIndex
-        let quads = Array(currentStroke.quads[batchIndex..<currentStroke.quads.count])
-        currentStroke.saveQuads(for: quads)
+        currentStroke.saveQuads(to: currentStroke.quads.endIndex)
         withPersistence(\.backgroundContext) { context in
             try context.saveIfNeeded()
             if let stroke = currentStroke.object {

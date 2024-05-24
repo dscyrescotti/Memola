@@ -23,6 +23,8 @@ struct EraserPenStyle: PenStyle {
     var generator: any StrokeGenerator {
         SolidPointStrokeGenerator(configuration: .init())
     }
+
+    var strokeStyle: StrokeStyle { .eraser }
 }
 
 extension PenStyle where Self == EraserPenStyle {
