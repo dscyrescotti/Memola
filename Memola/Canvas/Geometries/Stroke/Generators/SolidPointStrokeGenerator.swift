@@ -10,13 +10,13 @@ import Foundation
 struct SolidPointStrokeGenerator: StrokeGenerator {
     var configuration: Configuration
 
-    func begin(at point: CGPoint, on stroke: Stroke) {
+    func begin(at point: CGPoint, on stroke: any Stroke) {
         let point = stroke.movingAverage.addPoint(point)
         stroke.keyPoints.append(point)
         addPoint(point, on: stroke)
     }
 
-    func append(to point: CGPoint, on stroke: Stroke) {
+    func append(to point: CGPoint, on stroke: any Stroke) {
         guard stroke.keyPoints.endIndex > 0 else {
             return
         }
@@ -29,7 +29,9 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
             let control = CGPoint.middle(p1: start, p2: end)
             addCurve(from: start, to: end, by: control, on: stroke)
         case 3:
-            stroke.removeQuads(from: stroke.quadIndex + 1)
+            let quadIndex = stroke.quadIndex + 1
+            stroke.removeQuads(from: quadIndex)
+            stroke.saveQuads(to: quadIndex)
             let index = stroke.keyPoints.endIndex - 1
             var start = stroke.keyPoints[index - 2]
             var end = CGPoint.middle(p1: stroke.keyPoints[index - 2], p2: stroke.keyPoints[index - 1])
@@ -49,7 +51,7 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
         }
     }
 
-    func finish(at point: CGPoint, on stroke: Stroke) {
+    func finish(at point: CGPoint, on stroke: any Stroke) {
         switch stroke.keyPoints.endIndex {
         case 0...1:
             break
@@ -58,8 +60,10 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
         }
     }
 
-    private func smoothOutPath(on stroke: Stroke) {
-        stroke.removeQuads(from: stroke.quadIndex + 1)
+    private func smoothOutPath(on stroke: any Stroke) {
+        let quadIndex = stroke.quadIndex + 1
+        stroke.removeQuads(from: quadIndex)
+        stroke.saveQuads(to: quadIndex)
         adjustKeyPoint(on: stroke)
         switch stroke.keyPoints.endIndex {
         case 4:
@@ -79,7 +83,7 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
         stroke.quadIndex = stroke.quads.endIndex - 1
     }
 
-    private func adjustKeyPoint(on stroke: Stroke) {
+    private func adjustKeyPoint(on stroke: any Stroke) {
         let index = stroke.keyPoints.endIndex - 1
         let prev = stroke.keyPoints[index - 1]
         let current = stroke.keyPoints[index]
@@ -89,7 +93,7 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
         stroke.keyPoints[index] = point
     }
 
-    private func addPoint(_ point: CGPoint, on stroke: Stroke) {
+    private func addPoint(_ point: CGPoint, on stroke: any Stroke) {
         let rotation: CGFloat
         switch configuration.rotation {
         case .fixed:
@@ -100,7 +104,7 @@ struct SolidPointStrokeGenerator: StrokeGenerator {
         stroke.addQuad(at: point, rotation: rotation, shape: .rounded)
     }
 
-    private func addCurve(from start: CGPoint, to end: CGPoint, by control: CGPoint, on stroke: Stroke) {
+    private func addCurve(from start: CGPoint, to end: CGPoint, by control: CGPoint, on stroke: any Stroke) {
         let distance = start.distance(to: end)
         let factor: CGFloat
         switch configuration.granularity {

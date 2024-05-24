@@ -8,7 +8,8 @@
 import MetalKit
 import Foundation
 
-protocol Stroke: AnyObject, Drawable {
+protocol Stroke: AnyObject, Drawable, Hashable, Equatable {
+    var id: UUID { get set }
     var bounds: [CGFloat] { get set }
     var color: [CGFloat] { get set }
     var style: StrokeStyle { get set }
@@ -30,7 +31,6 @@ protocol Stroke: AnyObject, Drawable {
     func append(to point: CGPoint)
     func finish(at point: CGPoint)
 
-    func loadQuads()
     func addQuad(at point: CGPoint, rotation: CGFloat, shape: QuadShape)
     func removeQuads(from index: Int)
     func saveQuads(to index: Int)
@@ -50,7 +50,9 @@ extension Stroke {
     func isVisible(in bounds: CGRect) -> Bool {
         bounds.contains(strokeBounds) || bounds.intersects(strokeBounds)
     }
+}
 
+extension Stroke {
     func begin(at point: CGPoint) {
         penStyle.generator.begin(at: point, on: self)
     }
@@ -63,7 +65,9 @@ extension Stroke {
         penStyle.generator.finish(at: point, on: self)
         keyPoints.removeAll()
     }
+}
 
+extension Stroke {
     func addQuad(at point: CGPoint, rotation: CGFloat, shape: QuadShape) {
         let quad = Quad(
             origin: point,
@@ -83,7 +87,7 @@ extension Stroke {
 
 extension Stroke {
     func prepare(device: MTLDevice) {
-        guard texture != nil else { return }
+        guard texture == nil else { return }
         texture = penStyle.loadTexture(on: device)
     }
 
@@ -101,5 +105,15 @@ extension Stroke {
         )
         self.vertexBuffer = nil
         self.indexBuffer = nil
+    }
+}
+
+extension Stroke {
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

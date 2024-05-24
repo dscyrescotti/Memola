@@ -10,6 +10,7 @@ import CoreData
 import Foundation
 
 final class PenStroke: Stroke, @unchecked Sendable {
+    var id: UUID = UUID()
     var bounds: [CGFloat]
     var color: [CGFloat]
     var style: StrokeStyle
@@ -68,12 +69,6 @@ final class PenStroke: Stroke, @unchecked Sendable {
             guard let quad = quad as? QuadObject else { return nil }
             return Quad(object: quad)
         }
-    }
-
-    func removeQuads(from index: Int) {
-        let dropCount = quads.endIndex - max(1, index)
-        quads.removeLast(dropCount)
-        saveQuads(to: index)
     }
 
     func saveQuads(to index: Int) {
