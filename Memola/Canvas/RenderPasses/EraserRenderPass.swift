@@ -16,7 +16,7 @@ class EraserRenderPass: RenderPass {
     var eraserPipelineState: MTLRenderPipelineState?
     var quadPipelineState: MTLComputePipelineState?
 
-    var stroke: PenStroke?
+    var stroke: (any Stroke)?
     weak var graphicTexture: MTLTexture?
 
     init(renderer: Renderer) {

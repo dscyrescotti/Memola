@@ -104,7 +104,7 @@ extension Canvas {
 
 // MARK: - Graphic Context
 extension Canvas {
-    func beginTouch(at point: CGPoint, pen: Pen) -> PenStroke {
+    func beginTouch(at point: CGPoint, pen: Pen) -> any Stroke {
         graphicContext.beginStroke(at: point, pen: pen)
     }
 
@@ -124,7 +124,7 @@ extension Canvas {
         graphicContext.renderType = renderType
     }
 
-    func getNewlyAddedStroke() -> PenStroke? {
+    func getNewlyAddedStroke() -> (any Stroke)? {
         graphicContext.strokes.last
     }
 }

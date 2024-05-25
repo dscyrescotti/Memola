@@ -11,11 +11,12 @@ import CoreData
 import Foundation
 
 final class GraphicContext: @unchecked Sendable {
-    var strokes: [PenStroke] = []
+    var strokes: [any Stroke] = []
     var object: GraphicContextObject?
+    
+    var currentStroke: (any Stroke)?
+    var previousStroke: (any Stroke)?
 
-    var currentStroke: PenStroke?
-    var previousStroke: PenStroke?
     var currentPoint: CGPoint?
     var renderType: RenderType = .finished
     var vertices: [ViewPortVertex] = []
@@ -40,7 +41,7 @@ final class GraphicContext: @unchecked Sendable {
         guard !strokes.isEmpty else { return }
         let stroke = strokes.removeLast()
         withPersistence(\.backgroundContext) { [stroke] context in
-            stroke.object?.graphicContext = nil
+            stroke.stroke(as: PenStroke.self)?.object?.graphicContext = nil
             try context.saveIfNeeded()
         }
         previousStroke = nil
@@ -51,7 +52,7 @@ final class GraphicContext: @unchecked Sendable {
         case .stroke(let stroke):
             strokes.append(stroke)
             withPersistence(\.backgroundContext) { [weak self, stroke] context in
-                stroke.object?.graphicContext = self?.object
+                stroke.stroke(as: PenStroke.self)?.object?.graphicContext = self?.object
                 try context.saveIfNeeded()
             }
             previousStroke = nil
@@ -92,7 +93,7 @@ extension GraphicContext {
     func loadQuads(_ bounds: CGRect) {
         for stroke in self.strokes {
             guard stroke.isVisible(in: bounds), stroke.isEmpty else { continue }
-            stroke.loadQuads()
+            stroke.stroke(as: PenStroke.self)?.loadQuads()
         }
     }
 }
@@ -114,7 +115,7 @@ extension GraphicContext: Drawable {
 }
 
 extension GraphicContext {
-    func beginStroke(at point: CGPoint, pen: Pen) -> PenStroke {
+    func beginStroke(at point: CGPoint, pen: Pen) -> any Stroke {
         let stroke = PenStroke(
             bounds: [point.x - pen.thickness, point.y - pen.thickness, point.x + pen.thickness, point.y + pen.thickness],
             color: pen.rgba,
@@ -156,7 +157,7 @@ extension GraphicContext {
         currentStroke.saveQuads(to: currentStroke.quads.endIndex)
         withPersistence(\.backgroundContext) { context in
             try context.saveIfNeeded()
-            if let stroke = currentStroke.object {
+            if let stroke = currentStroke.stroke(as: PenStroke.self)?.object {
                 context.refresh(stroke, mergeChanges: false)
             }
         }
@@ -169,7 +170,7 @@ extension GraphicContext {
         if !strokes.isEmpty {
             let stroke = strokes.removeLast()
             withPersistence(\.backgroundContext) { [graphicContext = object, _stroke = stroke] context in
-                if let stroke = _stroke.object {
+                if let stroke = _stroke.stroke(as: PenStroke.self)?.object {
                     graphicContext?.strokes.remove(stroke)
                     context.delete(stroke)
                 }

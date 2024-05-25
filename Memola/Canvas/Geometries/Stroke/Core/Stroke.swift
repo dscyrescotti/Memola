@@ -117,3 +117,9 @@ extension Stroke {
         hasher.combine(id)
     }
 }
+
+extension Stroke {
+    func stroke<S: Stroke>(as type: S.Type) -> S? {
+        self as? S
+    }
+}

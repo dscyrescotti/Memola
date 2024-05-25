@@ -53,7 +53,7 @@ class History: ObservableObject {
             switch event {
             case .stroke(let _stroke):
                 withPersistence(\.backgroundContext) { context in
-                    if let stroke = _stroke.object {
+                    if let stroke = _stroke.stroke(as: PenStroke.self)?.object {
                         context.delete(stroke)
                     }
                     try context.saveIfNeeded()

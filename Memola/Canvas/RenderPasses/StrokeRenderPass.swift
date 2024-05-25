@@ -18,7 +18,7 @@ class StrokeRenderPass: RenderPass {
     var quadPipelineState: MTLComputePipelineState?
     weak var graphicPipelineState: MTLRenderPipelineState?
 
-    var stroke: PenStroke?
+    var stroke: (any Stroke)?
     var strokeTexture: MTLTexture?
 
     init(renderer: Renderer) {
