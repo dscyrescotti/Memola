@@ -9,9 +9,10 @@ import Combine
 import MetalKit
 import CoreData
 import Foundation
+import GameplayKit
 
 final class GraphicContext: @unchecked Sendable {
-    var strokes: [any Stroke] = []
+    var strokes: GKRTree = GKRTree(maxNumberOfChildren: 5)
     var object: GraphicContextObject?
     
     var currentStroke: (any Stroke)?
@@ -37,20 +38,26 @@ final class GraphicContext: @unchecked Sendable {
         ]
     }
 
-    func undoGraphic() {
-        guard !strokes.isEmpty else { return }
-        let stroke = strokes.removeLast()
-        withPersistence(\.backgroundContext) { [stroke] context in
-            stroke.stroke(as: PenStroke.self)?.object?.graphicContext = nil
-            try context.saveIfNeeded()
+    func undoGraphic(for event: HistoryEvent) {
+        switch event {
+        case .stroke(let stroke):
+            guard let stroke = stroke as? PenStroke else { return }
+            let (min, max) = stroke.strokeBounds.boundingRect
+            strokes.removeElement(stroke, boundingRectMin: min, boundingRectMax: max)
+            withPersistence(\.backgroundContext) { [stroke] context in
+                stroke.stroke(as: PenStroke.self)?.object?.graphicContext = nil
+                try context.saveIfNeeded()
+            }
+            previousStroke = nil
         }
-        previousStroke = nil
     }
 
     func redoGraphic(for event: HistoryEvent) {
         switch event {
         case .stroke(let stroke):
-            strokes.append(stroke)
+            guard let stroke = stroke as? PenStroke else { return }
+            let (min, max) = stroke.strokeBounds.boundingRect
+            strokes.addElement(stroke, boundingRectMin: min, boundingRectMax: max, splitStrategy: .reduceOverlap)
             withPersistence(\.backgroundContext) { [weak self, stroke] context in
                 stroke.stroke(as: PenStroke.self)?.object?.graphicContext = self?.object
                 try context.saveIfNeeded()
@@ -65,9 +72,11 @@ extension GraphicContext {
         guard let object else { return }
         let queue = OperationQueue()
         queue.qualityOfService = .userInteractive
-        self.strokes = object.strokes.compactMap { stroke -> PenStroke? in
-            guard let stroke = stroke as? StrokeObject else { return nil }
+        object.strokes.forEach { stroke in
+            guard let stroke = stroke as? StrokeObject else { return }
             let _stroke = PenStroke(object: stroke)
+            let (min, max) = _stroke.strokeBounds.boundingRect
+            strokes.addElement(_stroke, boundingRectMin: min, boundingRectMax: max, splitStrategy: .reduceOverlap)
             if _stroke.isVisible(in: bounds) {
                 let id = stroke.objectID
                 queue.addOperation {
@@ -85,15 +94,14 @@ extension GraphicContext {
                     context.refresh(stroke, mergeChanges: false)
                 }
             }
-            return _stroke
         }
         queue.waitUntilAllOperationsAreFinished()
     }
 
     func loadQuads(_ bounds: CGRect) {
-        for stroke in self.strokes {
-            guard stroke.isVisible(in: bounds), stroke.isEmpty else { continue }
-            stroke.stroke(as: PenStroke.self)?.loadQuads()
+        let (min, max) = bounds.boundingRect
+        strokes.elements(inBoundingRectMin: min, rectMax: max).forEach { stroke in
+            (stroke as? PenStroke)?.loadQuads()
         }
     }
 }
@@ -135,7 +143,6 @@ extension GraphicContext {
             graphicContext?.strokes.add(stroke)
             _stroke.object = stroke
         }
-        strokes.append(stroke)
         currentStroke = stroke
         currentPoint = point
         currentStroke?.begin(at: point)
@@ -155,11 +162,16 @@ extension GraphicContext {
         guard currentPoint != nil, let currentStroke else { return }
         currentStroke.finish(at: point)
         currentStroke.saveQuads(to: currentStroke.quads.endIndex)
-        withPersistence(\.backgroundContext) { context in
+        withPersistence(\.backgroundContext) { [currentStroke, bounds = currentStroke.bounds] context in
+            currentStroke.stroke(as: PenStroke.self)?.object?.bounds = bounds
             try context.saveIfNeeded()
             if let stroke = currentStroke.stroke(as: PenStroke.self)?.object {
                 context.refresh(stroke, mergeChanges: false)
             }
+        }
+        if let stroke = currentStroke.stroke(as: PenStroke.self) {
+            let (min, max) = stroke.strokeBounds.boundingRect
+            strokes.addElement(stroke, boundingRectMin: min, boundingRectMax: max, splitStrategy: .reduceOverlap)
         }
         previousStroke = currentStroke
         self.currentStroke = nil
@@ -167,8 +179,7 @@ extension GraphicContext {
     }
 
     func cancelStroke() {
-        if !strokes.isEmpty {
-            let stroke = strokes.removeLast()
+        if let stroke = currentStroke {
             withPersistence(\.backgroundContext) { [graphicContext = object, _stroke = stroke] context in
                 if let stroke = _stroke.stroke(as: PenStroke.self)?.object {
                     graphicContext?.strokes.remove(stroke)

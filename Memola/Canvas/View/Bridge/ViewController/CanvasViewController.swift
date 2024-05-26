@@ -323,9 +323,9 @@ extension CanvasViewController {
 
 extension CanvasViewController {
     func historyUndid() {
-        guard history.undo() else { return }
+        guard let event = history.undo() else { return }
         drawingView.disableUserInteraction()
-        canvas.graphicContext.undoGraphic()
+        canvas.graphicContext.undoGraphic(for: event)
         renderer.redrawsGraphicRender = true
         renderer.resize(on: renderView, to: renderView.drawableSize)
         renderView.draw()

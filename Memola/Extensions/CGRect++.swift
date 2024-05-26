@@ -5,6 +5,7 @@
 //  Created by Dscyre Scotti on 5/4/24.
 //
 
+import MetalKit
 import Foundation
 
 extension CGRect {
@@ -19,5 +20,9 @@ extension CGRect {
 
     func muliply(by factor: CGFloat) -> CGRect {
         CGRect(origin: origin.muliply(by: factor), size: size.multiply(by: factor))
+    }
+
+    var boundingRect: (min: vector_float2, max: vector_float2) {
+        (.init(minX.float, minY.float), .init(maxX.float, maxY.float))
     }
 }

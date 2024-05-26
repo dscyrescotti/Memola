@@ -9,7 +9,7 @@ import MetalKit
 import CoreData
 import Foundation
 
-final class PenStroke: Stroke, @unchecked Sendable {
+final class PenStroke: NSObject, Stroke, @unchecked Sendable {
     var id: UUID = UUID()
     var bounds: [CGFloat]
     var color: [CGFloat]
@@ -74,11 +74,14 @@ final class PenStroke: Stroke, @unchecked Sendable {
     func saveQuads(to index: Int) {
         let quads = Array(quads[batchIndex..<index])
         batchIndex = index
-        withPersistence(\.backgroundContext) { [weak self, object] context in
-            guard let self else { return }
-            var topLeft: CGPoint = CGPoint(x: bounds[0], y: bounds[1])
-            var bottomRight: CGPoint = CGPoint(x: bounds[2], y: bounds[3])
-            for _quad in quads {
+        var topLeft: CGPoint = CGPoint(x: bounds[0], y: bounds[1])
+        var bottomRight: CGPoint = CGPoint(x: bounds[2], y: bounds[3])
+        for _quad in quads {
+            topLeft.x = min(_quad.originX.cgFloat, topLeft.x)
+            topLeft.y = min(_quad.originY.cgFloat, topLeft.y)
+            bottomRight.x = max(_quad.originX.cgFloat, bottomRight.x)
+            bottomRight.y = max(_quad.originY.cgFloat, bottomRight.y)
+            withPersistence(\.backgroundContext) { [object] context in
                 let quad = QuadObject(\.backgroundContext)
                 quad.originX = _quad.originX.cgFloat
                 quad.originY = _quad.originY.cgFloat
@@ -88,13 +91,8 @@ final class PenStroke: Stroke, @unchecked Sendable {
                 quad.color = _quad.getColor()
                 quad.stroke = object
                 object?.quads.add(quad)
-                topLeft.x = min(quad.originX, topLeft.x)
-                topLeft.y = min(quad.originY, topLeft.y)
-                bottomRight.x = max(quad.originX, bottomRight.x)
-                bottomRight.y = max(quad.originY, bottomRight.y)
             }
-            bounds = [topLeft.x, topLeft.y, bottomRight.x, bottomRight.y]
-            object?.bounds = bounds
         }
+        bounds = [topLeft.x, topLeft.y, bottomRight.x, bottomRight.y]
     }
 }

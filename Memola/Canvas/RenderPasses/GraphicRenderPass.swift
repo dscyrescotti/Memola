@@ -45,11 +45,12 @@ class GraphicRenderPass: RenderPass {
         let graphicContext = canvas.graphicContext
         if renderer.redrawsGraphicRender {
             canvas.setGraphicRenderType(.finished)
-            for stroke in graphicContext.strokes {
+            let (min, max) = canvas.bounds.boundingRect
+            for stroke in graphicContext.strokes.elements(inBoundingRectMin: min, rectMax: max) {
+                guard let stroke = stroke as? (any Stroke) else { return }
                 if graphicContext.previousStroke === stroke || graphicContext.currentStroke === stroke {
                     continue
                 }
-                guard stroke.isVisible(in: canvas.bounds) else { continue }
                 descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
                 clearsTexture = false
                 switch stroke.style {
