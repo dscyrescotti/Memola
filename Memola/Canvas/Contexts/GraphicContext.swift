@@ -162,8 +162,8 @@ extension GraphicContext {
         guard currentPoint != nil, let currentStroke else { return }
         currentStroke.finish(at: point)
         currentStroke.saveQuads(to: currentStroke.quads.endIndex)
-        withPersistence(\.backgroundContext) { [currentStroke, bounds = currentStroke.bounds] context in
-            currentStroke.stroke(as: PenStroke.self)?.object?.bounds = bounds
+        withPersistence(\.backgroundContext) { [currentStroke] context in
+            currentStroke.stroke(as: PenStroke.self)?.object?.bounds = currentStroke.bounds
             try context.saveIfNeeded()
             if let stroke = currentStroke.stroke(as: PenStroke.self)?.object {
                 context.refresh(stroke, mergeChanges: false)

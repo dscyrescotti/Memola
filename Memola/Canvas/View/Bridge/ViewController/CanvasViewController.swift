@@ -141,8 +141,8 @@ extension CanvasViewController {
 
     func updateDocumentBounds() {
         var bounds = scrollView.bounds.muliply(by: drawingView.ratio / scrollView.zoomScale)
-        let xDelta = bounds.minX * 0.05
-        let yDelta = bounds.minY * 0.05
+        let xDelta = bounds.minX * 0.2
+        let yDelta = bounds.minY * 0.2
         bounds.origin.x -= xDelta
         bounds.origin.y -= yDelta
         bounds.size.width += xDelta * 2

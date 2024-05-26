@@ -77,6 +77,11 @@ extension Stroke {
             color: color
         )
         quads.append(quad)
+        let halfSize = quad.size.cgFloat / 2
+        bounds[0] = min(quad.originX.cgFloat - halfSize, bounds[0])
+        bounds[1] = min(quad.originY.cgFloat - halfSize, bounds[1])
+        bounds[2] = max(quad.originX.cgFloat + halfSize, bounds[2])
+        bounds[3] = max(quad.originY.cgFloat + halfSize, bounds[3])
     }
 
     func removeQuads(from index: Int) {

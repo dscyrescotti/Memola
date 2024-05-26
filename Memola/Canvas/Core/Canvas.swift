@@ -40,7 +40,7 @@ final class Canvas: ObservableObject, Identifiable, @unchecked Sendable {
 
     var hasValidStroke: Bool {
         if let currentStroke = graphicContext.currentStroke {
-            return Date.now.timeIntervalSince(currentStroke.createdAt) * 1000 > 80
+            return Date.now.timeIntervalSince(currentStroke.createdAt) * 1000 > 100
         }
         return false
     }
