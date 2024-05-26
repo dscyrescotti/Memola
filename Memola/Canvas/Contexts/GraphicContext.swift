@@ -42,7 +42,7 @@ final class GraphicContext: @unchecked Sendable {
         switch event {
         case .stroke(let stroke):
             guard let stroke = stroke as? PenStroke else { return }
-            let (min, max) = stroke.strokeBounds.boundingRect
+            let (min, max) = stroke.strokeBounds.boundingBox
             strokes.removeElement(stroke, boundingRectMin: min, boundingRectMax: max)
             withPersistence(\.backgroundContext) { [stroke] context in
                 stroke.stroke(as: PenStroke.self)?.object?.graphicContext = nil
@@ -56,8 +56,8 @@ final class GraphicContext: @unchecked Sendable {
         switch event {
         case .stroke(let stroke):
             guard let stroke = stroke as? PenStroke else { return }
-            let (min, max) = stroke.strokeBounds.boundingRect
-            strokes.addElement(stroke, boundingRectMin: min, boundingRectMax: max, splitStrategy: .reduceOverlap)
+            let boundingBox = stroke.strokeBounds.boundingBox
+            strokes.addElement(stroke, boundingRectMin: boundingBox.min, boundingRectMax: boundingBox.max, splitStrategy: .reduceOverlap)
             withPersistence(\.backgroundContext) { [weak self, stroke] context in
                 stroke.stroke(as: PenStroke.self)?.object?.graphicContext = self?.object
                 try context.saveIfNeeded()
@@ -75,8 +75,8 @@ extension GraphicContext {
         object.strokes.forEach { stroke in
             guard let stroke = stroke as? StrokeObject else { return }
             let _stroke = PenStroke(object: stroke)
-            let (min, max) = _stroke.strokeBounds.boundingRect
-            strokes.addElement(_stroke, boundingRectMin: min, boundingRectMax: max, splitStrategy: .reduceOverlap)
+            let boundingBox = _stroke.strokeBounds.boundingBox
+            strokes.addElement(_stroke, boundingRectMin: boundingBox.min, boundingRectMax: boundingBox.max, splitStrategy: .reduceOverlap)
             if _stroke.isVisible(in: bounds) {
                 let id = stroke.objectID
                 queue.addOperation {
@@ -99,8 +99,8 @@ extension GraphicContext {
     }
 
     func loadQuads(_ bounds: CGRect) {
-        let (min, max) = bounds.boundingRect
-        strokes.elements(inBoundingRectMin: min, rectMax: max).forEach { stroke in
+        let boundingBox = bounds.boundingBox
+        strokes.elements(inBoundingRectMin: boundingBox.min, rectMax: boundingBox.max).forEach { stroke in
             (stroke as? PenStroke)?.loadQuads()
         }
     }
@@ -170,8 +170,8 @@ extension GraphicContext {
             }
         }
         if let stroke = currentStroke.stroke(as: PenStroke.self) {
-            let (min, max) = stroke.strokeBounds.boundingRect
-            strokes.addElement(stroke, boundingRectMin: min, boundingRectMax: max, splitStrategy: .reduceOverlap)
+            let boundingBox = stroke.strokeBounds.boundingBox
+            strokes.addElement(stroke, boundingRectMin: boundingBox.min, boundingRectMax: boundingBox.max, splitStrategy: .reduceOverlap)
         }
         previousStroke = currentStroke
         self.currentStroke = nil

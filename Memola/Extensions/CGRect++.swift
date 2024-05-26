@@ -22,7 +22,7 @@ extension CGRect {
         CGRect(origin: origin.muliply(by: factor), size: size.multiply(by: factor))
     }
 
-    var boundingRect: (min: vector_float2, max: vector_float2) {
+    var boundingBox: (min: vector_float2, max: vector_float2) {
         (.init(minX.float, minY.float), .init(maxX.float, maxY.float))
     }
 }
