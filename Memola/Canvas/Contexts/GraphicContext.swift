@@ -154,11 +154,12 @@ extension GraphicContext {
     func endStroke(at point: CGPoint) {
         guard currentPoint != nil, let currentStroke else { return }
         currentStroke.finish(at: point)
-        currentStroke.saveQuads(to: currentStroke.quads.endIndex)
-        withPersistence(\.backgroundContext) { context in
+        withPersistence(\.backgroundContext) { [currentStroke] context in
+            guard let stroke = currentStroke.stroke(as: PenStroke.self) else { return }
+            stroke.object?.bounds = stroke.bounds
             try context.saveIfNeeded()
-            if let stroke = currentStroke.stroke(as: PenStroke.self)?.object {
-                context.refresh(stroke, mergeChanges: false)
+            if let object = stroke.object {
+                context.refresh(object, mergeChanges: false)
             }
         }
         previousStroke = currentStroke

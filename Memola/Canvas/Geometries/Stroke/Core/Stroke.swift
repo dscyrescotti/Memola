@@ -18,8 +18,6 @@ protocol Stroke: AnyObject, Drawable, Hashable, Equatable {
     var quads: [Quad] { get set }
     var penStyle: any PenStyle { get set }
 
-    var batchIndex: Int { get set }
-    var quadIndex: Int { get set }
     var keyPoints: [CGPoint] { get set }
     var movingAverage: MovingAverage { get set }
 
@@ -32,8 +30,6 @@ protocol Stroke: AnyObject, Drawable, Hashable, Equatable {
     func finish(at point: CGPoint)
 
     func addQuad(at point: CGPoint, rotation: CGFloat, shape: QuadShape)
-    func removeQuads(from index: Int)
-    func saveQuads(to index: Int)
 }
 
 extension Stroke {
@@ -77,11 +73,6 @@ extension Stroke {
             color: color
         )
         quads.append(quad)
-    }
-
-    func removeQuads(from index: Int) {
-        let dropCount = quads.endIndex - max(1, index)
-        quads.removeLast(dropCount)
     }
 }
 

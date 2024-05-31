@@ -19,8 +19,6 @@ final class PenStroke: Stroke, @unchecked Sendable {
     var quads: [Quad]
     var penStyle: any PenStyle
 
-    var batchIndex: Int = 0
-    var quadIndex: Int = -1
     var keyPoints: [CGPoint] = []
     var movingAverage: MovingAverage = MovingAverage(windowSize: 3)
 
@@ -71,30 +69,31 @@ final class PenStroke: Stroke, @unchecked Sendable {
         }
     }
 
-    func saveQuads(to index: Int) {
-        let quads = Array(quads[batchIndex..<index])
-        batchIndex = index
-        withPersistence(\.backgroundContext) { [weak self, object] context in
-            guard let self else { return }
-            var topLeft: CGPoint = CGPoint(x: bounds[0], y: bounds[1])
-            var bottomRight: CGPoint = CGPoint(x: bounds[2], y: bounds[3])
-            for _quad in quads {
-                let quad = QuadObject(\.backgroundContext)
-                quad.originX = _quad.originX.cgFloat
-                quad.originY = _quad.originY.cgFloat
-                quad.size = _quad.size.cgFloat
-                quad.rotation = _quad.rotation.cgFloat
-                quad.shape = _quad.shape
-                quad.color = _quad.getColor()
-                quad.stroke = object
-                object?.quads.add(quad)
-                topLeft.x = min(quad.originX, topLeft.x)
-                topLeft.y = min(quad.originY, topLeft.y)
-                bottomRight.x = max(quad.originX, bottomRight.x)
-                bottomRight.y = max(quad.originY, bottomRight.y)
-            }
-            bounds = [topLeft.x, topLeft.y, bottomRight.x, bottomRight.y]
-            object?.bounds = bounds
+    func addQuad(at point: CGPoint, rotation: CGFloat, shape: QuadShape) {
+        let quad = Quad(
+            origin: point,
+            size: thickness,
+            rotation: rotation,
+            shape: shape.rawValue,
+            color: color
+        )
+        quads.append(quad)
+        bounds = [
+            min(quad.originX.cgFloat, bounds[0]),
+            min(quad.originY.cgFloat, bounds[1]),
+            max(quad.originX.cgFloat, bounds[2]),
+            max(quad.originY.cgFloat, bounds[3])
+        ]
+        withPersistence(\.backgroundContext) { [object, _quad = quad] context in
+            let quad = QuadObject(\.backgroundContext)
+            quad.originX = _quad.originX.cgFloat
+            quad.originY = _quad.originY.cgFloat
+            quad.size = _quad.size.cgFloat
+            quad.rotation = _quad.rotation.cgFloat
+            quad.shape = _quad.shape
+            quad.color = _quad.getColor()
+            quad.stroke = object
+            object?.quads.add(quad)
         }
     }
 }

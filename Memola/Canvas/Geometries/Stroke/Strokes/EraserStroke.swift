@@ -18,8 +18,6 @@ final class EraserStroke: Stroke, @unchecked Sendable {
     var quads: [Quad]
     var penStyle: any PenStyle
 
-    var batchIndex: Int = 0
-    var quadIndex: Int = -1
     var keyPoints: [CGPoint] = []
     var movingAverage: MovingAverage = MovingAverage(windowSize: 3)
 
@@ -42,9 +40,5 @@ final class EraserStroke: Stroke, @unchecked Sendable {
         self.thickness = thickness
         self.quads = quads
         self.penStyle = style.penStyle
-    }
-
-    func saveQuads(to index: Int) {
-        
     }
 }
