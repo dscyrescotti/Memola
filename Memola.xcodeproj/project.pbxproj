@@ -12,6 +12,7 @@
 		EC0D14262BF7A8C9009BFE5F /* PenObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14252BF7A8C9009BFE5F /* PenObject.swift */; };
 		EC0D14282BF7BF20009BFE5F /* ContextMenuViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14272BF7BF20009BFE5F /* ContextMenuViewModifier.swift */; };
 		EC1B783D2BFA0AC9005A34E2 /* Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1B783C2BFA0AC9005A34E2 /* Toolbar.swift */; };
+		EC2106AD2C10C2A700FBE27C /* AnyStroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2106AC2C10C2A700FBE27C /* AnyStroke.swift */; };
 		EC2BEBF42C0F5FF7005DB0AF /* RTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2BEBF32C0F5FF7005DB0AF /* RTree.swift */; };
 		EC2BEBF62C0F600D005DB0AF /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2BEBF52C0F600D005DB0AF /* Box.swift */; };
 		EC2BEBF82C0F601A005DB0AF /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2BEBF72C0F601A005DB0AF /* Node.swift */; };
@@ -98,6 +99,7 @@
 		EC0D14252BF7A8C9009BFE5F /* PenObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenObject.swift; sourceTree = "<group>"; };
 		EC0D14272BF7BF20009BFE5F /* ContextMenuViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenuViewModifier.swift; sourceTree = "<group>"; };
 		EC1B783C2BFA0AC9005A34E2 /* Toolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toolbar.swift; sourceTree = "<group>"; };
+		EC2106AC2C10C2A700FBE27C /* AnyStroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyStroke.swift; sourceTree = "<group>"; };
 		EC2BEBF32C0F5FF7005DB0AF /* RTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTree.swift; sourceTree = "<group>"; };
 		EC2BEBF52C0F600D005DB0AF /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 		EC2BEBF72C0F601A005DB0AF /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
@@ -653,6 +655,7 @@
 		ECE883B92C009DCA0045C53D /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				EC2106AC2C10C2A700FBE27C /* AnyStroke.swift */,
 				ECE883BE2C00AB440045C53D /* Stroke.swift */,
 				ECA738D32BE60F9100A4542E /* StrokeGenerator.swift */,
 				ECE883C02C00C9CB0045C53D /* StrokeStyle.swift */,
@@ -834,6 +837,7 @@
 				EC2BEBF82C0F601A005DB0AF /* Node.swift in Sources */,
 				ECA738A02BE601E400A4542E /* ViewPortVertex.swift in Sources */,
 				EC0D14282BF7BF20009BFE5F /* ContextMenuViewModifier.swift in Sources */,
+				EC2106AD2C10C2A700FBE27C /* AnyStroke.swift in Sources */,
 				ECA738BC2BE60E0300A4542E /* Tool.swift in Sources */,
 				ECA738972BE6014200A4542E /* Graphic.metal in Sources */,
 				ECA7388A2BE6006A00A4542E /* PipelineStates.swift in Sources */,

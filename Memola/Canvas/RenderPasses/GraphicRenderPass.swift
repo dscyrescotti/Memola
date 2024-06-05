@@ -45,9 +45,8 @@ class GraphicRenderPass: RenderPass {
         let graphicContext = canvas.graphicContext
         if renderer.redrawsGraphicRender {
             canvas.setGraphicRenderType(.finished)
-            let strokes = graphicContext.tree.search(box: canvas.bounds.box)
-            print(strokes.count)
-            for stroke in strokes {
+            for _stroke in graphicContext.tree.search(box: canvas.bounds.box) {
+                let stroke = _stroke.value
                 if graphicContext.previousStroke === stroke || graphicContext.currentStroke === stroke {
                     continue
                 }
