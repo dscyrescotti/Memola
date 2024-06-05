@@ -20,4 +20,8 @@ extension CGRect {
     func muliply(by factor: CGFloat) -> CGRect {
         CGRect(origin: origin.muliply(by: factor), size: size.multiply(by: factor))
     }
+
+    var box: Box {
+        Box(minX: minX, minY: minY, maxX: maxX, maxY: maxY)
+    }
 }

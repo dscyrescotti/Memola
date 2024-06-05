@@ -12,6 +12,10 @@
 		EC0D14262BF7A8C9009BFE5F /* PenObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14252BF7A8C9009BFE5F /* PenObject.swift */; };
 		EC0D14282BF7BF20009BFE5F /* ContextMenuViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D14272BF7BF20009BFE5F /* ContextMenuViewModifier.swift */; };
 		EC1B783D2BFA0AC9005A34E2 /* Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1B783C2BFA0AC9005A34E2 /* Toolbar.swift */; };
+		EC2106AD2C10C2A700FBE27C /* AnyStroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2106AC2C10C2A700FBE27C /* AnyStroke.swift */; };
+		EC2BEBF42C0F5FF7005DB0AF /* RTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2BEBF32C0F5FF7005DB0AF /* RTree.swift */; };
+		EC2BEBF62C0F600D005DB0AF /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2BEBF52C0F600D005DB0AF /* Box.swift */; };
+		EC2BEBF82C0F601A005DB0AF /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2BEBF72C0F601A005DB0AF /* Node.swift */; };
 		EC3565522BEFC65F00A4E0BF /* NSManagedObjectContext++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565512BEFC65F00A4E0BF /* NSManagedObjectContext++.swift */; };
 		EC3565542BEFC6AD00A4E0BF /* View++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565532BEFC6AD00A4E0BF /* View++.swift */; };
 		EC3565562BEFC7B300A4E0BF /* NSManagedObject++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */; };
@@ -95,6 +99,10 @@
 		EC0D14252BF7A8C9009BFE5F /* PenObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenObject.swift; sourceTree = "<group>"; };
 		EC0D14272BF7BF20009BFE5F /* ContextMenuViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenuViewModifier.swift; sourceTree = "<group>"; };
 		EC1B783C2BFA0AC9005A34E2 /* Toolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toolbar.swift; sourceTree = "<group>"; };
+		EC2106AC2C10C2A700FBE27C /* AnyStroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyStroke.swift; sourceTree = "<group>"; };
+		EC2BEBF32C0F5FF7005DB0AF /* RTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTree.swift; sourceTree = "<group>"; };
+		EC2BEBF52C0F600D005DB0AF /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
+		EC2BEBF72C0F601A005DB0AF /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		EC3565512BEFC65F00A4E0BF /* NSManagedObjectContext++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext++.swift"; sourceTree = "<group>"; };
 		EC3565532BEFC6AD00A4E0BF /* View++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View++.swift"; sourceTree = "<group>"; };
 		EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObject++.swift"; sourceTree = "<group>"; };
@@ -215,6 +223,16 @@
 				EC1B783C2BFA0AC9005A34E2 /* Toolbar.swift */,
 			);
 			path = Toolbar;
+			sourceTree = "<group>";
+		};
+		EC2BEBF22C0F5FE1005DB0AF /* RTree */ = {
+			isa = PBXGroup;
+			children = (
+				EC2BEBF32C0F5FF7005DB0AF /* RTree.swift */,
+				EC2BEBF52C0F600D005DB0AF /* Box.swift */,
+				EC2BEBF72C0F601A005DB0AF /* Node.swift */,
+			);
+			path = RTree;
 			sourceTree = "<group>";
 		};
 		EC5050042BF65CBC00B4D86E /* Core */ = {
@@ -362,6 +380,7 @@
 		ECA7387E2BE5FE4200A4542E /* Canvas */ = {
 			isa = PBXGroup;
 			children = (
+				EC2BEBF22C0F5FE1005DB0AF /* RTree */,
 				ECA738F92BE6130000A4542E /* Geometries */,
 				ECA738812BE5FEEE00A4542E /* Abstracts */,
 				ECA738992BE6018900A4542E /* Buffers */,
@@ -636,6 +655,7 @@
 		ECE883B92C009DCA0045C53D /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				EC2106AC2C10C2A700FBE27C /* AnyStroke.swift */,
 				ECE883BE2C00AB440045C53D /* Stroke.swift */,
 				ECA738D32BE60F9100A4542E /* StrokeGenerator.swift */,
 				ECE883C02C00C9CB0045C53D /* StrokeStyle.swift */,
@@ -768,6 +788,7 @@
 				ECA738A62BE6023F00A4542E /* GridUniforms.swift in Sources */,
 				ECA738D72BE60FC100A4542E /* SolidPointStrokeGenerator.swift in Sources */,
 				EC3565542BEFC6AD00A4E0BF /* View++.swift in Sources */,
+				EC2BEBF62C0F600D005DB0AF /* Box.swift in Sources */,
 				ECA738832BE5FEFE00A4542E /* RenderPass.swift in Sources */,
 				ECEC01A82BEE11BA006DA24C /* QuadShape.swift in Sources */,
 				ECA738862BE5FF2500A4542E /* Canvas.swift in Sources */,
@@ -794,6 +815,7 @@
 				EC4538892BEBCAE000A86FEC /* Quad.swift in Sources */,
 				ECE883BD2C00AA170045C53D /* EraserStroke.swift in Sources */,
 				ECA7388F2BE600DA00A4542E /* Grid.metal in Sources */,
+				EC2BEBF42C0F5FF7005DB0AF /* RTree.swift in Sources */,
 				ECA738C92BE60EF700A4542E /* GraphicContext.swift in Sources */,
 				ECA738F62BE612B700A4542E /* MTLDevice++.swift in Sources */,
 				EC0D14212BF79C73009BFE5F /* ToolObject.swift in Sources */,
@@ -812,8 +834,10 @@
 				ECA738C12BE60E5300A4542E /* PenStyle.swift in Sources */,
 				ECA738DE2BE610A000A4542E /* ViewPortRenderPass.swift in Sources */,
 				EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */,
+				EC2BEBF82C0F601A005DB0AF /* Node.swift in Sources */,
 				ECA738A02BE601E400A4542E /* ViewPortVertex.swift in Sources */,
 				EC0D14282BF7BF20009BFE5F /* ContextMenuViewModifier.swift in Sources */,
+				EC2106AD2C10C2A700FBE27C /* AnyStroke.swift in Sources */,
 				ECA738BC2BE60E0300A4542E /* Tool.swift in Sources */,
 				ECA738972BE6014200A4542E /* Graphic.metal in Sources */,
 				ECA7388A2BE6006A00A4542E /* PipelineStates.swift in Sources */,

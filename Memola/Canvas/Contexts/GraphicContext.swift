@@ -11,7 +11,7 @@ import CoreData
 import Foundation
 
 final class GraphicContext: @unchecked Sendable {
-    var strokes: [any Stroke] = []
+    var tree: RTree = RTree<AnyStroke>(maxEntries: 8)
     var object: GraphicContextObject?
     
     var currentStroke: (any Stroke)?
@@ -37,20 +37,26 @@ final class GraphicContext: @unchecked Sendable {
         ]
     }
 
-    func undoGraphic() {
-        guard !strokes.isEmpty else { return }
-        let stroke = strokes.removeLast()
-        withPersistence(\.backgroundContext) { [stroke] context in
-            stroke.stroke(as: PenStroke.self)?.object?.graphicContext = nil
-            try context.saveIfNeeded()
+    func undoGraphic(for event: HistoryEvent) {
+        switch event {
+        case .stroke(let stroke):
+            guard let _stroke = stroke.stroke(as: PenStroke.self) else { return }
+            let deletedStroke = tree.remove(_stroke.anyStroke, in: _stroke.strokeBox)
+            withPersistence(\.backgroundContext) { [stroke = deletedStroke] context in
+                stroke?.stroke(as: PenStroke.self)?.object?.graphicContext = nil
+                try context.saveIfNeeded()
+            }
+            previousStroke = nil
         }
-        previousStroke = nil
+
     }
 
     func redoGraphic(for event: HistoryEvent) {
         switch event {
         case .stroke(let stroke):
-            strokes.append(stroke)
+            if let stroke = stroke.stroke(as: PenStroke.self) {
+                tree.insert(stroke.anyStroke, in: stroke.strokeBox)
+            }
             withPersistence(\.backgroundContext) { [weak self, stroke] context in
                 stroke.stroke(as: PenStroke.self)?.object?.graphicContext = self?.object
                 try context.saveIfNeeded()
@@ -65,9 +71,10 @@ extension GraphicContext {
         guard let object else { return }
         let queue = OperationQueue()
         queue.qualityOfService = .userInteractive
-        self.strokes = object.strokes.compactMap { stroke -> PenStroke? in
-            guard let stroke = stroke as? StrokeObject else { return nil }
+        object.strokes.forEach { stroke in
+            guard let stroke = stroke as? StrokeObject else { return }
             let _stroke = PenStroke(object: stroke)
+            tree.insert(_stroke.anyStroke, in: _stroke.strokeBox)
             if _stroke.isVisible(in: bounds) {
                 let id = stroke.objectID
                 queue.addOperation {
@@ -85,15 +92,14 @@ extension GraphicContext {
                     context.refresh(stroke, mergeChanges: false)
                 }
             }
-            return _stroke
         }
         queue.waitUntilAllOperationsAreFinished()
     }
 
     func loadQuads(_ bounds: CGRect) {
-        for stroke in self.strokes {
-            guard stroke.isVisible(in: bounds), stroke.isEmpty else { continue }
-            stroke.stroke(as: PenStroke.self)?.loadQuads()
+        for _stroke in self.tree.search(box: bounds.box) {
+            guard let stroke = _stroke.stroke(as: PenStroke.self), stroke.isEmpty else { continue }
+            stroke.loadQuads()
         }
     }
 }
@@ -135,7 +141,6 @@ extension GraphicContext {
             graphicContext?.strokes.add(stroke)
             _stroke.object = stroke
         }
-        strokes.append(stroke)
         currentStroke = stroke
         currentPoint = point
         currentStroke?.begin(at: point)
@@ -152,13 +157,15 @@ extension GraphicContext {
     }
 
     func endStroke(at point: CGPoint) {
-        guard currentPoint != nil, let currentStroke else { return }
+        guard currentPoint != nil, let currentStroke = currentStroke?.stroke(as: PenStroke.self) else { return }
         currentStroke.finish(at: point)
-        currentStroke.saveQuads(to: currentStroke.quads.endIndex)
-        withPersistence(\.backgroundContext) { context in
+        tree.insert(currentStroke.anyStroke, in: currentStroke.strokeBox)
+        withPersistence(\.backgroundContext) { [currentStroke] context in
+            guard let stroke = currentStroke.stroke(as: PenStroke.self) else { return }
+            stroke.object?.bounds = stroke.bounds
             try context.saveIfNeeded()
-            if let stroke = currentStroke.stroke(as: PenStroke.self)?.object {
-                context.refresh(stroke, mergeChanges: false)
+            if let object = stroke.object {
+                context.refresh(object, mergeChanges: false)
             }
         }
         previousStroke = currentStroke
@@ -167,10 +174,10 @@ extension GraphicContext {
     }
 
     func cancelStroke() {
-        if !strokes.isEmpty {
-            let stroke = strokes.removeLast()
-            withPersistence(\.backgroundContext) { [graphicContext = object, _stroke = stroke] context in
-                if let stroke = _stroke.stroke(as: PenStroke.self)?.object {
+        if !tree.isEmpty, let stroke = currentStroke?.stroke(as: PenStroke.self) {
+            let _stroke = tree.remove(stroke.anyStroke, in: stroke.strokeBox)
+            withPersistence(\.backgroundContext) { [graphicContext = object, _stroke] context in
+                if let stroke = _stroke?.stroke(as: PenStroke.self)?.object {
                     graphicContext?.strokes.remove(stroke)
                     context.delete(stroke)
                 }
