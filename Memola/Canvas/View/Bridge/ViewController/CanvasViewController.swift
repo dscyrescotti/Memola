@@ -141,8 +141,8 @@ extension CanvasViewController {
 
     func updateDocumentBounds() {
         var bounds = scrollView.bounds.muliply(by: drawingView.ratio / scrollView.zoomScale)
-        let xDelta = bounds.minX * 0.05
-        let yDelta = bounds.minY * 0.05
+        let xDelta = bounds.minX * 0.0
+        let yDelta = bounds.minY * 0.0
         bounds.origin.x -= xDelta
         bounds.origin.y -= yDelta
         bounds.size.width += xDelta * 2
@@ -323,9 +323,9 @@ extension CanvasViewController {
 
 extension CanvasViewController {
     func historyUndid() {
-        guard history.undo() else { return }
+        guard let event = history.undo() else { return }
         drawingView.disableUserInteraction()
-        canvas.graphicContext.undoGraphic()
+        canvas.graphicContext.undoGraphic(for: event)
         renderer.redrawsGraphicRender = true
         renderer.resize(on: renderView, to: renderView.drawableSize)
         renderView.draw()

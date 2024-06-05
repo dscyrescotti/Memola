@@ -23,12 +23,12 @@ class History: ObservableObject {
         redoStack.isEmpty
     }
 
-    func undo() -> Bool {
+    func undo() -> HistoryEvent? {
         guard let event = undoStack.popLast() else {
-            return false
+            return nil
         }
         addRedo(event)
-        return true
+        return event
     }
 
     func redo() -> HistoryEvent? {

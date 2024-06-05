@@ -18,6 +18,10 @@ class RTree<T> where T: Equatable & Comparable {
         self.root = Node<T>.createNode()
     }
 
+    var isEmpty: Bool {
+        root.children.isEmpty
+    }
+
     // MARK: - Retrival
     func traverse() -> [T] {
         _traverse(from: root)
@@ -40,7 +44,7 @@ class RTree<T> where T: Equatable & Comparable {
         return result
     }
 
-    func _merge(_ left: [T], _ right: [T]) -> [T] {
+    private func _merge(_ left: [T], _ right: [T]) -> [T] {
         var mergedArray: [T] = []
         var leftIndex = 0
         var rightIndex = 0

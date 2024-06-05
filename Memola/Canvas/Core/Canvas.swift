@@ -123,10 +123,6 @@ extension Canvas {
     func setGraphicRenderType(_ renderType: GraphicContext.RenderType) {
         graphicContext.renderType = renderType
     }
-
-    func getNewlyAddedStroke() -> (any Stroke)? {
-        graphicContext.strokes.last
-    }
 }
 
 // MARK: - Rendering

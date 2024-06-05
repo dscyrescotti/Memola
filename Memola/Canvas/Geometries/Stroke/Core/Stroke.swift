@@ -8,7 +8,7 @@
 import MetalKit
 import Foundation
 
-protocol Stroke: AnyObject, Drawable, Hashable, Equatable {
+protocol Stroke: AnyObject, Drawable, Hashable, Equatable, Comparable {
     var id: UUID { get set }
     var bounds: [CGFloat] { get set }
     var color: [CGFloat] { get set }
@@ -41,6 +41,10 @@ extension Stroke {
         let width = bounds[2] - x
         let height = bounds[3] - y
         return CGRect(x: x, y: y, width: width, height: height)
+    }
+
+    var strokeBox: Box {
+        Box(minX: bounds[0], minY: bounds[1], maxX: bounds[2], maxY: bounds[3])
     }
 
     func isVisible(in bounds: CGRect) -> Bool {
@@ -106,6 +110,10 @@ extension Stroke {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+    }
+
+    static func < (lhs: Self, rhs: Self) -> Bool {
+        lhs.createdAt < rhs.createdAt
     }
 }
 
