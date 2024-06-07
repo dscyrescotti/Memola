@@ -28,6 +28,9 @@ final class PenStroke: Stroke, @unchecked Sendable {
 
     var object: StrokeObject?
 
+    let batchSize: Int = 50
+    var batchIndex: Int = 0
+
     init(
         bounds: [CGFloat],
         color: [CGFloat],
@@ -84,16 +87,27 @@ final class PenStroke: Stroke, @unchecked Sendable {
             max(quad.originX.cgFloat, bounds[2]),
             max(quad.originY.cgFloat, bounds[3])
         ]
-        withPersistence(\.backgroundContext) { [object, _quad = quad] context in
-            let quad = QuadObject(\.backgroundContext)
-            quad.originX = _quad.originX.cgFloat
-            quad.originY = _quad.originY.cgFloat
-            quad.size = _quad.size.cgFloat
-            quad.rotation = _quad.rotation.cgFloat
-            quad.shape = _quad.shape
-            quad.color = _quad.getColor()
-            quad.stroke = object
-            object?.quads.add(quad)
+        if quads.endIndex >= batchIndex + batchSize {
+            saveQuads(to: batchIndex + batchSize)
+        }
+    }
+
+    func saveQuads(to endIndex: Int? = nil) {
+        let endIndex = endIndex ?? quads.endIndex
+        let batch = quads[batchIndex..<endIndex]
+        batchIndex = endIndex
+        withPersistence(\.backgroundContext) { [object, quads = batch] context in
+            for _quad in quads {
+                let quad = QuadObject(\.backgroundContext)
+                quad.originX = _quad.originX.cgFloat
+                quad.originY = _quad.originY.cgFloat
+                quad.size = _quad.size.cgFloat
+                quad.rotation = _quad.rotation.cgFloat
+                quad.shape = _quad.shape
+                quad.color = _quad.getColor()
+                quad.stroke = object
+                object?.quads.add(quad)
+            }
         }
     }
 }

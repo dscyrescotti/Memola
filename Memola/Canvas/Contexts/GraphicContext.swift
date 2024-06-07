@@ -160,6 +160,7 @@ extension GraphicContext {
         guard currentPoint != nil, let currentStroke = currentStroke?.stroke(as: PenStroke.self) else { return }
         currentStroke.finish(at: point)
         tree.insert(currentStroke.anyStroke, in: currentStroke.strokeBox)
+        currentStroke.saveQuads()
         withPersistence(\.backgroundContext) { [currentStroke] context in
             guard let stroke = currentStroke.stroke(as: PenStroke.self) else { return }
             stroke.object?.bounds = stroke.bounds
