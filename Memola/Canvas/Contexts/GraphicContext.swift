@@ -10,8 +10,6 @@ import MetalKit
 import CoreData
 import Foundation
 
-#warning("ISSUE: after closing the canvas, instantly opening the memo misses erasers of a particular stroke")
-#warning("TODO: it is required to remove eraser stroke that finishes saving")
 #warning("TODO: to update history undo and redo logic")
 final class GraphicContext: @unchecked Sendable {
     var tree: RTree = RTree<AnyStroke>(maxEntries: 8)
@@ -91,15 +89,11 @@ extension GraphicContext {
                         guard let stroke = try? context.existingObject(with: id) as? StrokeObject else { return }
                         _stroke.loadQuads(from: stroke, with: self)
                     }
-                    withPersistence(\.backgroundContext) { [stroke] context in
-                        context.refresh(stroke, mergeChanges: false)
-                    }
                 }
             } else {
-                withPersistence(\.backgroundContext) { [weak self, stroke] context in
+                withPersistence(\.backgroundContext) { [weak self] context in
                     guard let self else { return }
                     _stroke.loadQuads(with: self)
-                    context.refresh(stroke, mergeChanges: false)
                 }
             }
         }
@@ -154,6 +148,7 @@ extension GraphicContext {
                 stroke.graphicContext = graphicContext
                 graphicContext?.strokes.add(stroke)
                 _stroke.object = stroke
+                try context.saveIfNeeded()
             }
             stroke = penStroke
         case .eraser:
@@ -175,6 +170,7 @@ extension GraphicContext {
                 stroke.strokes = .init()
                 graphicContext?.strokes.add(stroke)
                 _stroke.object = stroke
+                try context.saveIfNeeded()
             }
             eraserStroke.graphicContext = self
             stroke = eraserStroke
@@ -220,18 +216,29 @@ extension GraphicContext {
     }
 
     func cancelStroke() {
-        if !tree.isEmpty, let stroke = currentStroke {
-            let _stroke = tree.remove(stroke.anyStroke, in: stroke.strokeBox)
-            withPersistence(\.backgroundContext) { [graphicContext = object, _stroke] context in
-                if let stroke = _stroke?.stroke(as: PenStroke.self)?.object {
-                    graphicContext?.strokes.remove(stroke)
-                    context.delete(stroke)
-                } else if let stroke = _stroke?.stroke(as: EraserStroke.self)?.object {
-                    graphicContext?.strokes.remove(stroke)
-                    context.delete(stroke)
+        if let stroke = currentStroke {
+            switch stroke.style {
+            case .marker:
+                guard !tree.isEmpty else { return }
+                let _stroke = tree.remove(stroke.anyStroke, in: stroke.strokeBox)
+                withPersistence(\.backgroundContext) { [graphicContext = object, _stroke] context in
+                    if let stroke = _stroke?.stroke(as: PenStroke.self)?.object {
+                        graphicContext?.strokes.remove(stroke)
+                        context.delete(stroke)
+                    }
+                    try context.saveIfNeeded()
                 }
-                try context.saveIfNeeded()
+            case .eraser:
+                guard let eraserStroke = stroke.stroke(as: EraserStroke.self) else { return }
+                eraserStrokes.remove(eraserStroke)
+                withPersistence(\.backgroundContext) { [eraserStroke] context in
+                    if let stroke = eraserStroke.object {
+                        context.delete(stroke)
+                    }
+                    try context.saveIfNeeded()
+                }
             }
+
         }
         currentStroke = nil
         currentPoint = nil
