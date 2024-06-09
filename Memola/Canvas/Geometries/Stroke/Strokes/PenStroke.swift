@@ -65,7 +65,7 @@ final class PenStroke: Stroke, @unchecked Sendable {
             bounds: object.bounds,
             color: object.color,
             style: style,
-            createdAt: object.createdAt,
+            createdAt: object.createdAt, // sometimes crash here
             thickness: object.thickness
         )
         self.object = object

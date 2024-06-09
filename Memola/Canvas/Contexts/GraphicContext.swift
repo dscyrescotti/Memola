@@ -160,7 +160,7 @@ extension GraphicContext {
                 thickness: pen.thickness
             )
             eraserStroke.graphicContext = self
-            withPersistence(\.backgroundContext) { [graphicContext = object, _stroke = eraserStroke] context in
+            withPersistence(\.backgroundContext) { [_stroke = eraserStroke] context in
                 let stroke = EraserObject(\.backgroundContext)
                 stroke.bounds = _stroke.bounds
                 stroke.color = _stroke.color
@@ -169,8 +169,6 @@ extension GraphicContext {
                 stroke.createdAt = _stroke.createdAt
                 stroke.quads = []
                 stroke.strokes = .init()
-                stroke.graphicContext = graphicContext
-                graphicContext?.erasers.add(stroke)
                 _stroke.object = stroke
                 try context.saveIfNeeded()
             }
