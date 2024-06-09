@@ -12,4 +12,5 @@ import Foundation
 final class GraphicContextObject: NSManagedObject {
     @NSManaged var canvas: CanvasObject?
     @NSManaged var strokes: NSMutableOrderedSet
+    @NSManaged var erasers: NSMutableSet
 }

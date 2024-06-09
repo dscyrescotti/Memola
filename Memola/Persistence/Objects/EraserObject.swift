@@ -17,4 +17,5 @@ final class EraserObject: NSManagedObject {
     @NSManaged var thickness: CGFloat
     @NSManaged var quads: NSMutableOrderedSet
     @NSManaged var strokes: NSMutableSet
+    @NSManaged var graphicContext: GraphicContextObject?
 }

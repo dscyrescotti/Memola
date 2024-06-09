@@ -12,11 +12,13 @@
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="style" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thickness" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="graphicContext" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GraphicContextObject" inverseName="erasers" inverseEntity="GraphicContextObject"/>
         <relationship name="quads" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="QuadObject" inverseName="eraser" inverseEntity="QuadObject"/>
         <relationship name="strokes" toMany="YES" deletionRule="Nullify" destinationEntity="StrokeObject" inverseName="erasers" inverseEntity="StrokeObject"/>
     </entity>
     <entity name="GraphicContextObject" representedClassName="GraphicContextObject" syncable="YES">
         <relationship name="canvas" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CanvasObject" inverseName="graphicContext" inverseEntity="CanvasObject"/>
+        <relationship name="erasers" toMany="YES" deletionRule="Cascade" destinationEntity="EraserObject" inverseName="graphicContext" inverseEntity="EraserObject"/>
         <relationship name="strokes" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="StrokeObject" inverseName="graphicContext" inverseEntity="StrokeObject"/>
     </entity>
     <entity name="MemoObject" representedClassName="MemoObject" syncable="YES">

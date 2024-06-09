@@ -81,8 +81,8 @@ final class PenStroke: Stroke, @unchecked Sendable {
             guard let quad = quad as? QuadObject else { return nil }
             return Quad(object: quad)
         }
-        eraserStrokes = Set(object.erasers.compactMap { [graphicContext] eraser -> EraserStroke? in
-            guard let eraser = eraser as? EraserObject else { return nil }
+        let erasers = fetchErasers(of: object)
+        eraserStrokes = Set(erasers.compactMap { [graphicContext] eraser -> EraserStroke? in
             let url = eraser.objectID.uriRepresentation()
             return graphicContext.barrierQueue.sync(flags: .barrier) {
                 if graphicContext.erasers[url] == nil {
@@ -94,6 +94,19 @@ final class PenStroke: Stroke, @unchecked Sendable {
                 return graphicContext.erasers[url]
             }
         })
+    }
+
+    func fetchErasers(of stroke: StrokeObject) -> [EraserObject] {
+        let fetchRequest: NSFetchRequest<EraserObject> = .init(entityName: "EraserObject")
+        fetchRequest.predicate = NSPredicate(format: "ANY strokes == %@", stroke)
+
+        do {
+            let erasers = try Persistence.shared.backgroundContext.fetch(fetchRequest)
+            return erasers
+        } catch {
+            NSLog("[Memola] - \(error.localizedDescription)")
+        }
+        return []
     }
 
     func addQuad(at point: CGPoint, rotation: CGFloat, shape: QuadShape) {
