@@ -159,7 +159,8 @@ extension GraphicContext {
                 createdAt: .now,
                 thickness: pen.thickness
             )
-            withPersistence(\.backgroundContext) { [graphicContext = object, _stroke = eraserStroke] context in
+            eraserStroke.graphicContext = self
+            withPersistence(\.backgroundContext) { [_stroke = eraserStroke] context in
                 let stroke = EraserObject(\.backgroundContext)
                 stroke.bounds = _stroke.bounds
                 stroke.color = _stroke.color
@@ -168,11 +169,9 @@ extension GraphicContext {
                 stroke.createdAt = _stroke.createdAt
                 stroke.quads = []
                 stroke.strokes = .init()
-                graphicContext?.strokes.add(stroke)
                 _stroke.object = stroke
                 try context.saveIfNeeded()
             }
-            eraserStroke.graphicContext = self
             stroke = eraserStroke
         }
         currentStroke = stroke
@@ -219,17 +218,16 @@ extension GraphicContext {
         if let stroke = currentStroke {
             switch stroke.style {
             case .marker:
-                guard !tree.isEmpty else { return }
-                let _stroke = tree.remove(stroke.anyStroke, in: stroke.strokeBox)
+                guard let _stroke = stroke.stroke(as: PenStroke.self) else { break }
                 withPersistence(\.backgroundContext) { [graphicContext = object, _stroke] context in
-                    if let stroke = _stroke?.stroke(as: PenStroke.self)?.object {
+                    if let stroke = _stroke.object {
                         graphicContext?.strokes.remove(stroke)
                         context.delete(stroke)
                     }
                     try context.saveIfNeeded()
                 }
             case .eraser:
-                guard let eraserStroke = stroke.stroke(as: EraserStroke.self) else { return }
+                guard let eraserStroke = stroke.stroke(as: EraserStroke.self) else { break }
                 eraserStrokes.remove(eraserStroke)
                 withPersistence(\.backgroundContext) { [eraserStroke] context in
                     if let stroke = eraserStroke.object {
@@ -238,7 +236,6 @@ extension GraphicContext {
                     try context.saveIfNeeded()
                 }
             }
-
         }
         currentStroke = nil
         currentPoint = nil

@@ -59,7 +59,7 @@ extension Canvas {
             let graphicContext = canvas.graphicContext
             self?.graphicContext.object = graphicContext
             self?.graphicContext.loadStrokes(bounds)
-            context.refresh(canvas, mergeChanges: false)
+            context.refreshAllObjects()
             DispatchQueue.main.async { [weak self] in
                 self?.state = .loaded
             }

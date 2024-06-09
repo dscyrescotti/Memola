@@ -194,7 +194,6 @@ struct PenDock: View {
                     .stroke(Color.gray, lineWidth: 0.4)
             }
             .padding(0.2)
-            .drawingGroup()
         }
         .buttonStyle(.plain)
         .hoverEffect(.lift)
@@ -302,7 +301,6 @@ struct PenDock: View {
                     .resizable()
                     .renderingMode(.template)
             }
-            .drawingGroup()
             .foregroundStyle(.black.opacity(0.2))
             .blur(radius: 3)
             if let tip = pen.style.icon.tip {
