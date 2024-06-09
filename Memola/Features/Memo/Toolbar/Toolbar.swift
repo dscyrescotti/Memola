@@ -72,6 +72,9 @@ struct Toolbar: View {
                     } else {
                         title = memo.title
                     }
+                    withPersistence(\.viewContext) { context in
+                        try context.saveIfNeeded()
+                    }
                 }
             }
             .transition(.move(edge: .top).combined(with: .blurReplace))
