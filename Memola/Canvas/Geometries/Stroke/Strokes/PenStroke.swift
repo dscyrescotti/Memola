@@ -84,7 +84,7 @@ final class PenStroke: Stroke, @unchecked Sendable {
         eraserStrokes = Set(object.erasers.compactMap { [graphicContext] eraser -> EraserStroke? in
             guard let eraser = eraser as? EraserObject else { return nil }
             let url = eraser.objectID.uriRepresentation()
-            return graphicContext.concurrentQueue.sync(flags: .barrier) {
+            return graphicContext.barrierQueue.sync(flags: .barrier) {
                 if graphicContext.erasers[url] == nil {
                     let _stroke = EraserStroke(object: eraser)
                     _stroke.loadQuads(from: eraser)

@@ -100,5 +100,18 @@ class GraphicRenderPass: RenderPass {
             }
             graphicContext.previousStroke = nil
         }
+
+        let eraserStrokes = graphicContext.eraserStrokes
+        for eraserStroke in eraserStrokes {
+            if eraserStroke.finishesSaving {
+                graphicContext.eraserStrokes.remove(eraserStroke)
+                continue
+            }
+            descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
+            clearsTexture = false
+            eraserRenderPass.stroke = eraserStroke
+            eraserRenderPass.descriptor = descriptor
+            eraserRenderPass.draw(on: canvas, with: renderer)
+        }
     }
 }

@@ -29,7 +29,7 @@ final class GraphicContext: @unchecked Sendable {
 
     var erasers: [URL: EraserStroke] = [:]
 
-    let concurrentQueue = DispatchQueue(label: "com.dispatchBarrier", attributes: .concurrent)
+    let barrierQueue = DispatchQueue(label: "com.memola.app.graphic-context", attributes: .concurrent)
 
     init() {
         setViewPortVertices()
