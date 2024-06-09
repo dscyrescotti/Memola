@@ -10,8 +10,12 @@ import MetalKit
 import CoreData
 import Foundation
 
+#warning("ISSUE: after closing the canvas, instantly opening the memo misses erasers of a particular stroke")
+#warning("TODO: it is required to remove eraser stroke that finishes saving")
+#warning("TODO: to update history undo and redo logic")
 final class GraphicContext: @unchecked Sendable {
     var tree: RTree = RTree<AnyStroke>(maxEntries: 8)
+    var eraserStrokes: Set<EraserStroke> = []
     var object: GraphicContextObject?
     
     var currentStroke: (any Stroke)?
@@ -22,6 +26,10 @@ final class GraphicContext: @unchecked Sendable {
     var vertices: [ViewPortVertex] = []
     var vertexCount: Int = 4
     var vertexBuffer: MTLBuffer?
+
+    var erasers: [URL: EraserStroke] = [:]
+
+    let concurrentQueue = DispatchQueue(label: "com.dispatchBarrier", attributes: .concurrent)
 
     init() {
         setViewPortVertices()
@@ -72,23 +80,25 @@ extension GraphicContext {
         let queue = OperationQueue()
         queue.qualityOfService = .userInteractive
         object.strokes.forEach { stroke in
-            guard let stroke = stroke as? StrokeObject else { return }
+            guard let stroke = stroke as? StrokeObject, stroke.style == 0 else { return }
             let _stroke = PenStroke(object: stroke)
             tree.insert(_stroke.anyStroke, in: _stroke.strokeBox)
             if _stroke.isVisible(in: bounds) {
                 let id = stroke.objectID
-                queue.addOperation {
+                queue.addOperation { [weak self] in
+                    guard let self else { return }
                     withPersistenceSync(\.newBackgroundContext) { [_stroke] context in
                         guard let stroke = try? context.existingObject(with: id) as? StrokeObject else { return }
-                        _stroke.loadQuads(from: stroke)
+                        _stroke.loadQuads(from: stroke, with: self)
                     }
                     withPersistence(\.backgroundContext) { [stroke] context in
                         context.refresh(stroke, mergeChanges: false)
                     }
                 }
             } else {
-                withPersistence(\.backgroundContext) { [stroke] context in
-                    _stroke.loadQuads()
+                withPersistence(\.backgroundContext) { [weak self, stroke] context in
+                    guard let self else { return }
+                    _stroke.loadQuads(with: self)
                     context.refresh(stroke, mergeChanges: false)
                 }
             }
@@ -96,10 +106,10 @@ extension GraphicContext {
         queue.waitUntilAllOperationsAreFinished()
     }
 
-    func loadQuads(_ bounds: CGRect) {
+    func loadQuads(_ bounds: CGRect, on context: NSManagedObjectContext) {
         for _stroke in self.tree.search(box: bounds.box) {
             guard let stroke = _stroke.stroke(as: PenStroke.self), stroke.isEmpty else { continue }
-            stroke.loadQuads()
+            stroke.loadQuads(with: self)
         }
     }
 }
@@ -122,24 +132,52 @@ extension GraphicContext: Drawable {
 
 extension GraphicContext {
     func beginStroke(at point: CGPoint, pen: Pen) -> any Stroke {
-        let stroke = PenStroke(
-            bounds: [point.x - pen.thickness, point.y - pen.thickness, point.x + pen.thickness, point.y + pen.thickness],
-            color: pen.rgba,
-            style: pen.strokeStyle,
-            createdAt: .now,
-            thickness: pen.thickness
-        )
-        withPersistence(\.backgroundContext) { [graphicContext = object, _stroke = stroke] context in
-            let stroke = StrokeObject(\.backgroundContext)
-            stroke.bounds = _stroke.bounds
-            stroke.color = _stroke.color
-            stroke.style = _stroke.style.rawValue
-            stroke.thickness = _stroke.thickness
-            stroke.createdAt = _stroke.createdAt
-            stroke.quads = []
-            stroke.graphicContext = graphicContext
-            graphicContext?.strokes.add(stroke)
-            _stroke.object = stroke
+        let stroke: any Stroke
+        switch pen.strokeStyle {
+        case .marker:
+            let penStroke = PenStroke(
+                bounds: [point.x - pen.thickness, point.y - pen.thickness, point.x + pen.thickness, point.y + pen.thickness],
+                color: pen.rgba,
+                style: pen.strokeStyle,
+                createdAt: .now,
+                thickness: pen.thickness
+            )
+            withPersistence(\.backgroundContext) { [graphicContext = object, _stroke = penStroke] context in
+                let stroke = StrokeObject(\.backgroundContext)
+                stroke.bounds = _stroke.bounds
+                stroke.color = _stroke.color
+                stroke.style = _stroke.style.rawValue
+                stroke.thickness = _stroke.thickness
+                stroke.createdAt = _stroke.createdAt
+                stroke.quads = []
+                stroke.erasers = .init()
+                stroke.graphicContext = graphicContext
+                graphicContext?.strokes.add(stroke)
+                _stroke.object = stroke
+            }
+            stroke = penStroke
+        case .eraser:
+            let eraserStroke = EraserStroke(
+                bounds: [point.x - pen.thickness, point.y - pen.thickness, point.x + pen.thickness, point.y + pen.thickness],
+                color: pen.rgba,
+                style: pen.strokeStyle,
+                createdAt: .now,
+                thickness: pen.thickness
+            )
+            withPersistence(\.backgroundContext) { [graphicContext = object, _stroke = eraserStroke] context in
+                let stroke = EraserObject(\.backgroundContext)
+                stroke.bounds = _stroke.bounds
+                stroke.color = _stroke.color
+                stroke.style = _stroke.style.rawValue
+                stroke.thickness = _stroke.thickness
+                stroke.createdAt = _stroke.createdAt
+                stroke.quads = []
+                stroke.strokes = .init()
+                graphicContext?.strokes.add(stroke)
+                _stroke.object = stroke
+            }
+            eraserStroke.graphicContext = self
+            stroke = eraserStroke
         }
         currentStroke = stroke
         currentPoint = point
@@ -157,16 +195,23 @@ extension GraphicContext {
     }
 
     func endStroke(at point: CGPoint) {
-        guard currentPoint != nil, let currentStroke = currentStroke?.stroke(as: PenStroke.self) else { return }
+        guard currentPoint != nil, let currentStroke = currentStroke else { return }
         currentStroke.finish(at: point)
-        tree.insert(currentStroke.anyStroke, in: currentStroke.strokeBox)
-        currentStroke.saveQuads()
-        withPersistence(\.backgroundContext) { [currentStroke] context in
-            guard let stroke = currentStroke.stroke(as: PenStroke.self) else { return }
-            stroke.object?.bounds = stroke.bounds
-            try context.saveIfNeeded()
-            if let object = stroke.object {
-                context.refresh(object, mergeChanges: false)
+        if let penStroke = currentStroke.stroke(as: PenStroke.self) {
+            penStroke.saveQuads()
+            tree.insert(currentStroke.anyStroke, in: currentStroke.strokeBox)
+            withPersistence(\.backgroundContext) { [penStroke] context in
+                penStroke.object?.bounds = penStroke.bounds
+                try context.saveIfNeeded()
+                if let object = penStroke.object {
+                    context.refresh(object, mergeChanges: false)
+                }
+            }
+        } else if let eraserStroke = currentStroke.stroke(as: EraserStroke.self) {
+            eraserStroke.saveQuads()
+            eraserStrokes.insert(eraserStroke)
+            withPersistence(\.backgroundContext) { context in
+                try context.saveIfNeeded()
             }
         }
         previousStroke = currentStroke
@@ -175,10 +220,13 @@ extension GraphicContext {
     }
 
     func cancelStroke() {
-        if !tree.isEmpty, let stroke = currentStroke?.stroke(as: PenStroke.self) {
+        if !tree.isEmpty, let stroke = currentStroke {
             let _stroke = tree.remove(stroke.anyStroke, in: stroke.strokeBox)
             withPersistence(\.backgroundContext) { [graphicContext = object, _stroke] context in
                 if let stroke = _stroke?.stroke(as: PenStroke.self)?.object {
+                    graphicContext?.strokes.remove(stroke)
+                    context.delete(stroke)
+                } else if let stroke = _stroke?.stroke(as: EraserStroke.self)?.object {
                     graphicContext?.strokes.remove(stroke)
                     context.delete(stroke)
                 }

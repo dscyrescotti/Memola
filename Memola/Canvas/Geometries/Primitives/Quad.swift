@@ -53,4 +53,14 @@ extension Quad {
     func getColor() -> [CGFloat] {
         [color.x.cgFloat, color.y.cgFloat, color.z.cgFloat, color.w.cgFloat]
     }
+
+    var quadBounds: CGRect {
+        let halfSize = size.cgFloat / 2
+        return CGRect(x: originX.cgFloat - halfSize, y: originY.cgFloat - halfSize, width: size.cgFloat, height: size.cgFloat)
+    }
+
+    var quadBox: Box {
+        let halfSize = size / 2
+        return Box(minX: Double(originX - halfSize), minY: Double(originY - halfSize), maxX: Double(originX + halfSize), maxY: Double(originY + halfSize))
+    }
 }

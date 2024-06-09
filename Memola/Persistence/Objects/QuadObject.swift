@@ -17,4 +17,5 @@ final class QuadObject: NSManagedObject {
     @NSManaged var shape: Int16
     @NSManaged var color: [CGFloat]
     @NSManaged var stroke: StrokeObject?
+    @NSManaged var eraser: EraserObject?
 }

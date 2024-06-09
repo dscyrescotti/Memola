@@ -5,8 +5,8 @@
 //  Created by Dscyre Scotti on 5/4/24.
 //
 
-import MetalKit
 import CoreData
+import MetalKit
 import Foundation
 
 final class PenStroke: Stroke, @unchecked Sendable {
@@ -25,11 +25,22 @@ final class PenStroke: Stroke, @unchecked Sendable {
     var texture: (any MTLTexture)?
     var indexBuffer: (any MTLBuffer)?
     var vertexBuffer: (any MTLBuffer)?
+    var erasedIndexBuffer: (any MTLBuffer)?
+    var erasedVertexBuffer: (any MTLBuffer)?
 
     var object: StrokeObject?
 
     let batchSize: Int = 50
     var batchIndex: Int = 0
+    var erasedQuadCount: Int = 0
+
+    var eraserStrokes: Set<EraserStroke> = []
+
+    var isEmptyErasedQuads: Bool {
+        eraserStrokes.isEmpty
+    }
+
+    weak var graphicContext: GraphicContext?
 
     init(
         bounds: [CGFloat],
@@ -60,16 +71,29 @@ final class PenStroke: Stroke, @unchecked Sendable {
         self.object = object
     }
 
-    func loadQuads() {
+    func loadQuads(with graphicContext: GraphicContext) {
         guard let object else { return }
-        loadQuads(from: object)
+        loadQuads(from: object, with: graphicContext)
     }
 
-    func loadQuads(from object: StrokeObject) {
+    func loadQuads(from object: StrokeObject, with graphicContext: GraphicContext) {
         quads = object.quads.compactMap { quad in
             guard let quad = quad as? QuadObject else { return nil }
             return Quad(object: quad)
         }
+        eraserStrokes = Set(object.erasers.compactMap { [graphicContext] eraser -> EraserStroke? in
+            guard let eraser = eraser as? EraserObject else { return nil }
+            let url = eraser.objectID.uriRepresentation()
+            return graphicContext.concurrentQueue.sync(flags: .barrier) {
+                if graphicContext.erasers[url] == nil {
+                    let _stroke = EraserStroke(object: eraser)
+                    _stroke.loadQuads(from: eraser)
+                    graphicContext.erasers[url] = _stroke
+                    return _stroke
+                }
+                return graphicContext.erasers[url]
+            }
+        })
     }
 
     func addQuad(at point: CGPoint, rotation: CGFloat, shape: QuadShape) {
@@ -109,5 +133,27 @@ final class PenStroke: Stroke, @unchecked Sendable {
                 object?.quads.add(quad)
             }
         }
+    }
+
+    func getAllErasedQuads() -> [Quad] {
+        eraserStrokes.flatMap { $0.quads }
+    }
+
+    func erase(device: MTLDevice, renderEncoder: MTLRenderCommandEncoder) {
+        guard !isEmptyErasedQuads, let erasedIndexBuffer else {
+            return
+        }
+        prepare(device: device)
+        renderEncoder.setFragmentTexture(texture, index: 0)
+        renderEncoder.setVertexBuffer(erasedVertexBuffer, offset: 0, index: 0)
+        renderEncoder.drawIndexedPrimitives(
+            type: .triangle,
+            indexCount: erasedQuadCount * 6,
+            indexType: .uint32,
+            indexBuffer: erasedIndexBuffer,
+            indexBufferOffset: 0
+        )
+        self.erasedIndexBuffer = nil
+        self.erasedVertexBuffer = nil
     }
 }

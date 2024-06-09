@@ -66,7 +66,7 @@ class RTree<T> where T: Equatable & Comparable {
     }
 
     // MARK: - Search
-    func search(box: Box) -> [T] {
+    func search(box: Box, isInOrder: Bool = true) -> [T] {
         guard box.intersects(with: root.box) else { return [] }
         var result: [T] = []
         var queue: [Node<T>] = [root]
@@ -76,10 +76,18 @@ class RTree<T> where T: Equatable & Comparable {
                 if box.intersects(with: childNode.box) {
                     if node.isLeaf {
                         if let value = childNode.value {
-                            result = _merge(result, [value])
+                            if isInOrder {
+                                result = _merge(result, [value])
+                            } else {
+                                result.append(value)
+                            }
                         }
                     } else if box.contains(with: childNode.box) {
-                        result = _merge(result, _traverse(from: childNode))
+                        if isInOrder {
+                            result = _merge(result, _traverse(from: childNode))
+                        } else {
+                            result.append(contentsOf: _traverse(from: childNode))
+                        }
                     } else {
                         queue.append(childNode)
                     }
