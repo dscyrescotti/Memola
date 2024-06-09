@@ -107,11 +107,6 @@ class GraphicRenderPass: RenderPass {
                 graphicContext.eraserStrokes.remove(eraserStroke)
                 continue
             }
-            descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
-            clearsTexture = false
-            eraserRenderPass.stroke = eraserStroke
-            eraserRenderPass.descriptor = descriptor
-            eraserRenderPass.draw(on: canvas, with: renderer)
         }
     }
 }
