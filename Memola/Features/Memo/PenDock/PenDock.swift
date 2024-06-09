@@ -250,7 +250,9 @@ struct PenDock: View {
     var newPenButton: some View {
         Button {
             let pen = PenObject.createObject(\.viewContext, penStyle: .marker)
-            if let color = (tool.selectedPen ?? tool.pens.last)?.rgba {
+            var selectedPen = tool.selectedPen
+            selectedPen = (selectedPen?.strokeStyle == .marker ? (selectedPen ?? tool.pens.last) : tool.pens.last)
+            if let color = selectedPen?.rgba {
                 pen.color = color
             }
             pen.isSelected = true
