@@ -203,15 +203,15 @@ extension GraphicContext {
             withPersistence(\.backgroundContext) { [penStroke] context in
                 penStroke.object?.bounds = penStroke.bounds
                 try context.saveIfNeeded()
-                if let object = penStroke.object {
-                    context.refresh(object, mergeChanges: false)
-                }
+                context.refreshAllObjects()
             }
         } else if let eraserStroke = currentStroke.stroke(as: EraserStroke.self) {
             eraserStroke.saveQuads()
             eraserStrokes.insert(eraserStroke)
-            withPersistence(\.backgroundContext) { context in
+            withPersistence(\.backgroundContext) { [eraserStroke] context in
+                eraserStroke.object?.bounds = eraserStroke.bounds
                 try context.saveIfNeeded()
+                context.refreshAllObjects()
             }
         }
         previousStroke = currentStroke

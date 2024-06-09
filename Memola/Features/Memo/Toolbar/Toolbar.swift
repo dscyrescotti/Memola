@@ -128,15 +128,15 @@ struct Toolbar: View {
     }
 
     func closeMemo() {
-        DispatchQueue.global(qos: .userInitiated).async {
+        withAnimation {
+            canvas.state = .closing
+        }
+        withPersistence(\.backgroundContext) { context in
+            try? context.saveIfNeeded()
             DispatchQueue.main.async {
-                canvas.state = .closing
-            }
-            withPersistenceSync(\.viewContext) { context in
-                try context.saveIfNeeded()
-            }
-            DispatchQueue.main.async {
-                canvas.state = .closed
+                withAnimation {
+                    canvas.state = .closed
+                }
                 dismiss()
             }
         }
