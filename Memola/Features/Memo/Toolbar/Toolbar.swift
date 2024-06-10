@@ -10,9 +10,9 @@ import Foundation
 
 struct Toolbar: View {
     @Environment(\.dismiss) var dismiss
-    
-    @EnvironmentObject var history: History
-    @EnvironmentObject var canvas: Canvas
+
+    @ObservedObject var canvas: Canvas
+    @ObservedObject var history: History
 
     @State var memo: MemoObject
     @State var title: String
@@ -20,9 +20,11 @@ struct Toolbar: View {
 
     let size: CGFloat
 
-    init(memo: MemoObject, size: CGFloat) {
-        self.memo = memo
+    init(size: CGFloat, memo: MemoObject, canvas: Canvas, history: History) {
         self.size = size
+        self.memo = memo
+        self.canvas = canvas
+        self.history = history
         self.title = memo.title
     }
     
@@ -136,6 +138,7 @@ struct Toolbar: View {
         }
         withPersistence(\.backgroundContext) { context in
             try? context.saveIfNeeded()
+            context.refreshAllObjects()
             DispatchQueue.main.async {
                 withAnimation {
                     canvas.state = .closed

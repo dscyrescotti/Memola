@@ -27,17 +27,17 @@ struct MemoView: View {
     }
 
     var body: some View {
-        CanvasView()
+        CanvasView(tool: tool, canvas: canvas, history: history)
             .ignoresSafeArea()
             .overlay(alignment: .trailing) {
-                PenDock()
+                PenDock(tool: tool, canvas: canvas)
             }
             .overlay(alignment: .bottomLeading) {
                 zoomControl
             }
             .disabled(textFieldState)
             .overlay(alignment: .top) {
-                Toolbar(memo: memo, size: size)
+                Toolbar(size: size, memo: memo, canvas: canvas, history: history)
             }
             .disabled(canvas.state == .loading || canvas.state == .closing)
             .overlay {
@@ -50,9 +50,6 @@ struct MemoView: View {
                     EmptyView()
                 }
             }
-            .environmentObject(tool)
-            .environmentObject(canvas)
-            .environmentObject(history)
     }
 
     @ViewBuilder

@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct CanvasView: UIViewControllerRepresentable {
-    @EnvironmentObject var tool: Tool
-    @EnvironmentObject var canvas: Canvas
-    @EnvironmentObject var history: History
+    @ObservedObject var tool: Tool
+    @ObservedObject var canvas: Canvas
+    @ObservedObject var history: History
 
     func makeUIViewController(context: Context) -> CanvasViewController {
         CanvasViewController(tool: tool, canvas: canvas, history: history)

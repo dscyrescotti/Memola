@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct PenDock: View {
-    @EnvironmentObject var tool: Tool
-    @EnvironmentObject var canvas: Canvas
+    @ObservedObject var tool: Tool
+    @ObservedObject var canvas: Canvas
 
     let width: CGFloat = 90
     let height: CGFloat = 30
