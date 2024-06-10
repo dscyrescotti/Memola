@@ -69,6 +69,7 @@ extension Canvas {
     func loadStrokes(_ bounds: CGRect) {
         withPersistence(\.backgroundContext) { [weak self, bounds] context in
             self?.graphicContext.loadQuads(bounds, on: context)
+            context.refreshAllObjects()
         }
     }
 }

@@ -52,6 +52,7 @@ final class GraphicContext: @unchecked Sendable {
                 withPersistence(\.backgroundContext) { [stroke = deletedStroke] context in
                     stroke?.stroke(as: PenStroke.self)?.object?.graphicContext = nil
                     try context.saveIfNeeded()
+                    context.refreshAllObjects()
                 }
             case .eraser:
                 guard let eraserStroke = stroke.stroke(as: EraserStroke.self) else { return }
@@ -64,6 +65,8 @@ final class GraphicContext: @unchecked Sendable {
                             penStroke.object?.erasers.remove(object)
                         }
                     }
+                    try context.saveIfNeeded()
+                    context.refreshAllObjects()
                 }
             }
             previousStroke = nil
@@ -82,6 +85,7 @@ final class GraphicContext: @unchecked Sendable {
                 withPersistence(\.backgroundContext) { [weak self, penStroke] context in
                     penStroke.object?.graphicContext = self?.object
                     try context.saveIfNeeded()
+                    context.refreshAllObjects()
                 }
             case .eraser:
                 guard let eraserStroke = stroke.stroke(as: EraserStroke.self) else {
@@ -97,6 +101,7 @@ final class GraphicContext: @unchecked Sendable {
                         }
                     }
                     try context.saveIfNeeded()
+                    context.refreshAllObjects()
                 }
             }
             previousStroke = nil
@@ -120,12 +125,14 @@ extension GraphicContext {
                     withPersistenceSync(\.newBackgroundContext) { [_stroke] context in
                         guard let stroke = try? context.existingObject(with: id) as? StrokeObject else { return }
                         _stroke.loadQuads(from: stroke, with: self)
+                        context.refreshAllObjects()
                     }
                 }
             } else {
                 withPersistence(\.backgroundContext) { [weak self] context in
                     guard let self else { return }
                     _stroke.loadQuads(with: self)
+                    context.refreshAllObjects()
                 }
             }
         }
