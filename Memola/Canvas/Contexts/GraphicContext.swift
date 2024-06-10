@@ -48,7 +48,7 @@ final class GraphicContext: @unchecked Sendable {
             switch stroke.style {
             case .marker:
                 guard let penStroke = stroke.stroke(as: PenStroke.self) else { return }
-                let deletedStroke = tree.remove(penStroke.anyStroke, in: penStroke.strokeBox)
+                tree.remove(penStroke.anyStroke, in: penStroke.strokeBox)
                 withPersistence(\.backgroundContext) { [weak penStroke] context in
                     penStroke?.object?.graphicContext = nil
                     try context.saveIfNeeded()
