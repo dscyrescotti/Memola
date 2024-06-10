@@ -13,7 +13,7 @@ final class StrokeObject: NSManagedObject {
     @NSManaged var bounds: [CGFloat]
     @NSManaged var color: [CGFloat]
     @NSManaged var style: Int16
-    @NSManaged var createdAt: Date
+    @NSManaged var createdAt: Date?
     @NSManaged var thickness: CGFloat
     @NSManaged var quads: NSMutableOrderedSet
     @NSManaged var erasers: NSMutableSet

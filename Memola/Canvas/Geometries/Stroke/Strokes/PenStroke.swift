@@ -61,11 +61,12 @@ final class PenStroke: Stroke, @unchecked Sendable {
 
     convenience init(object: StrokeObject) {
         let style = StrokeStyle(rawValue: object.style) ?? .marker
+        #warning("TODO: revisit here and check if there is any crash")
         self.init(
             bounds: object.bounds,
             color: object.color,
             style: style,
-            createdAt: object.createdAt, // sometimes crash here
+            createdAt: object.createdAt ?? .now, // sometimes crash here
             thickness: object.thickness
         )
         self.object = object

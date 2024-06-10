@@ -10,7 +10,6 @@ import MetalKit
 import CoreData
 import Foundation
 
-#warning("TODO: to update history undo and redo logic")
 final class GraphicContext: @unchecked Sendable {
     var tree: RTree = RTree<AnyStroke>(maxEntries: 8)
     var eraserStrokes: Set<EraserStroke> = []
@@ -46,26 +45,59 @@ final class GraphicContext: @unchecked Sendable {
     func undoGraphic(for event: HistoryEvent) {
         switch event {
         case .stroke(let stroke):
-            guard let _stroke = stroke.stroke(as: PenStroke.self) else { return }
-            let deletedStroke = tree.remove(_stroke.anyStroke, in: _stroke.strokeBox)
-            withPersistence(\.backgroundContext) { [stroke = deletedStroke] context in
-                stroke?.stroke(as: PenStroke.self)?.object?.graphicContext = nil
-                try context.saveIfNeeded()
+            switch stroke.style {
+            case .marker:
+                guard let penStroke = stroke.stroke(as: PenStroke.self) else { return }
+                let deletedStroke = tree.remove(penStroke.anyStroke, in: penStroke.strokeBox)
+                withPersistence(\.backgroundContext) { [stroke = deletedStroke] context in
+                    stroke?.stroke(as: PenStroke.self)?.object?.graphicContext = nil
+                    try context.saveIfNeeded()
+                }
+            case .eraser:
+                guard let eraserStroke = stroke.stroke(as: EraserStroke.self) else { return }
+                eraserStrokes.remove(eraserStroke)
+                let penStrokes = eraserStroke.penStrokes
+                withPersistence(\.backgroundContext) { [penStrokes] context in
+                    for penStroke in penStrokes {
+                        penStroke.eraserStrokes.remove(eraserStroke)
+                        if let object = eraserStroke.object {
+                            penStroke.object?.erasers.remove(object)
+                        }
+                    }
+                }
             }
             previousStroke = nil
         }
-
     }
 
     func redoGraphic(for event: HistoryEvent) {
         switch event {
         case .stroke(let stroke):
-            if let stroke = stroke.stroke(as: PenStroke.self) {
-                tree.insert(stroke.anyStroke, in: stroke.strokeBox)
-            }
-            withPersistence(\.backgroundContext) { [weak self, stroke] context in
-                stroke.stroke(as: PenStroke.self)?.object?.graphicContext = self?.object
-                try context.saveIfNeeded()
+            switch stroke.style {
+            case .marker:
+                guard let penStroke = stroke.stroke(as: PenStroke.self) else {
+                    break
+                }
+                tree.insert(penStroke.anyStroke, in: penStroke.strokeBox)
+                withPersistence(\.backgroundContext) { [weak self, penStroke] context in
+                    penStroke.object?.graphicContext = self?.object
+                    try context.saveIfNeeded()
+                }
+            case .eraser:
+                guard let eraserStroke = stroke.stroke(as: EraserStroke.self) else {
+                    break
+                }
+                eraserStrokes.insert(eraserStroke)
+                let penStrokes = eraserStroke.penStrokes
+                withPersistence(\.backgroundContext) { [eraserStroke, penStrokes] context in
+                    for penStroke in penStrokes {
+                        penStroke.eraserStrokes.insert(eraserStroke)
+                        if let object = eraserStroke.object {
+                            penStroke.object?.erasers.add(object)
+                        }
+                    }
+                    try context.saveIfNeeded()
+                }
             }
             previousStroke = nil
         }

@@ -34,6 +34,7 @@ final class EraserStroke: Stroke, @unchecked Sendable {
     weak var graphicContext: GraphicContext?
 
     var finishesSaving: Bool = false
+    var penStrokes: Set<PenStroke> = []
 
     init(
         bounds: [CGFloat],
@@ -58,7 +59,7 @@ final class EraserStroke: Stroke, @unchecked Sendable {
             bounds: object.bounds,
             color: object.color,
             style: style,
-            createdAt: object.createdAt,
+            createdAt: object.createdAt ?? .now,
             thickness: object.thickness
         )
         self.object = object
@@ -111,6 +112,7 @@ final class EraserStroke: Stroke, @unchecked Sendable {
                 for stroke in graphicContext.tree.search(box: _quad.quadBox) {
                     if let _penStroke = stroke.stroke(as: PenStroke.self), !_penStroke.eraserStrokes.contains(self) {
                         _penStroke.eraserStrokes.insert(self)
+                        penStrokes.insert(_penStroke)
                         if let penStroke = _penStroke.object {
                             penStroke.erasers.add(eraser)
                             eraser.strokes.add(penStroke)
