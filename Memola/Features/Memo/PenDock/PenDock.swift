@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct PenDock: View {
-    @EnvironmentObject var tool: Tool
-    @EnvironmentObject var canvas: Canvas
+    @ObservedObject var tool: Tool
+    @ObservedObject var canvas: Canvas
 
     let width: CGFloat = 90
     let height: CGFloat = 30
@@ -194,7 +194,6 @@ struct PenDock: View {
                     .stroke(Color.gray, lineWidth: 0.4)
             }
             .padding(0.2)
-            .drawingGroup()
         }
         .buttonStyle(.plain)
         .hoverEffect(.lift)
@@ -250,7 +249,9 @@ struct PenDock: View {
     var newPenButton: some View {
         Button {
             let pen = PenObject.createObject(\.viewContext, penStyle: .marker)
-            if let color = (tool.selectedPen ?? tool.pens.last)?.rgba {
+            var selectedPen = tool.selectedPen
+            selectedPen = (selectedPen?.strokeStyle == .marker ? (selectedPen ?? tool.pens.last) : tool.pens.last)
+            if let color = selectedPen?.rgba {
                 pen.color = color
             }
             pen.isSelected = true
@@ -300,7 +301,6 @@ struct PenDock: View {
                     .resizable()
                     .renderingMode(.template)
             }
-            .drawingGroup()
             .foregroundStyle(.black.opacity(0.2))
             .blur(radius: 3)
             if let tip = pen.style.icon.tip {

@@ -41,21 +41,33 @@ class EraserRenderPass: RenderPass {
         renderEncoder.setRenderPipelineState(eraserPipelineState)
 
         canvas.setUniformsBuffer(device: renderer.device, renderEncoder: renderEncoder)
-        stroke?.draw(device: renderer.device, renderEncoder: renderEncoder)
+        if let stroke = stroke as? PenStroke {
+            stroke.erase(device: renderer.device, renderEncoder: renderEncoder)
+        } else {
+            stroke?.draw(device: renderer.device, renderEncoder: renderEncoder)
+        }
 
         renderEncoder.endEncoding()
         commandBuffer.commit()
     }
 
     private func generateVertexBuffer(on canvas: Canvas, with renderer: Renderer) {
-        guard let stroke, !stroke.isEmpty, let quadPipelineState else { return }
+        guard let stroke else { return }
+        let quadCount: Int
+        var quads: [Quad]
+        if let stroke = stroke as? PenStroke {
+            quads = stroke.getAllErasedQuads()
+            quadCount = quads.endIndex
+        } else {
+            quadCount = stroke.quads.endIndex
+            quads = stroke.quads
+        }
+        guard !quads.isEmpty, let quadPipelineState else { return }
         guard let quadCommandBuffer = renderer.commandQueue.makeCommandBuffer() else { return }
         guard let computeEncoder = quadCommandBuffer.makeComputeCommandEncoder() else { return }
 
         computeEncoder.label = "Quad Render Pass"
 
-        let quadCount = stroke.quads.endIndex
-        var quads = stroke.quads
         let quadBuffer = renderer.device.makeBuffer(bytes: &quads, length: MemoryLayout<Quad>.stride * quadCount, options: [])
         let indexBuffer = renderer.device.makeBuffer(length: MemoryLayout<UInt>.stride * quadCount * 6, options: [])
         let vertexBuffer = renderer.device.makeBuffer(length: MemoryLayout<QuadVertex>.stride * quadCount * 4, options: [])
@@ -65,8 +77,14 @@ class EraserRenderPass: RenderPass {
         computeEncoder.setBuffer(indexBuffer, offset: 0, index: 1)
         computeEncoder.setBuffer(vertexBuffer, offset: 0, index: 2)
 
-        stroke.indexBuffer = indexBuffer
-        stroke.vertexBuffer = vertexBuffer
+        if let stroke = stroke as? PenStroke {
+            stroke.erasedIndexBuffer = indexBuffer
+            stroke.erasedVertexBuffer = vertexBuffer
+            stroke.erasedQuadCount = quadCount
+        } else {
+            stroke.indexBuffer = indexBuffer
+            stroke.vertexBuffer = vertexBuffer
+        }
 
         let threadsPerGroup = MTLSize(width: 1, height: 1, depth: 1)
         let numThreadgroups = MTLSize(width: quadCount + 1, height: 1, depth: 1)

@@ -64,6 +64,13 @@ class GraphicRenderPass: RenderPass {
                     strokeRenderPass.graphicDescriptor = descriptor
                     strokeRenderPass.graphicPipelineState = graphicPipelineState
                     strokeRenderPass.draw(on: canvas, with: renderer)
+
+                    if let stroke = stroke as? PenStroke, !stroke.isEmptyErasedQuads {
+                        descriptor.colorAttachments[0].loadAction = .load
+                        eraserRenderPass.stroke = stroke
+                        eraserRenderPass.descriptor = descriptor
+                        eraserRenderPass.draw(on: canvas, with: renderer)
+                    }
                 }
             }
             renderer.redrawsGraphicRender = false
@@ -83,8 +90,23 @@ class GraphicRenderPass: RenderPass {
                 strokeRenderPass.graphicDescriptor = descriptor
                 strokeRenderPass.graphicPipelineState = graphicPipelineState
                 strokeRenderPass.draw(on: canvas, with: renderer)
+
+                if let stroke = stroke as? PenStroke, !stroke.isEmptyErasedQuads {
+                    descriptor.colorAttachments[0].loadAction = .load
+                    eraserRenderPass.stroke = stroke
+                    eraserRenderPass.descriptor = descriptor
+                    eraserRenderPass.draw(on: canvas, with: renderer)
+                }
             }
             graphicContext.previousStroke = nil
+        }
+
+        let eraserStrokes = graphicContext.eraserStrokes
+        for eraserStroke in eraserStrokes {
+            if eraserStroke.finishesSaving {
+                graphicContext.eraserStrokes.remove(eraserStroke)
+                continue
+            }
         }
     }
 }

@@ -33,6 +33,7 @@ struct MemosView: View {
             MemoView(memo: memo)
                 .onDisappear {
                     withPersistence(\.viewContext) { context in
+                        try context.saveIfNeeded()
                         context.refreshAllObjects()
                     }
                 }

@@ -28,6 +28,7 @@
 		EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */; };
 		EC7F6BF02BE5E6E400A34A7B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */; };
 		EC7F6BF32BE5E6E400A34A7B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BF22BE5E6E400A34A7B /* Preview Assets.xcassets */; };
+		EC9AB09F2C1401A40076AF58 /* EraserObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9AB09E2C1401A40076AF58 /* EraserObject.swift */; };
 		ECA7387A2BE5EF0400A4542E /* MemosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738792BE5EF0400A4542E /* MemosView.swift */; };
 		ECA7387D2BE5EF4B00A4542E /* MemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA7387C2BE5EF4B00A4542E /* MemoView.swift */; };
 		ECA738832BE5FEFE00A4542E /* RenderPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738822BE5FEFE00A4542E /* RenderPass.swift */; };
@@ -117,6 +118,7 @@
 		EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemolaApp.swift; sourceTree = "<group>"; };
 		EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EC7F6BF22BE5E6E400A34A7B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		EC9AB09E2C1401A40076AF58 /* EraserObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EraserObject.swift; sourceTree = "<group>"; };
 		ECA738792BE5EF0400A4542E /* MemosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemosView.swift; sourceTree = "<group>"; };
 		ECA7387C2BE5EF4B00A4542E /* MemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoView.swift; sourceTree = "<group>"; };
 		ECA738822BE5FEFE00A4542E /* RenderPass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderPass.swift; sourceTree = "<group>"; };
@@ -673,6 +675,7 @@
 				ECFA15272BEF225000455818 /* QuadObject.swift */,
 				EC0D14202BF79C73009BFE5F /* ToolObject.swift */,
 				EC0D14252BF7A8C9009BFE5F /* PenObject.swift */,
+				EC9AB09E2C1401A40076AF58 /* EraserObject.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -820,6 +823,7 @@
 				ECA738F62BE612B700A4542E /* MTLDevice++.swift in Sources */,
 				EC0D14212BF79C73009BFE5F /* ToolObject.swift in Sources */,
 				EC50500D2BF6674400B4D86E /* OnDragViewModifier.swift in Sources */,
+				EC9AB09F2C1401A40076AF58 /* EraserObject.swift in Sources */,
 				ECA7389E2BE601CB00A4542E /* QuadVertex.swift in Sources */,
 				ECA738B32BE60D9E00A4542E /* CanvasView.swift in Sources */,
 				ECA738C42BE60E8800A4542E /* MarkerPenStyle.swift in Sources */,

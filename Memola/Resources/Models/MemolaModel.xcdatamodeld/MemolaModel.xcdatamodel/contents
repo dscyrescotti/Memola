@@ -6,6 +6,15 @@
         <relationship name="graphicContext" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="GraphicContextObject" inverseName="canvas" inverseEntity="GraphicContextObject"/>
         <relationship name="memo" maxCount="1" deletionRule="Deny" destinationEntity="MemoObject" inverseName="canvas" inverseEntity="MemoObject"/>
     </entity>
+    <entity name="EraserObject" representedClassName="EraserObject" syncable="YES">
+        <attribute name="bounds" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
+        <attribute name="color" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="style" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="thickness" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="quads" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="QuadObject" inverseName="eraser" inverseEntity="QuadObject"/>
+        <relationship name="strokes" toMany="YES" deletionRule="Nullify" destinationEntity="StrokeObject" inverseName="erasers" inverseEntity="StrokeObject"/>
+    </entity>
     <entity name="GraphicContextObject" representedClassName="GraphicContextObject" syncable="YES">
         <relationship name="canvas" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CanvasObject" inverseName="graphicContext" inverseEntity="CanvasObject"/>
         <relationship name="strokes" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="StrokeObject" inverseName="graphicContext" inverseEntity="StrokeObject"/>
@@ -32,6 +41,7 @@
         <attribute name="rotation" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="shape" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="size" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="eraser" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="EraserObject" inverseName="quads" inverseEntity="EraserObject"/>
         <relationship name="stroke" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StrokeObject" inverseName="quads" inverseEntity="StrokeObject"/>
     </entity>
     <entity name="StrokeObject" representedClassName="StrokeObject" syncable="YES">
@@ -40,6 +50,7 @@
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="style" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thickness" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="erasers" toMany="YES" deletionRule="Nullify" destinationEntity="EraserObject" inverseName="strokes" inverseEntity="EraserObject"/>
         <relationship name="graphicContext" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GraphicContextObject" inverseName="strokes" inverseEntity="GraphicContextObject"/>
         <relationship name="quads" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="QuadObject" inverseName="stroke" inverseEntity="QuadObject"/>
     </entity>

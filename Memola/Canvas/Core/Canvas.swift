@@ -59,7 +59,7 @@ extension Canvas {
             let graphicContext = canvas.graphicContext
             self?.graphicContext.object = graphicContext
             self?.graphicContext.loadStrokes(bounds)
-            context.refresh(canvas, mergeChanges: false)
+            context.refreshAllObjects()
             DispatchQueue.main.async { [weak self] in
                 self?.state = .loaded
             }
@@ -68,7 +68,8 @@ extension Canvas {
 
     func loadStrokes(_ bounds: CGRect) {
         withPersistence(\.backgroundContext) { [weak self, bounds] context in
-            self?.graphicContext.loadQuads(bounds)
+            self?.graphicContext.loadQuads(bounds, on: context)
+            context.refreshAllObjects()
         }
     }
 }
