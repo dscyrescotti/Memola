@@ -134,7 +134,7 @@ final class PenStroke: Stroke, @unchecked Sendable {
         let endIndex = endIndex ?? quads.endIndex
         let batch = quads[batchIndex..<endIndex]
         batchIndex = endIndex
-        withPersistence(\.backgroundContext) { [object, quads = batch] context in
+        withPersistence(\.backgroundContext) { [weak object, quads = batch] context in
             for _quad in quads {
                 let quad = QuadObject(\.backgroundContext)
                 quad.originX = _quad.originX.cgFloat

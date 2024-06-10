@@ -49,17 +49,17 @@ final class GraphicContext: @unchecked Sendable {
             case .marker:
                 guard let penStroke = stroke.stroke(as: PenStroke.self) else { return }
                 let deletedStroke = tree.remove(penStroke.anyStroke, in: penStroke.strokeBox)
-                withPersistence(\.backgroundContext) { [stroke = deletedStroke] context in
-                    stroke?.stroke(as: PenStroke.self)?.object?.graphicContext = nil
+                withPersistence(\.backgroundContext) { [weak penStroke] context in
+                    penStroke?.object?.graphicContext = nil
                     try context.saveIfNeeded()
                     context.refreshAllObjects()
                 }
             case .eraser:
                 guard let eraserStroke = stroke.stroke(as: EraserStroke.self) else { return }
                 eraserStrokes.remove(eraserStroke)
-                let penStrokes = eraserStroke.penStrokes
-                withPersistence(\.backgroundContext) { [penStrokes] context in
-                    for penStroke in penStrokes {
+                withPersistence(\.backgroundContext) { [weak eraserStroke] context in
+                    guard let eraserStroke else { return }
+                    for penStroke in eraserStroke.penStrokes {
                         penStroke.eraserStrokes.remove(eraserStroke)
                         if let object = eraserStroke.object {
                             penStroke.object?.erasers.remove(object)
@@ -82,8 +82,8 @@ final class GraphicContext: @unchecked Sendable {
                     break
                 }
                 tree.insert(penStroke.anyStroke, in: penStroke.strokeBox)
-                withPersistence(\.backgroundContext) { [weak self, penStroke] context in
-                    penStroke.object?.graphicContext = self?.object
+                withPersistence(\.backgroundContext) { [weak self, weak penStroke] context in
+                    penStroke?.object?.graphicContext = self?.object
                     try context.saveIfNeeded()
                     context.refreshAllObjects()
                 }
@@ -92,9 +92,9 @@ final class GraphicContext: @unchecked Sendable {
                     break
                 }
                 eraserStrokes.insert(eraserStroke)
-                let penStrokes = eraserStroke.penStrokes
-                withPersistence(\.backgroundContext) { [eraserStroke, penStrokes] context in
-                    for penStroke in penStrokes {
+                withPersistence(\.backgroundContext) { [weak eraserStroke] context in
+                    guard let eraserStroke else { return }
+                    for penStroke in eraserStroke.penStrokes {
                         penStroke.eraserStrokes.insert(eraserStroke)
                         if let object = eraserStroke.object {
                             penStroke.object?.erasers.add(object)
@@ -122,16 +122,16 @@ extension GraphicContext {
                 let id = stroke.objectID
                 queue.addOperation { [weak self] in
                     guard let self else { return }
-                    withPersistenceSync(\.newBackgroundContext) { [_stroke] context in
+                    withPersistenceSync(\.newBackgroundContext) { [weak _stroke] context in
                         guard let stroke = try? context.existingObject(with: id) as? StrokeObject else { return }
-                        _stroke.loadQuads(from: stroke, with: self)
+                        _stroke?.loadQuads(from: stroke, with: self)
                         context.refreshAllObjects()
                     }
                 }
             } else {
-                withPersistence(\.backgroundContext) { [weak self] context in
+                withPersistence(\.backgroundContext) { [weak self, weak _stroke] context in
                     guard let self else { return }
-                    _stroke.loadQuads(with: self)
+                    _stroke?.loadQuads(with: self)
                     context.refreshAllObjects()
                 }
             }
@@ -175,7 +175,8 @@ extension GraphicContext {
                 createdAt: .now,
                 thickness: pen.thickness
             )
-            withPersistence(\.backgroundContext) { [graphicContext = object, _stroke = penStroke] context in
+            withPersistence(\.backgroundContext) { [weak graphicContext = object, weak _stroke = penStroke] context in
+                guard let _stroke else { return }
                 let stroke = StrokeObject(\.backgroundContext)
                 stroke.bounds = _stroke.bounds
                 stroke.color = _stroke.color
@@ -199,7 +200,8 @@ extension GraphicContext {
                 thickness: pen.thickness
             )
             eraserStroke.graphicContext = self
-            withPersistence(\.backgroundContext) { [_stroke = eraserStroke] context in
+            withPersistence(\.backgroundContext) { [weak _stroke = eraserStroke] context in
+                guard let _stroke else { return }
                 let stroke = EraserObject(\.backgroundContext)
                 stroke.bounds = _stroke.bounds
                 stroke.color = _stroke.color
@@ -234,7 +236,8 @@ extension GraphicContext {
         if let penStroke = currentStroke.stroke(as: PenStroke.self) {
             penStroke.saveQuads()
             tree.insert(currentStroke.anyStroke, in: currentStroke.strokeBox)
-            withPersistence(\.backgroundContext) { [penStroke] context in
+            withPersistence(\.backgroundContext) { [weak penStroke] context in
+                guard let penStroke else { return }
                 penStroke.object?.bounds = penStroke.bounds
                 try context.saveIfNeeded()
                 context.refreshAllObjects()
@@ -242,7 +245,8 @@ extension GraphicContext {
         } else if let eraserStroke = currentStroke.stroke(as: EraserStroke.self) {
             eraserStroke.saveQuads()
             eraserStrokes.insert(eraserStroke)
-            withPersistence(\.backgroundContext) { [eraserStroke] context in
+            withPersistence(\.backgroundContext) { [weak eraserStroke] context in
+                guard let eraserStroke else { return }
                 eraserStroke.object?.bounds = eraserStroke.bounds
                 try context.saveIfNeeded()
                 context.refreshAllObjects()
@@ -258,7 +262,8 @@ extension GraphicContext {
             switch stroke.style {
             case .marker:
                 guard let _stroke = stroke.stroke(as: PenStroke.self) else { break }
-                withPersistence(\.backgroundContext) { [graphicContext = object, _stroke] context in
+                withPersistence(\.backgroundContext) { [weak graphicContext = object, weak _stroke] context in
+                    guard let _stroke else { return }
                     if let stroke = _stroke.object {
                         graphicContext?.strokes.remove(stroke)
                         context.delete(stroke)
@@ -268,8 +273,8 @@ extension GraphicContext {
             case .eraser:
                 guard let eraserStroke = stroke.stroke(as: EraserStroke.self) else { break }
                 eraserStrokes.remove(eraserStroke)
-                withPersistence(\.backgroundContext) { [eraserStroke] context in
-                    if let stroke = eraserStroke.object {
+                withPersistence(\.backgroundContext) { [weak eraserStroke] context in
+                    if let stroke = eraserStroke?.object {
                         context.delete(stroke)
                     }
                     try context.saveIfNeeded()

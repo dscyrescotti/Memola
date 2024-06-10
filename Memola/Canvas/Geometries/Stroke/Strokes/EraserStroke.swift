@@ -98,7 +98,7 @@ final class EraserStroke: Stroke, @unchecked Sendable {
         let endIndex = endIndex ?? quads.endIndex
         let batch = quads[batchIndex..<endIndex]
         batchIndex = endIndex
-        withPersistence(\.backgroundContext) { [weak self, eraser = object, quads = batch] context in
+        withPersistence(\.backgroundContext) { [weak self, weak eraser = object, quads = batch] context in
             guard let self, let eraser else { return }
             for _quad in quads {
                 let quad = QuadObject(\.backgroundContext)
