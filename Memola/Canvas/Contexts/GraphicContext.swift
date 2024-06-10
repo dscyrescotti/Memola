@@ -59,7 +59,7 @@ final class GraphicContext: @unchecked Sendable {
                 eraserStrokes.remove(eraserStroke)
                 withPersistence(\.backgroundContext) { [weak eraserStroke] context in
                     guard let eraserStroke else { return }
-                    for penStroke in eraserStroke.penStrokes {
+                    for penStroke in eraserStroke.penStrokes.allObjects {
                         penStroke.eraserStrokes.remove(eraserStroke)
                         if let object = eraserStroke.object {
                             penStroke.object?.erasers.remove(object)
@@ -94,7 +94,7 @@ final class GraphicContext: @unchecked Sendable {
                 eraserStrokes.insert(eraserStroke)
                 withPersistence(\.backgroundContext) { [weak eraserStroke] context in
                     guard let eraserStroke else { return }
-                    for penStroke in eraserStroke.penStrokes {
+                    for penStroke in eraserStroke.penStrokes.allObjects {
                         penStroke.eraserStrokes.insert(eraserStroke)
                         if let object = eraserStroke.object {
                             penStroke.object?.erasers.add(object)

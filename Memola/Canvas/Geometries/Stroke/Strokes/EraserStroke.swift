@@ -34,7 +34,7 @@ final class EraserStroke: Stroke, @unchecked Sendable {
     weak var graphicContext: GraphicContext?
 
     var finishesSaving: Bool = false
-    var penStrokes: Set<PenStroke> = []
+    var penStrokes: NSHashTable<PenStroke> = .weakObjects()
 
     init(
         bounds: [CGFloat],
@@ -112,7 +112,7 @@ final class EraserStroke: Stroke, @unchecked Sendable {
                 for stroke in graphicContext.tree.search(box: _quad.quadBox) {
                     if let _penStroke = stroke.stroke(as: PenStroke.self), !_penStroke.eraserStrokes.contains(self) {
                         _penStroke.eraserStrokes.insert(self)
-                        penStrokes.insert(_penStroke)
+                        penStrokes.add(_penStroke)
                         if let penStroke = _penStroke.object {
                             penStroke.erasers.add(eraser)
                             eraser.strokes.add(penStroke)
