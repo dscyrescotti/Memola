@@ -17,5 +17,5 @@ final class StrokeObject: NSManagedObject {
     @NSManaged var thickness: CGFloat
     @NSManaged var quads: NSMutableOrderedSet
     @NSManaged var erasers: NSMutableSet
-    @NSManaged var graphicContext: GraphicContextObject?
+    @NSManaged var element: ElementObject?
 }

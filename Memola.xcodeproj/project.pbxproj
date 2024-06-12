@@ -82,6 +82,8 @@
 		ECA738F62BE612B700A4542E /* MTLDevice++.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738F52BE612B700A4542E /* MTLDevice++.swift */; };
 		ECA738FC2BE61C5200A4542E /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738FB2BE61C5200A4542E /* Persistence.swift */; };
 		ECA739082BE623F300A4542E /* PenDock.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA739072BE623F300A4542E /* PenDock.swift */; };
+		ECD12A862C19EE3900B96E12 /* ElementObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A852C19EE3900B96E12 /* ElementObject.swift */; };
+		ECD12A8A2C19EFB000B96E12 /* Element.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A892C19EFB000B96E12 /* Element.swift */; };
 		ECE883BD2C00AA170045C53D /* EraserStroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE883BC2C00AA170045C53D /* EraserStroke.swift */; };
 		ECE883BF2C00AB440045C53D /* Stroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE883BE2C00AB440045C53D /* Stroke.swift */; };
 		ECE883C12C00C9CB0045C53D /* StrokeStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE883C02C00C9CB0045C53D /* StrokeStyle.swift */; };
@@ -172,6 +174,8 @@
 		ECA738F52BE612B700A4542E /* MTLDevice++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MTLDevice++.swift"; sourceTree = "<group>"; };
 		ECA738FB2BE61C5200A4542E /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		ECA739072BE623F300A4542E /* PenDock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenDock.swift; sourceTree = "<group>"; };
+		ECD12A852C19EE3900B96E12 /* ElementObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementObject.swift; sourceTree = "<group>"; };
+		ECD12A892C19EFB000B96E12 /* Element.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Element.swift; sourceTree = "<group>"; };
 		ECE883BC2C00AA170045C53D /* EraserStroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EraserStroke.swift; sourceTree = "<group>"; };
 		ECE883BE2C00AB440045C53D /* Stroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stroke.swift; sourceTree = "<group>"; };
 		ECE883C02C00C9CB0045C53D /* StrokeStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeStyle.swift; sourceTree = "<group>"; };
@@ -382,8 +386,8 @@
 		ECA7387E2BE5FE4200A4542E /* Canvas */ = {
 			isa = PBXGroup;
 			children = (
+				ECD12A872C19EF8700B96E12 /* Elements */,
 				EC2BEBF22C0F5FE1005DB0AF /* RTree */,
-				ECA738F92BE6130000A4542E /* Geometries */,
 				ECA738812BE5FEEE00A4542E /* Abstracts */,
 				ECA738992BE6018900A4542E /* Buffers */,
 				ECA738C72BE60EE200A4542E /* Contexts */,
@@ -645,6 +649,23 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
+		ECD12A872C19EF8700B96E12 /* Elements */ = {
+			isa = PBXGroup;
+			children = (
+				ECD12A882C19EF9500B96E12 /* Core */,
+				ECA738F92BE6130000A4542E /* Geometries */,
+			);
+			path = Elements;
+			sourceTree = "<group>";
+		};
+		ECD12A882C19EF9500B96E12 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				ECD12A892C19EFB000B96E12 /* Element.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
 		ECE883B82C009DC30045C53D /* Strokes */ = {
 			isa = PBXGroup;
 			children = (
@@ -676,6 +697,7 @@
 				EC0D14202BF79C73009BFE5F /* ToolObject.swift */,
 				EC0D14252BF7A8C9009BFE5F /* PenObject.swift */,
 				EC9AB09E2C1401A40076AF58 /* EraserObject.swift */,
+				ECD12A852C19EE3900B96E12 /* ElementObject.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -805,6 +827,7 @@
 				ECA738B82BE60DDC00A4542E /* HistoryEvent.swift in Sources */,
 				EC0D14262BF7A8C9009BFE5F /* PenObject.swift in Sources */,
 				ECA738952BE6012D00A4542E /* ViewPort.metal in Sources */,
+				ECD12A862C19EE3900B96E12 /* ElementObject.swift in Sources */,
 				EC0D14242BF79C98009BFE5F /* MemolaModel.xcdatamodeld in Sources */,
 				ECA738F02BE6127700A4542E /* CGSize++.swift in Sources */,
 				ECFA15242BEF223300455818 /* GraphicContextObject.swift in Sources */,
@@ -840,6 +863,7 @@
 				EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */,
 				EC2BEBF82C0F601A005DB0AF /* Node.swift in Sources */,
 				ECA738A02BE601E400A4542E /* ViewPortVertex.swift in Sources */,
+				ECD12A8A2C19EFB000B96E12 /* Element.swift in Sources */,
 				EC0D14282BF7BF20009BFE5F /* ContextMenuViewModifier.swift in Sources */,
 				EC2106AD2C10C2A700FBE27C /* AnyStroke.swift in Sources */,
 				ECA738BC2BE60E0300A4542E /* Tool.swift in Sources */,

@@ -11,7 +11,7 @@ import CoreData
 import Foundation
 
 final class GraphicContext: @unchecked Sendable {
-    var tree: RTree = RTree<AnyStroke>(maxEntries: 8)
+    var tree: RTree = RTree<Element>(maxEntries: 8)
     var eraserStrokes: Set<EraserStroke> = []
     var object: GraphicContextObject?
     
@@ -48,9 +48,9 @@ final class GraphicContext: @unchecked Sendable {
             switch stroke.style {
             case .marker:
                 guard let penStroke = stroke.stroke(as: PenStroke.self) else { return }
-                tree.remove(penStroke.anyStroke, in: penStroke.strokeBox)
+                tree.remove(penStroke.element, in: penStroke.strokeBox)
                 withPersistence(\.backgroundContext) { [weak penStroke] context in
-                    penStroke?.object?.graphicContext = nil
+                    penStroke?.object?.element?.graphicContext = nil
                     try context.saveIfNeeded()
                     context.refreshAllObjects()
                 }
@@ -81,9 +81,9 @@ final class GraphicContext: @unchecked Sendable {
                 guard let penStroke = stroke.stroke(as: PenStroke.self) else {
                     break
                 }
-                tree.insert(penStroke.anyStroke, in: penStroke.strokeBox)
+                tree.insert(penStroke.element, in: penStroke.strokeBox)
                 withPersistence(\.backgroundContext) { [weak self, weak penStroke] context in
-                    penStroke?.object?.graphicContext = self?.object
+                    penStroke?.object?.element?.graphicContext = self?.object
                     try context.saveIfNeeded()
                     context.refreshAllObjects()
                 }
@@ -114,32 +114,43 @@ extension GraphicContext {
         guard let object else { return }
         let queue = OperationQueue()
         queue.qualityOfService = .userInteractive
-        object.strokes.forEach { stroke in
-            guard let stroke = stroke as? StrokeObject, stroke.style == 0 else { return }
-            let _stroke = PenStroke(object: stroke)
-            tree.insert(_stroke.anyStroke, in: _stroke.strokeBox)
-            if _stroke.isVisible(in: bounds) {
-                let id = stroke.objectID
-                queue.addOperation { [weak self] in
-                    guard let self else { return }
-                    withPersistenceSync(\.newBackgroundContext) { [weak _stroke] context in
-                        guard let stroke = try? context.existingObject(with: id) as? StrokeObject else { return }
-                        _stroke?.loadQuads(from: stroke, with: self)
+        object.elements.forEach { element in
+            guard let element = element as? ElementObject else { return }
+            switch element.type {
+            case 0:
+                guard let stroke = element.stroke, stroke.style == 0 else { return }
+                let _stroke = PenStroke(object: stroke)
+                tree.insert(_stroke.element, in: _stroke.strokeBox)
+                if _stroke.isVisible(in: bounds) {
+                    let id = stroke.objectID
+                    queue.addOperation { [weak self] in
+                        guard let self else { return }
+                        withPersistenceSync(\.newBackgroundContext) { [weak _stroke] context in
+                            guard let stroke = try? context.existingObject(with: id) as? StrokeObject else { return }
+                            _stroke?.loadQuads(from: stroke, with: self)
+                            context.refreshAllObjects()
+                        }
+                    }
+                } else {
+                    withPersistence(\.backgroundContext) { [weak self, weak _stroke] context in
+                        guard let self else { return }
+                        _stroke?.loadQuads(with: self)
                         context.refreshAllObjects()
                     }
                 }
-            } else {
-                withPersistence(\.backgroundContext) { [weak self, weak _stroke] context in
-                    guard let self else { return }
-                    _stroke?.loadQuads(with: self)
-                    context.refreshAllObjects()
-                }
+            case 1:
+                #warning("TODO: implement photo")
+                break
+            default:
+                break
             }
+
         }
         queue.waitUntilAllOperationsAreFinished()
     }
 
     func loadQuads(_ bounds: CGRect, on context: NSManagedObjectContext) {
+        #warning("TODO: implement photo")
         for _stroke in self.tree.search(box: bounds.box) {
             guard let stroke = _stroke.stroke(as: PenStroke.self), stroke.isEmpty else { continue }
             stroke.loadQuads(with: self)
@@ -185,8 +196,13 @@ extension GraphicContext {
                 stroke.createdAt = _stroke.createdAt
                 stroke.quads = []
                 stroke.erasers = .init()
-                stroke.graphicContext = graphicContext
-                graphicContext?.strokes.add(stroke)
+                let element = ElementObject(\.backgroundContext)
+                element.createdAt = _stroke.createdAt
+                element.type = 0
+                element.graphicContext = graphicContext
+                stroke.element = element
+                element.stroke = stroke
+                graphicContext?.elements.add(element)
                 _stroke.object = stroke
                 try context.saveIfNeeded()
             }
@@ -235,7 +251,7 @@ extension GraphicContext {
         currentStroke.finish(at: point)
         if let penStroke = currentStroke.stroke(as: PenStroke.self) {
             penStroke.saveQuads()
-            tree.insert(currentStroke.anyStroke, in: currentStroke.strokeBox)
+            tree.insert(currentStroke.element, in: currentStroke.strokeBox)
             withPersistence(\.backgroundContext) { [weak penStroke] context in
                 guard let penStroke else { return }
                 penStroke.object?.bounds = penStroke.bounds
@@ -264,9 +280,8 @@ extension GraphicContext {
                 guard let _stroke = stroke.stroke(as: PenStroke.self) else { break }
                 withPersistence(\.backgroundContext) { [weak graphicContext = object, weak _stroke] context in
                     guard let _stroke else { return }
-                    if let stroke = _stroke.object {
-                        graphicContext?.strokes.remove(stroke)
-                        context.delete(stroke)
+                    if let element = _stroke.object?.element {
+                        graphicContext?.elements.remove(element)
                     }
                     try context.saveIfNeeded()
                 }

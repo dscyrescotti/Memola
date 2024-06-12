@@ -85,7 +85,7 @@ struct MemosView: View {
         }
 
         let graphicContextObject = GraphicContextObject(\.viewContext)
-        graphicContextObject.strokes = []
+        graphicContextObject.elements = []
 
         memoObject.canvas = canvasObject
         memoObject.tool = toolObject
