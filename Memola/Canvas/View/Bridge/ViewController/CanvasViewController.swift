@@ -17,6 +17,8 @@ class CanvasViewController: UIViewController {
         drawingView.renderView
     }
 
+    var photoInsertGesture: UITapGestureRecognizer?
+
     let tool: Tool
     let canvas: Canvas
     let history: History
@@ -40,6 +42,7 @@ class CanvasViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureViews()
+        configureGestures()
         configureListeners()
     }
 
@@ -176,6 +179,11 @@ extension CanvasViewController {
                 self?.penChanged(to: pen)
             }
             .store(in: &cancellables)
+        tool.$selection
+            .sink { [weak self] selection in
+                self?.toolSelectionChanged(to: selection)
+            }
+            .store(in: &cancellables)
 
         history.historyPublisher
             .sink { [weak self] action in
@@ -213,6 +221,21 @@ extension CanvasViewController: MTKViewDelegate {
         }
         canvas.updateTransform(on: drawingView)
         renderer.draw(in: view, on: canvas)
+    }
+}
+
+extension CanvasViewController {
+    func configureGestures() {
+        let photoInsertGesture = UITapGestureRecognizer(target: self, action: #selector(recognizeTapGesture))
+        photoInsertGesture.numberOfTapsRequired = 1
+        self.photoInsertGesture = photoInsertGesture
+        scrollView.addGestureRecognizer(photoInsertGesture)
+    }
+
+    @objc func recognizeTapGesture(_ gesture: UITapGestureRecognizer) {
+        let point = gesture.location(in: drawingView)
+        canvas.insertPhoto(at: point.muliply(by: drawingView.ratio))
+        drawingView.draw()
     }
 }
 
@@ -300,10 +323,31 @@ extension CanvasViewController {
         if let pen, let device = drawingView.renderView.device {
             pen.style.loadTexture(on: device)
         }
-        let isPenSelected = pen != nil
-        scrollView.isScrollEnabled = !isPenSelected
-        drawingView.isUserInteractionEnabled = isPenSelected
-        isPenSelected ? drawingView.enableUserInteraction() : drawingView.disableUserInteraction()
+    }
+
+    func toolSelectionChanged(to selection: ToolSelection) {
+        let enablesScrolling: Bool
+        let enablesDrawing: Bool
+        let enablesPhotoInsertion: Bool
+        switch selection {
+        case .none:
+            enablesScrolling = true
+            enablesDrawing = false
+            enablesPhotoInsertion = false
+        case .pen:
+            enablesScrolling = false
+            enablesDrawing = true
+            enablesPhotoInsertion = false
+            penChanged(to: tool.selectedPen)
+        case .photo:
+            enablesScrolling = true
+            enablesDrawing = false
+            enablesPhotoInsertion = true
+        }
+        scrollView.isScrollEnabled = enablesScrolling
+        drawingView.isUserInteractionEnabled = enablesDrawing
+        photoInsertGesture?.isEnabled = enablesPhotoInsertion
+        enablesDrawing ? drawingView.enableUserInteraction() : drawingView.disableUserInteraction()
     }
 }
 

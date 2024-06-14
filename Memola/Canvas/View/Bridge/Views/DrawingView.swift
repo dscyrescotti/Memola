@@ -87,20 +87,20 @@ class DrawingView: UIView {
         guard !disablesUserInteraction else { return }
         canvas.moveTouch(to: point.muliply(by: ratio))
         if canvas.hasValidStroke {
-            renderView.draw()
+            draw()
         }
     }
 
     func touchEnded(at point: CGPoint) {
         guard !disablesUserInteraction else { return }
         canvas.endTouch(at: point.muliply(by: ratio))
-        renderView.draw()
+        draw()
     }
 
     func touchCancelled() {
-        if canvas.graphicContext.currentStroke != nil {
+        if canvas.graphicContext.currentElement != nil {
             canvas.cancelTouch()
-            renderView.draw()
+            draw()
             history.restoreUndo()
         }
     }
@@ -113,5 +113,9 @@ class DrawingView: UIView {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { [weak self] in
             self?.disablesUserInteraction = false
         }
+    }
+
+    func draw() {
+        renderView.draw()
     }
 }

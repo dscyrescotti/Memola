@@ -93,6 +93,28 @@ struct PipelineStates {
         return try? device.makeRenderPipelineState(descriptor: pipelineDescriptor)
     }
 
+    static func createPhotoPipelineState(from renderer: Renderer, pixelFormat: MTLPixelFormat? = nil) -> MTLRenderPipelineState? {
+        let device = renderer.device
+        let library = renderer.library
+        let pipelineDescriptor = MTLRenderPipelineDescriptor()
+
+        pipelineDescriptor.vertexFunction = library.makeFunction(name: "vertex_photo")
+        pipelineDescriptor.fragmentFunction = library.makeFunction(name: "fragment_photo")
+        pipelineDescriptor.colorAttachments[0].pixelFormat = pixelFormat ?? renderer.pixelFormat
+        pipelineDescriptor.label = "Photo Pipeline State"
+
+        let attachment = pipelineDescriptor.colorAttachments[0]
+        attachment?.isBlendingEnabled = true
+        attachment?.rgbBlendOperation = .add
+        attachment?.sourceRGBBlendFactor = .sourceAlpha
+        attachment?.destinationRGBBlendFactor = .oneMinusSourceAlpha
+        attachment?.alphaBlendOperation = .add
+        attachment?.sourceAlphaBlendFactor = .one
+        attachment?.destinationAlphaBlendFactor = .oneMinusSourceAlpha
+
+        return try? device.makeRenderPipelineState(descriptor: pipelineDescriptor)
+    }
+
     static func createViewPortPipelineState(from renderer: Renderer, pixelFormat: MTLPixelFormat? = nil, isUpdate: Bool = false) -> MTLRenderPipelineState? {
         var label: String
         var vertexName: String

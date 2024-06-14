@@ -17,6 +17,8 @@ public class Tool: NSObject, ObservableObject {
     @Published var selectedPen: Pen?
     @Published var draggedPen: Pen?
 
+    @Published var selection: ToolSelection = .none
+
     let scrollPublisher = PassthroughSubject<String, Never>()
     var markers: [Pen] {
         pens.filter { $0.strokeStyle == .marker }

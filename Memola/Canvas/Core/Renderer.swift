@@ -25,6 +25,9 @@ final class Renderer {
     lazy var eraserRenderPass: EraserRenderPass = {
         EraserRenderPass(renderer: self)
     }()
+    lazy var photoRenderPass: PhotoRenderPass = {
+        PhotoRenderPass(renderer: self)
+    }()
     lazy var graphicRenderPass: GraphicRenderPass = {
         GraphicRenderPass(renderer: self)
     }()
@@ -66,12 +69,14 @@ final class Renderer {
 
     func draw(in view: MTKView, on canvas: Canvas) {
         if !updatesViewPort {
+            graphicRenderPass.photoRenderPass = photoRenderPass
             graphicRenderPass.strokeRenderPass = strokeRenderPass
             graphicRenderPass.eraserRenderPass = eraserRenderPass
             graphicRenderPass.draw(on: canvas, with: self)
         }
 
         cacheRenderPass.clearsTexture = graphicRenderPass.clearsTexture
+        cacheRenderPass.photoRenderPass = photoRenderPass
         cacheRenderPass.strokeRenderPass = strokeRenderPass
         cacheRenderPass.eraserRenderPass = eraserRenderPass
         cacheRenderPass.graphicTexture = graphicRenderPass.graphicTexture

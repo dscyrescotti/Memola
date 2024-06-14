@@ -30,14 +30,17 @@ struct MemoView: View {
         CanvasView(tool: tool, canvas: canvas, history: history)
             .ignoresSafeArea()
             .overlay(alignment: .trailing) {
-                PenDock(tool: tool, canvas: canvas)
+                if tool.selection == .pen {
+                    PenDock(tool: tool, canvas: canvas)
+                        .transition(.move(edge: .trailing))
+                }
             }
             .overlay(alignment: .bottomLeading) {
                 zoomControl
             }
             .disabled(textFieldState)
             .overlay(alignment: .top) {
-                Toolbar(size: size, memo: memo, canvas: canvas, history: history)
+                Toolbar(size: size, memo: memo, tool: tool, canvas: canvas, history: history)
             }
             .disabled(canvas.state == .loading || canvas.state == .closing)
             .overlay {

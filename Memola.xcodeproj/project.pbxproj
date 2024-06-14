@@ -21,6 +21,7 @@
 		EC3565562BEFC7B300A4E0BF /* NSManagedObject++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */; };
 		EC35655A2BF060D900A4E0BF /* Quad.metal in Sources */ = {isa = PBXBuildFile; fileRef = EC3565592BF060D900A4E0BF /* Quad.metal */; };
 		EC35655C2BF0712A00A4E0BF /* Float++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC35655B2BF0712A00A4E0BF /* Float++.swift */; };
+		EC37FB122C1B2DD90008D976 /* ToolSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC37FB112C1B2DD90008D976 /* ToolSelection.swift */; };
 		EC4538892BEBCAE000A86FEC /* Quad.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4538882BEBCAE000A86FEC /* Quad.swift */; };
 		EC5050072BF65CED00B4D86E /* PenDropDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5050062BF65CED00B4D86E /* PenDropDelegate.swift */; };
 		EC50500D2BF6674400B4D86E /* OnDragViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC50500C2BF6674400B4D86E /* OnDragViewModifier.swift */; };
@@ -84,6 +85,11 @@
 		ECA739082BE623F300A4542E /* PenDock.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA739072BE623F300A4542E /* PenDock.swift */; };
 		ECD12A862C19EE3900B96E12 /* ElementObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A852C19EE3900B96E12 /* ElementObject.swift */; };
 		ECD12A8A2C19EFB000B96E12 /* Element.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A892C19EFB000B96E12 /* Element.swift */; };
+		ECD12A8C2C1AEAA900B96E12 /* PhotoObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A8B2C1AEAA900B96E12 /* PhotoObject.swift */; };
+		ECD12A8F2C1AEBA400B96E12 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A8E2C1AEBA400B96E12 /* Photo.swift */; };
+		ECD12A912C1B04EA00B96E12 /* PhotoRenderPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A902C1B04EA00B96E12 /* PhotoRenderPass.swift */; };
+		ECD12A932C1B062000B96E12 /* Photo.metal in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A922C1B062000B96E12 /* Photo.metal */; };
+		ECD12A952C1B1FA200B96E12 /* PhotoVertex.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A942C1B1FA200B96E12 /* PhotoVertex.swift */; };
 		ECE883BD2C00AA170045C53D /* EraserStroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE883BC2C00AA170045C53D /* EraserStroke.swift */; };
 		ECE883BF2C00AB440045C53D /* Stroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE883BE2C00AB440045C53D /* Stroke.swift */; };
 		ECE883C12C00C9CB0045C53D /* StrokeStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE883C02C00C9CB0045C53D /* StrokeStyle.swift */; };
@@ -111,6 +117,7 @@
 		EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObject++.swift"; sourceTree = "<group>"; };
 		EC3565592BF060D900A4E0BF /* Quad.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Quad.metal; sourceTree = "<group>"; };
 		EC35655B2BF0712A00A4E0BF /* Float++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float++.swift"; sourceTree = "<group>"; };
+		EC37FB112C1B2DD90008D976 /* ToolSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolSelection.swift; sourceTree = "<group>"; };
 		EC4538882BEBCAE000A86FEC /* Quad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quad.swift; sourceTree = "<group>"; };
 		EC5050062BF65CED00B4D86E /* PenDropDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenDropDelegate.swift; sourceTree = "<group>"; };
 		EC50500C2BF6674400B4D86E /* OnDragViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDragViewModifier.swift; sourceTree = "<group>"; };
@@ -176,6 +183,11 @@
 		ECA739072BE623F300A4542E /* PenDock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenDock.swift; sourceTree = "<group>"; };
 		ECD12A852C19EE3900B96E12 /* ElementObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementObject.swift; sourceTree = "<group>"; };
 		ECD12A892C19EFB000B96E12 /* Element.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Element.swift; sourceTree = "<group>"; };
+		ECD12A8B2C1AEAA900B96E12 /* PhotoObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoObject.swift; sourceTree = "<group>"; };
+		ECD12A8E2C1AEBA400B96E12 /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
+		ECD12A902C1B04EA00B96E12 /* PhotoRenderPass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoRenderPass.swift; sourceTree = "<group>"; };
+		ECD12A922C1B062000B96E12 /* Photo.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Photo.metal; sourceTree = "<group>"; };
+		ECD12A942C1B1FA200B96E12 /* PhotoVertex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoVertex.swift; sourceTree = "<group>"; };
 		ECE883BC2C00AA170045C53D /* EraserStroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EraserStroke.swift; sourceTree = "<group>"; };
 		ECE883BE2C00AB440045C53D /* Stroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stroke.swift; sourceTree = "<group>"; };
 		ECE883C02C00C9CB0045C53D /* StrokeStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeStyle.swift; sourceTree = "<group>"; };
@@ -245,6 +257,7 @@
 			isa = PBXGroup;
 			children = (
 				ECA738BB2BE60E0300A4542E /* Tool.swift */,
+				EC37FB112C1B2DD90008D976 /* ToolSelection.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -439,6 +452,7 @@
 				ECA738942BE6012D00A4542E /* ViewPort.metal */,
 				ECA738962BE6014200A4542E /* Graphic.metal */,
 				EC3565592BF060D900A4E0BF /* Quad.metal */,
+				ECD12A922C1B062000B96E12 /* Photo.metal */,
 			);
 			path = Shaders;
 			sourceTree = "<group>";
@@ -467,6 +481,7 @@
 				ECA7389B2BE601AF00A4542E /* GridVertex.swift */,
 				ECA7389D2BE601CB00A4542E /* QuadVertex.swift */,
 				ECA7389F2BE601E400A4542E /* ViewPortVertex.swift */,
+				ECD12A942C1B1FA200B96E12 /* PhotoVertex.swift */,
 			);
 			path = Vertices;
 			sourceTree = "<group>";
@@ -594,6 +609,7 @@
 				ECA738DD2BE610A000A4542E /* ViewPortRenderPass.swift */,
 				ECA738DF2BE610B900A4542E /* EraserRenderPass.swift */,
 				ECA738E12BE610D000A4542E /* GraphicRenderPass.swift */,
+				ECD12A902C1B04EA00B96E12 /* PhotoRenderPass.swift */,
 			);
 			path = RenderPasses;
 			sourceTree = "<group>";
@@ -652,6 +668,7 @@
 		ECD12A872C19EF8700B96E12 /* Elements */ = {
 			isa = PBXGroup;
 			children = (
+				ECD12A8D2C1AEB8000B96E12 /* Photo */,
 				ECD12A882C19EF9500B96E12 /* Core */,
 				ECA738F92BE6130000A4542E /* Geometries */,
 			);
@@ -664,6 +681,14 @@
 				ECD12A892C19EFB000B96E12 /* Element.swift */,
 			);
 			path = Core;
+			sourceTree = "<group>";
+		};
+		ECD12A8D2C1AEB8000B96E12 /* Photo */ = {
+			isa = PBXGroup;
+			children = (
+				ECD12A8E2C1AEBA400B96E12 /* Photo.swift */,
+			);
+			path = Photo;
 			sourceTree = "<group>";
 		};
 		ECE883B82C009DC30045C53D /* Strokes */ = {
@@ -698,6 +723,7 @@
 				EC0D14252BF7A8C9009BFE5F /* PenObject.swift */,
 				EC9AB09E2C1401A40076AF58 /* EraserObject.swift */,
 				ECD12A852C19EE3900B96E12 /* ElementObject.swift */,
+				ECD12A8B2C1AEAA900B96E12 /* PhotoObject.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -785,6 +811,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ECA738B02BE60D0B00A4542E /* CanvasViewController.swift in Sources */,
+				ECD12A912C1B04EA00B96E12 /* PhotoRenderPass.swift in Sources */,
 				ECA738E42BE6110800A4542E /* Drawable.swift in Sources */,
 				ECA738AD2BE60CC600A4542E /* DrawingView.swift in Sources */,
 				EC1B783D2BFA0AC9005A34E2 /* Toolbar.swift in Sources */,
@@ -808,6 +835,7 @@
 				ECA738CD2BE60F2F00A4542E /* GridContext.swift in Sources */,
 				ECFA15202BEF21EF00455818 /* MemoObject.swift in Sources */,
 				ECE883C12C00C9CB0045C53D /* StrokeStyle.swift in Sources */,
+				EC37FB122C1B2DD90008D976 /* ToolSelection.swift in Sources */,
 				ECA738C62BE60E9D00A4542E /* EraserPenStyle.swift in Sources */,
 				ECA738EA2BE6122E00A4542E /* CGPoint++.swift in Sources */,
 				ECA738A62BE6023F00A4542E /* GridUniforms.swift in Sources */,
@@ -827,6 +855,8 @@
 				ECA738B82BE60DDC00A4542E /* HistoryEvent.swift in Sources */,
 				EC0D14262BF7A8C9009BFE5F /* PenObject.swift in Sources */,
 				ECA738952BE6012D00A4542E /* ViewPort.metal in Sources */,
+				ECD12A952C1B1FA200B96E12 /* PhotoVertex.swift in Sources */,
+				ECD12A8C2C1AEAA900B96E12 /* PhotoObject.swift in Sources */,
 				ECD12A862C19EE3900B96E12 /* ElementObject.swift in Sources */,
 				EC0D14242BF79C98009BFE5F /* MemolaModel.xcdatamodeld in Sources */,
 				ECA738F02BE6127700A4542E /* CGSize++.swift in Sources */,
@@ -840,6 +870,8 @@
 				ECA738F42BE612A000A4542E /* Array++.swift in Sources */,
 				EC4538892BEBCAE000A86FEC /* Quad.swift in Sources */,
 				ECE883BD2C00AA170045C53D /* EraserStroke.swift in Sources */,
+				ECD12A8F2C1AEBA400B96E12 /* Photo.swift in Sources */,
+				ECD12A932C1B062000B96E12 /* Photo.metal in Sources */,
 				ECA7388F2BE600DA00A4542E /* Grid.metal in Sources */,
 				EC2BEBF42C0F5FF7005DB0AF /* RTree.swift in Sources */,
 				ECA738C92BE60EF700A4542E /* GraphicContext.swift in Sources */,
@@ -1016,6 +1048,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				MTLLINKER_FLAGS = "";
+				MTL_COMPILER_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.Memola;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1049,6 +1083,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				MTLLINKER_FLAGS = "";
+				MTL_COMPILER_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.Memola;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

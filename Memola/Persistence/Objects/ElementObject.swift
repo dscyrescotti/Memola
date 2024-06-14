@@ -12,6 +12,7 @@ import Foundation
 final class ElementObject: NSManagedObject {
     @NSManaged var type: Int16
     @NSManaged var createdAt: Date?
+    @NSManaged var photo: PhotoObject?
     @NSManaged var stroke: StrokeObject?
     @NSManaged var graphicContext: GraphicContextObject?
 }

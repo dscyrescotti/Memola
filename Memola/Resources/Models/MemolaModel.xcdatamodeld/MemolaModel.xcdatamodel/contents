@@ -10,6 +10,7 @@
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="type" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="graphicContext" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GraphicContextObject" inverseName="elements" inverseEntity="GraphicContextObject"/>
+        <relationship name="photo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PhotoObject" inverseName="element" inverseEntity="PhotoObject"/>
         <relationship name="stroke" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StrokeObject" inverseName="element" inverseEntity="StrokeObject"/>
     </entity>
     <entity name="EraserObject" representedClassName="EraserObject" syncable="YES">
@@ -39,6 +40,16 @@
         <attribute name="style" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thickness" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="tool" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ToolObject" inverseName="pens" inverseEntity="ToolObject"/>
+    </entity>
+    <entity name="PhotoObject" representedClassName="PhotoObject" syncable="YES">
+        <attribute name="bounds" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="height" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="originX" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="originY" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="width" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="element" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ElementObject" inverseName="photo" inverseEntity="ElementObject"/>
     </entity>
     <entity name="QuadObject" representedClassName="QuadObject" syncable="YES">
         <attribute name="color" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>

@@ -15,8 +15,8 @@ final class GraphicContext: @unchecked Sendable {
     var eraserStrokes: Set<EraserStroke> = []
     var object: GraphicContextObject?
     
-    var currentStroke: (any Stroke)?
-    var previousStroke: (any Stroke)?
+    var currentElement: Element?
+    var previousElement: Element?
 
     var currentPoint: CGPoint?
     var renderType: RenderType = .finished
@@ -69,7 +69,7 @@ final class GraphicContext: @unchecked Sendable {
                     context.refreshAllObjects()
                 }
             }
-            previousStroke = nil
+            previousElement = nil
         }
     }
 
@@ -104,7 +104,7 @@ final class GraphicContext: @unchecked Sendable {
                     context.refreshAllObjects()
                 }
             }
-            previousStroke = nil
+            previousElement = nil
         }
     }
 }
@@ -174,6 +174,7 @@ extension GraphicContext: Drawable {
     }
 }
 
+// MARK: - Stroke
 extension GraphicContext {
     func beginStroke(at point: CGPoint, pen: Pen) -> any Stroke {
         let stroke: any Stroke
@@ -231,14 +232,14 @@ extension GraphicContext {
             }
             stroke = eraserStroke
         }
-        currentStroke = stroke
+        currentElement = .stroke(stroke.anyStroke)
         currentPoint = point
-        currentStroke?.begin(at: point)
+        currentElement?.stroke()?.begin(at: point)
         return stroke
     }
 
     func appendStroke(with point: CGPoint) {
-        guard let currentStroke else { return }
+        guard let currentStroke = currentElement?.stroke() else { return }
         guard let currentPoint, point.distance(to: currentPoint) > currentStroke.thickness * currentStroke.penStyle.stepRate else {
             return
         }
@@ -247,7 +248,7 @@ extension GraphicContext {
     }
 
     func endStroke(at point: CGPoint) {
-        guard currentPoint != nil, let currentStroke = currentStroke else { return }
+        guard currentPoint != nil, let currentStroke = currentElement?.stroke() else { return }
         currentStroke.finish(at: point)
         if let penStroke = currentStroke.stroke(as: PenStroke.self) {
             penStroke.saveQuads()
@@ -268,13 +269,13 @@ extension GraphicContext {
                 context.refreshAllObjects()
             }
         }
-        previousStroke = currentStroke
-        self.currentStroke = nil
+        previousElement = currentElement
+        self.currentElement = nil
         self.currentPoint = nil
     }
 
     func cancelStroke() {
-        if let stroke = currentStroke {
+        if let stroke = currentElement?.stroke() {
             switch stroke.style {
             case .marker:
                 guard let _stroke = stroke.stroke(as: PenStroke.self) else { break }
@@ -296,8 +297,20 @@ extension GraphicContext {
                 }
             }
         }
-        currentStroke = nil
+        currentElement = nil
         currentPoint = nil
+    }
+}
+
+// MARK: - Photo
+extension GraphicContext {
+    func insertPhoto(at point: CGPoint) {
+        let size = CGSize(width: 100, height: 100)
+        let origin = point
+        let bounds = [origin.x - size.width / 2, origin.y - size.height / 2, origin.x + size.width / 2, origin.y + size.height / 2]
+        let photo = Photo(size: size, origin: origin, bounds: bounds, createdAt: .now)
+        tree.insert(.photo(photo), in: photo.photoBox)
+        self.previousElement = .photo(photo)
     }
 }
 

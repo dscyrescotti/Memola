@@ -19,6 +19,7 @@ class CacheRenderPass: RenderPass {
     weak var graphicTexture: MTLTexture?
     var cacheTexture: MTLTexture?
 
+    weak var photoRenderPass: PhotoRenderPass?
     weak var strokeRenderPass: StrokeRenderPass?
     weak var eraserRenderPass: EraserRenderPass?
     var clearsTexture: Bool = true
@@ -34,7 +35,7 @@ class CacheRenderPass: RenderPass {
     }
 
     func draw(on canvas: Canvas, with renderer: Renderer) {
-        guard let descriptor, let strokeRenderPass, let eraserRenderPass else { return }
+        guard let descriptor, let strokeRenderPass, let eraserRenderPass, let photoRenderPass else { return }
 
         copyTexture(on: canvas, with: renderer)
 
@@ -45,18 +46,26 @@ class CacheRenderPass: RenderPass {
         descriptor.colorAttachments[0].storeAction = .store
 
         let graphicContext = canvas.graphicContext
-        if let stroke = graphicContext.currentStroke {
-            switch stroke.style {
-            case .eraser:
-                eraserRenderPass.stroke = stroke
-                eraserRenderPass.descriptor = descriptor
-                eraserRenderPass.draw(on: canvas, with: renderer)
-            case .marker:
-                canvas.setGraphicRenderType(.inProgress)
-                strokeRenderPass.stroke = stroke
-                strokeRenderPass.graphicDescriptor = descriptor
-                strokeRenderPass.graphicPipelineState = graphicPipelineState
-                strokeRenderPass.draw(on: canvas, with: renderer)
+        if let element = graphicContext.currentElement {
+            switch element {
+            case .stroke(let anyStroke):
+                let stroke = anyStroke.value
+                switch stroke.style {
+                case .eraser:
+                    eraserRenderPass.stroke = stroke
+                    eraserRenderPass.descriptor = descriptor
+                    eraserRenderPass.draw(on: canvas, with: renderer)
+                case .marker:
+                    canvas.setGraphicRenderType(.inProgress)
+                    strokeRenderPass.stroke = stroke
+                    strokeRenderPass.graphicDescriptor = descriptor
+                    strokeRenderPass.graphicPipelineState = graphicPipelineState
+                    strokeRenderPass.draw(on: canvas, with: renderer)
+                }
+            case .photo(let photo):
+                photoRenderPass.photo = photo
+                photoRenderPass.descriptor = descriptor
+                photoRenderPass.draw(on: canvas, with: renderer)
             }
             clearsTexture = false
         }
