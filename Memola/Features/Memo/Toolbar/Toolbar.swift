@@ -8,6 +8,7 @@
 import SwiftUI
 import PhotosUI
 import Foundation
+import AVFoundation
 
 struct Toolbar: View {
     @Environment(\.dismiss) var dismiss
@@ -19,6 +20,8 @@ struct Toolbar: View {
     @State var title: String
     @State var memo: MemoObject
     @State var photoItem: PhotosPickerItem?
+    @State var opensCamera: Bool = false
+    @State var isCameraAccessDenied: Bool = false
 
     @FocusState var textFieldState: Bool
 
@@ -65,6 +68,22 @@ struct Toolbar: View {
                     photoItem = nil
                 }
             }
+        }
+        .fullScreenCover(isPresented: $opensCamera) {
+            CameraView(image: $tool.selectedImage)
+                .ignoresSafeArea()
+        }
+        .alert("Camera Access Denied", isPresented: $isCameraAccessDenied) {
+            Button {
+                if let url = URL(string: UIApplication.openSettingsURLString + "&path=CAMERA/\(String(describing: Bundle.main.bundleIdentifier))") {
+                    UIApplication.shared.open(url)
+                }
+            } label: {
+                Text("Open Settings")
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Memola requires access to the camera to capture photos. Please open Settings and enable camera access.")
         }
     }
 
@@ -114,6 +133,7 @@ struct Toolbar: View {
                 }
             } label: {
                 Image(systemName: "pencil")
+                    .fontWeight(.heavy)
                     .contentShape(.circle)
                     .frame(width: size, height: size)
                     .background(tool.selection == .pen ? Color.accentColor : Color.clear)
@@ -138,7 +158,7 @@ struct Toolbar: View {
                 if tool.selection == .photo {
                     HStack(spacing: 0) {
                         Button {
-
+                            openCamera()
                         } label: {
                             Image(systemName: "camera.fill")
                                 .contentShape(.circle)
@@ -175,7 +195,6 @@ struct Toolbar: View {
                 history.historyPublisher.send(.undo)
             } label: {
                 Image(systemName: "arrow.uturn.backward.circle")
-
                     .contentShape(.circle)
             }
             .hoverEffect(.lift)
@@ -218,6 +237,26 @@ struct Toolbar: View {
             .clipShape(.rect(cornerRadius: 8))
         }
         .hoverEffect(.lift)
+    }
+
+    func openCamera() {
+        let status = AVCaptureDevice.authorizationStatus(for: .video)
+        switch status {
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video) { status in
+                withAnimation {
+                    if status {
+                        opensCamera = true
+                    } else {
+                        isCameraAccessDenied = true
+                    }
+                }
+            }
+        case .authorized:
+            opensCamera = true
+        default:
+            isCameraAccessDenied = true
+        }
     }
 
     func closeMemo() {
