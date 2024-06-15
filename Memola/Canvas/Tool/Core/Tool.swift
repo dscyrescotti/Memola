@@ -14,8 +14,12 @@ public class Tool: NSObject, ObservableObject {
     let object: ToolObject
 
     @Published var pens: [Pen] = []
+
+    // MARK: - Pen
     @Published var selectedPen: Pen?
     @Published var draggedPen: Pen?
+    // MARK: - Photo
+    @Published var selectedImage: UIImage?
 
     @Published var selection: ToolSelection = .none
 

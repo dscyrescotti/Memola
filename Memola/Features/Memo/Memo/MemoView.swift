@@ -29,10 +29,18 @@ struct MemoView: View {
     var body: some View {
         CanvasView(tool: tool, canvas: canvas, history: history)
             .ignoresSafeArea()
-            .overlay(alignment: .trailing) {
-                if tool.selection == .pen {
+            .overlay(alignment: .bottomTrailing) {
+                switch tool.selection {
+                case .pen:
                     PenDock(tool: tool, canvas: canvas)
                         .transition(.move(edge: .trailing))
+                case .photo:
+                    if let image = tool.selectedImage {
+                        PhotoPreview(image: image, tool: tool)
+                            .transition(.move(edge: .trailing))
+                    }
+                default:
+                    EmptyView()
                 }
             }
             .overlay(alignment: .bottomLeading) {

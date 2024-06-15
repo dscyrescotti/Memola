@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 import Foundation
 
 struct Toolbar: View {
@@ -15,8 +16,10 @@ struct Toolbar: View {
     @ObservedObject var canvas: Canvas
     @ObservedObject var history: History
 
-    @State var memo: MemoObject
     @State var title: String
+    @State var memo: MemoObject
+    @State var photoItem: PhotosPickerItem?
+
     @FocusState var textFieldState: Bool
 
     let size: CGFloat
@@ -50,6 +53,19 @@ struct Toolbar: View {
         }
         .font(.subheadline)
         .padding(10)
+        .onChange(of: photoItem) { oldValue, newValue in
+            if newValue != nil {
+                Task {
+                    let data = try? await newValue?.loadTransferable(type: Data.self)
+                    if let data {
+                        withAnimation {
+                            tool.selectedImage = UIImage(data: data)
+                        }
+                    }
+                    photoItem = nil
+                }
+            }
+        }
     }
 
     var closeButton: some View {
@@ -105,22 +121,52 @@ struct Toolbar: View {
                     .clipShape(.rect(cornerRadius: 8))
             }
             .hoverEffect(.lift)
-            Button {
-                withAnimation {
-                    tool.selection = tool.selection == .photo ? .none : .photo
+            HStack(spacing: 0) {
+                Button {
+                    withAnimation {
+                        tool.selection = tool.selection == .photo ? .none : .photo
+                    }
+                } label: {
+                    Image(systemName: "photo")
+                        .contentShape(.circle)
+                        .frame(width: size, height: size)
+                        .background(tool.selection == .photo ? Color.accentColor : Color.clear)
+                        .foregroundStyle(tool.selection == .photo ? Color.white : Color.accentColor)
+                        .clipShape(.rect(cornerRadius: 8))
                 }
-            } label: {
-                Image(systemName: "photo")
-                    .contentShape(.circle)
-                    .frame(width: size, height: size)
-                    .background(tool.selection == .photo ? Color.accentColor : Color.clear)
-                    .foregroundStyle(tool.selection == .photo ? Color.white : Color.accentColor)
-                    .clipShape(.rect(cornerRadius: 8))
+                .hoverEffect(.lift)
+                if tool.selection == .photo {
+                    HStack(spacing: 0) {
+                        Button {
+
+                        } label: {
+                            Image(systemName: "camera.fill")
+                                .contentShape(.circle)
+                                .frame(width: size, height: size)
+                                .clipShape(.rect(cornerRadius: 8))
+                        }
+                        .hoverEffect(.lift)
+                        PhotosPicker(selection: $photoItem, matching: .images) {
+                            Image(systemName: "photo.fill.on.rectangle.fill")
+                                .contentShape(.circle)
+                                .frame(width: size, height: size)
+                                .clipShape(.rect(cornerRadius: 8))
+                        }
+                        .hoverEffect(.lift)
+                    }
+                }
             }
-            .hoverEffect(.lift)
+            .background {
+                if tool.selection == .photo {
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color.white.tertiary)
+                }
+            }
         }
-        .background(.regularMaterial)
-        .clipShape(.rect(cornerRadius: 8))
+        .background {
+            RoundedRectangle(cornerRadius: 8)
+                .fill(.regularMaterial)
+        }
     }
 
     var historyControl: some View {

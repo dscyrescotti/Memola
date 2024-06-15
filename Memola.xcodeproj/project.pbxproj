@@ -83,6 +83,7 @@
 		ECA738F62BE612B700A4542E /* MTLDevice++.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738F52BE612B700A4542E /* MTLDevice++.swift */; };
 		ECA738FC2BE61C5200A4542E /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738FB2BE61C5200A4542E /* Persistence.swift */; };
 		ECA739082BE623F300A4542E /* PenDock.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA739072BE623F300A4542E /* PenDock.swift */; };
+		ECBE52962C1D5900006BDB3D /* PhotoPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBE52952C1D5900006BDB3D /* PhotoPreview.swift */; };
 		ECD12A862C19EE3900B96E12 /* ElementObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A852C19EE3900B96E12 /* ElementObject.swift */; };
 		ECD12A8A2C19EFB000B96E12 /* Element.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A892C19EFB000B96E12 /* Element.swift */; };
 		ECD12A8C2C1AEAA900B96E12 /* PhotoObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A8B2C1AEAA900B96E12 /* PhotoObject.swift */; };
@@ -181,6 +182,7 @@
 		ECA738F52BE612B700A4542E /* MTLDevice++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MTLDevice++.swift"; sourceTree = "<group>"; };
 		ECA738FB2BE61C5200A4542E /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		ECA739072BE623F300A4542E /* PenDock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenDock.swift; sourceTree = "<group>"; };
+		ECBE52952C1D5900006BDB3D /* PhotoPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPreview.swift; sourceTree = "<group>"; };
 		ECD12A852C19EE3900B96E12 /* ElementObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementObject.swift; sourceTree = "<group>"; };
 		ECD12A892C19EFB000B96E12 /* Element.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Element.swift; sourceTree = "<group>"; };
 		ECD12A8B2C1AEAA900B96E12 /* PhotoObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoObject.swift; sourceTree = "<group>"; };
@@ -389,6 +391,7 @@
 		ECA7387B2BE5EF3500A4542E /* Memo */ = {
 			isa = PBXGroup;
 			children = (
+				ECBE52942C1D58F5006BDB3D /* PhotoPreview */,
 				EC1B783B2BFA0AAC005A34E2 /* Toolbar */,
 				EC5050082BF65D0500B4D86E /* Memo */,
 				EC5050052BF65CCD00B4D86E /* PenDock */,
@@ -665,6 +668,14 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
+		ECBE52942C1D58F5006BDB3D /* PhotoPreview */ = {
+			isa = PBXGroup;
+			children = (
+				ECBE52952C1D5900006BDB3D /* PhotoPreview.swift */,
+			);
+			path = PhotoPreview;
+			sourceTree = "<group>";
+		};
 		ECD12A872C19EF8700B96E12 /* Elements */ = {
 			isa = PBXGroup;
 			children = (
@@ -891,6 +902,7 @@
 				EC5050072BF65CED00B4D86E /* PenDropDelegate.swift in Sources */,
 				ECA738A32BE6020A00A4542E /* CGFloat++.swift in Sources */,
 				ECA738C12BE60E5300A4542E /* PenStyle.swift in Sources */,
+				ECBE52962C1D5900006BDB3D /* PhotoPreview.swift in Sources */,
 				ECA738DE2BE610A000A4542E /* ViewPortRenderPass.swift in Sources */,
 				EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */,
 				EC2BEBF82C0F601A005DB0AF /* Node.swift in Sources */,
