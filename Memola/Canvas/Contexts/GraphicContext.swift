@@ -139,8 +139,9 @@ extension GraphicContext {
                     }
                 }
             case 1:
-                #warning("TODO: implement photo")
-                break
+                guard let photo = element.photo, photo.imageURL != nil else { return }
+                let _photo = Photo(object: photo)
+                tree.insert(_photo.element, in: _photo.photoBox)
             default:
                 break
             }
@@ -150,9 +151,8 @@ extension GraphicContext {
     }
 
     func loadQuads(_ bounds: CGRect, on context: NSManagedObjectContext) {
-        #warning("TODO: implement photo")
-        for _stroke in self.tree.search(box: bounds.box) {
-            guard let stroke = _stroke.stroke(as: PenStroke.self), stroke.isEmpty else { continue }
+        for element in self.tree.search(box: bounds.box) {
+            guard let stroke = element.stroke(as: PenStroke.self), stroke.isEmpty else { continue }
             stroke.loadQuads(with: self)
         }
     }
@@ -309,7 +309,26 @@ extension GraphicContext {
         let origin = point
         let bounds = [origin.x - size.width / 2, origin.y - size.height / 2, origin.x + size.width / 2, origin.y + size.height / 2]
         let photo = Photo(url: url, size: size, origin: origin, bounds: bounds, createdAt: .now)
-        tree.insert(.photo(photo), in: photo.photoBox)
+        tree.insert(photo.element, in: photo.photoBox)
+        withPersistence(\.backgroundContext) { [_photo = photo, graphicContext = object] context in
+            let photo = PhotoObject(\.backgroundContext)
+            photo.imageURL = _photo.url
+            photo.bounds = _photo.bounds
+            photo.width = _photo.size.width
+            photo.originY = _photo.origin.y
+            photo.originX = _photo.origin.x
+            photo.height = _photo.size.height
+            photo.createdAt = _photo.createdAt
+            let element = ElementObject(\.backgroundContext)
+            element.createdAt = _photo.createdAt
+            element.type = 1
+            element.graphicContext = graphicContext
+            photo.element = element
+            element.photo = photo
+            graphicContext?.elements.add(element)
+            _photo.object = photo
+            try context.saveIfNeeded()
+        }
         self.previousElement = .photo(photo)
     }
 }

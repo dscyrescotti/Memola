@@ -45,7 +45,7 @@
         <attribute name="bounds" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="height" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="imageURL" optional="YES" attributeType="URI"/>
         <attribute name="originX" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="originY" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="width" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>

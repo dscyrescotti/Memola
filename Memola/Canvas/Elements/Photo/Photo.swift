@@ -24,15 +24,6 @@ final class Photo: @unchecked Sendable, Equatable, Comparable {
     var vertexCount: Int = 0
     var vertexBuffer: MTLBuffer?
 
-    init(image: UIImage?, size: CGSize, origin: CGPoint, bounds: [CGFloat], createdAt: Date) {
-        self.size = size
-        self.origin = origin
-        self.image = image
-        self.bounds = bounds
-        self.createdAt = createdAt
-        generateVertices()
-    }
-
     init(url: URL?, size: CGSize, origin: CGPoint, bounds: [CGFloat], createdAt: Date) {
         self.size = size
         self.origin = origin
@@ -44,7 +35,7 @@ final class Photo: @unchecked Sendable, Equatable, Comparable {
 
     convenience init(object: PhotoObject) {
         self.init(
-            image: UIImage(data: object.image ?? .init()),
+            url: object.imageURL,
             size: .init(width: object.width, height: object.height),
             origin: .init(x: object.originX, y: object.originY),
             bounds: object.bounds,
@@ -116,5 +107,9 @@ extension Photo {
 
     func isVisible(in bounds: CGRect) -> Bool {
         bounds.contains(photoBounds) || bounds.intersects(photoBounds)
+    }
+
+    var element: Element {
+        .photo(self)
     }
 }

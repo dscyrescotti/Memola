@@ -16,6 +16,6 @@ class PhotoObject: NSManagedObject {
     @NSManaged var height: CGFloat
     @NSManaged var bounds: [CGFloat]
     @NSManaged var createdAt: Date?
-    @NSManaged var image: Data?
+    @NSManaged var imageURL: URL?
     @NSManaged var element: ElementObject?
 }
