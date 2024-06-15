@@ -84,7 +84,8 @@
 		ECA738FC2BE61C5200A4542E /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738FB2BE61C5200A4542E /* Persistence.swift */; };
 		ECA739082BE623F300A4542E /* PenDock.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA739072BE623F300A4542E /* PenDock.swift */; };
 		ECBE52962C1D5900006BDB3D /* PhotoPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBE52952C1D5900006BDB3D /* PhotoPreview.swift */; };
-		ECBE52992C1D60E5006BDB3D /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBE52982C1D60E5006BDB3D /* CameraView.swift */; };
+		ECBE529C2C1D94A4006BDB3D /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBE529A2C1D94A4006BDB3D /* CameraView.swift */; };
+		ECBE529E2C1DAB21006BDB3D /* UIImage++.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBE529D2C1DAB21006BDB3D /* UIImage++.swift */; };
 		ECD12A862C19EE3900B96E12 /* ElementObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A852C19EE3900B96E12 /* ElementObject.swift */; };
 		ECD12A8A2C19EFB000B96E12 /* Element.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A892C19EFB000B96E12 /* Element.swift */; };
 		ECD12A8C2C1AEAA900B96E12 /* PhotoObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A8B2C1AEAA900B96E12 /* PhotoObject.swift */; };
@@ -184,7 +185,8 @@
 		ECA738FB2BE61C5200A4542E /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		ECA739072BE623F300A4542E /* PenDock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenDock.swift; sourceTree = "<group>"; };
 		ECBE52952C1D5900006BDB3D /* PhotoPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPreview.swift; sourceTree = "<group>"; };
-		ECBE52982C1D60E5006BDB3D /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		ECBE529A2C1D94A4006BDB3D /* CameraView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		ECBE529D2C1DAB21006BDB3D /* UIImage++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage++.swift"; sourceTree = "<group>"; };
 		ECD12A852C19EE3900B96E12 /* ElementObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementObject.swift; sourceTree = "<group>"; };
 		ECD12A892C19EFB000B96E12 /* Element.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Element.swift; sourceTree = "<group>"; };
 		ECD12A8B2C1AEAA900B96E12 /* PhotoObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoObject.swift; sourceTree = "<group>"; };
@@ -234,7 +236,7 @@
 		EC1B783A2BF9C68C005A34E2 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				ECBE52972C1D6087006BDB3D /* CameraView */,
+				ECBE529B2C1D94A4006BDB3D /* CameraView */,
 				ECFC51252BF8885000D0D051 /* ColorPicker */,
 			);
 			path = Views;
@@ -509,6 +511,7 @@
 				EC3565532BEFC6AD00A4E0BF /* View++.swift */,
 				EC3565552BEFC7B300A4E0BF /* NSManagedObject++.swift */,
 				EC35655B2BF0712A00A4E0BF /* Float++.swift */,
+				ECBE529D2C1DAB21006BDB3D /* UIImage++.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -679,10 +682,10 @@
 			path = PhotoPreview;
 			sourceTree = "<group>";
 		};
-		ECBE52972C1D6087006BDB3D /* CameraView */ = {
+		ECBE529B2C1D94A4006BDB3D /* CameraView */ = {
 			isa = PBXGroup;
 			children = (
-				ECBE52982C1D60E5006BDB3D /* CameraView.swift */,
+				ECBE529A2C1D94A4006BDB3D /* CameraView.swift */,
 			);
 			path = CameraView;
 			sourceTree = "<group>";
@@ -863,6 +866,7 @@
 				ECA738A62BE6023F00A4542E /* GridUniforms.swift in Sources */,
 				ECA738D72BE60FC100A4542E /* SolidPointStrokeGenerator.swift in Sources */,
 				EC3565542BEFC6AD00A4E0BF /* View++.swift in Sources */,
+				ECBE529E2C1DAB21006BDB3D /* UIImage++.swift in Sources */,
 				EC2BEBF62C0F600D005DB0AF /* Box.swift in Sources */,
 				ECA738832BE5FEFE00A4542E /* RenderPass.swift in Sources */,
 				ECEC01A82BEE11BA006DA24C /* QuadShape.swift in Sources */,
@@ -901,7 +905,7 @@
 				EC0D14212BF79C73009BFE5F /* ToolObject.swift in Sources */,
 				EC50500D2BF6674400B4D86E /* OnDragViewModifier.swift in Sources */,
 				EC9AB09F2C1401A40076AF58 /* EraserObject.swift in Sources */,
-				ECBE52992C1D60E5006BDB3D /* CameraView.swift in Sources */,
+				ECBE529C2C1D94A4006BDB3D /* CameraView.swift in Sources */,
 				ECA7389E2BE601CB00A4542E /* QuadVertex.swift in Sources */,
 				ECA738B32BE60D9E00A4542E /* CanvasView.swift in Sources */,
 				ECA738C42BE60E8800A4542E /* MarkerPenStyle.swift in Sources */,

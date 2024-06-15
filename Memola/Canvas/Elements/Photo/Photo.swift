@@ -12,18 +12,31 @@ final class Photo: @unchecked Sendable, Equatable, Comparable {
     var id: UUID = UUID()
     var size: CGSize
     var origin: CGPoint
+    var image: UIImage?
+    var url: URL?
     var bounds: [CGFloat]
     var createdAt: Date
 
     var object: PhotoObject?
 
+    var texture: MTLTexture?
     var vertices: [PhotoVertex] = []
     var vertexCount: Int = 0
     var vertexBuffer: MTLBuffer?
 
-    init(size: CGSize, origin: CGPoint, bounds: [CGFloat], createdAt: Date) {
+    init(image: UIImage?, size: CGSize, origin: CGPoint, bounds: [CGFloat], createdAt: Date) {
         self.size = size
         self.origin = origin
+        self.image = image
+        self.bounds = bounds
+        self.createdAt = createdAt
+        generateVertices()
+    }
+
+    init(url: URL?, size: CGSize, origin: CGPoint, bounds: [CGFloat], createdAt: Date) {
+        self.size = size
+        self.origin = origin
+        self.url = url
         self.bounds = bounds
         self.createdAt = createdAt
         generateVertices()
@@ -31,6 +44,7 @@ final class Photo: @unchecked Sendable, Equatable, Comparable {
 
     convenience init(object: PhotoObject) {
         self.init(
+            image: UIImage(data: object.image ?? .init()),
             size: .init(width: object.width, height: object.height),
             origin: .init(x: object.originX, y: object.originY),
             bounds: object.bounds,
@@ -45,25 +59,31 @@ final class Photo: @unchecked Sendable, Equatable, Comparable {
         let minY = origin.y - size.height / 2
         let maxY = origin.y + size.height / 2
         vertices = [
-            PhotoVertex(x: minX, y: minY, textCoord: CGPoint(x: 0, y: 1)),
-            PhotoVertex(x: minX, y: maxY, textCoord: CGPoint(x: 0, y: 0)),
-            PhotoVertex(x: maxX, y: minY, textCoord: CGPoint(x: 1, y: 1)),
-            PhotoVertex(x: maxX, y: maxY, textCoord: CGPoint(x: 1, y: 0)),
+            PhotoVertex(x: minX, y: minY, textCoord: CGPoint(x: 0, y: 0)),
+            PhotoVertex(x: minX, y: maxY, textCoord: CGPoint(x: 0, y: 1)),
+            PhotoVertex(x: maxX, y: minY, textCoord: CGPoint(x: 1, y: 0)),
+            PhotoVertex(x: maxX, y: maxY, textCoord: CGPoint(x: 1, y: 1)),
         ]
     }
 }
 
 extension Photo: Drawable {
     func prepare(device: any MTLDevice) {
-        guard vertexBuffer == nil else { return }
-        vertexCount = vertices.endIndex
-        vertexBuffer = device.makeBuffer(bytes: vertices, length: vertexCount * MemoryLayout<PhotoVertex>.stride, options: [])
+        if vertexBuffer == nil {
+            vertexCount = vertices.endIndex
+            vertexBuffer = device.makeBuffer(bytes: vertices, length: vertexCount * MemoryLayout<PhotoVertex>.stride, options: [])
+        }
+        if texture == nil, let url {
+            texture = Textures.createPhotoTexture(for: url, on: device)
+        }
     }
     
     func draw(device: any MTLDevice, renderEncoder: any MTLRenderCommandEncoder) {
         prepare(device: device)
+        renderEncoder.setFragmentTexture(texture, index: 0)
         renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertices.count)
+        texture = nil
     }
 }
 

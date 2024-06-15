@@ -26,6 +26,18 @@ class Textures {
         return penTexture
     }
 
+    @discardableResult
+    static func createPhotoTexture(for url: URL, on device: MTLDevice) -> MTLTexture? {
+        let textureLoader = MTKTextureLoader(device: device)
+        do {
+            let photoTexture = try textureLoader.newTexture(URL: url, options: [.SRGB: false])
+            return photoTexture
+        } catch {
+            NSLog("[Memola] - \(error.localizedDescription)")
+            return nil
+        }
+    }
+
     static func createGraphicTexture(
         from renderer: Renderer,
         size: CGSize,

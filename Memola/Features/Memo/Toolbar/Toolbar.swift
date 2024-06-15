@@ -61,8 +61,9 @@ struct Toolbar: View {
                 Task {
                     let data = try? await newValue?.loadTransferable(type: Data.self)
                     if let data {
+                        let url = canvas.savePhoto(data)
                         withAnimation {
-                            tool.selectedImage = UIImage(data: data)
+                            tool.selectedImageURL = url
                         }
                     }
                     photoItem = nil
@@ -70,7 +71,7 @@ struct Toolbar: View {
             }
         }
         .fullScreenCover(isPresented: $opensCamera) {
-            CameraView(image: $tool.selectedImage)
+            CameraView(url: $tool.selectedImageURL, canvas: canvas)
                 .ignoresSafeArea()
         }
         .alert("Camera Access Denied", isPresented: $isCameraAccessDenied) {
@@ -166,7 +167,7 @@ struct Toolbar: View {
                                 .clipShape(.rect(cornerRadius: 8))
                         }
                         .hoverEffect(.lift)
-                        PhotosPicker(selection: $photoItem, matching: .images) {
+                        PhotosPicker(selection: $photoItem, matching: .images, preferredItemEncoding: .compatible) {
                             Image(systemName: "photo.fill.on.rectangle.fill")
                                 .contentShape(.circle)
                                 .frame(width: size, height: size)

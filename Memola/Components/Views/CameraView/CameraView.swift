@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct CameraView: UIViewControllerRepresentable {
-    @Binding var image: UIImage?
+    @Binding var url: URL?
+
+    @ObservedObject var canvas: Canvas
 
     @Environment(\.dismiss) private var dismiss
 
@@ -33,7 +35,10 @@ struct CameraView: UIViewControllerRepresentable {
         }
 
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            parent.image = info[.originalImage] as? UIImage
+            let image = (info[.originalImage] as? UIImage)?.imageWithUpOrientation()
+            if let image, let data = image.jpegData(compressionQuality: 1) {
+                parent.url = parent.canvas.savePhoto(data)
+            }
             parent.dismiss()
         }
 

@@ -37,11 +37,10 @@ vertex VertexOut vertex_photo(
 }
 
 fragment float4 fragment_photo(
-    VertexOut out [[stage_in]]
-//    texture2d<float> texture [[texture(0)]]
+    VertexOut out [[stage_in]],
+    texture2d<float> texture [[texture(0)]]
 ) {
-//    constexpr sampler textureSampler(mag_filter::linear, min_filter::linear);
-//    float4 color = float4(texture.sample(textureSampler, out.textCoord));
-//    return color;
-    return float4(1, 0, 1, 1);
+    constexpr sampler textureSampler(mag_filter::linear, min_filter::linear);
+    float4 color = float4(texture.sample(textureSampler, out.textCoord));
+    return color;
 }

@@ -128,8 +128,31 @@ extension Canvas {
 
 // MARK: - Photo
 extension Canvas {
-    func insertPhoto(at point: CGPoint) {
-        graphicContext.insertPhoto(at: point)
+    func insertPhoto(at point: CGPoint, url: URL) {
+        graphicContext.insertPhoto(at: point, url: url)
+    }
+
+    func savePhoto(_ data: Data) -> URL? {
+        let fileManager = FileManager.default
+        guard let directory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+        let fileName = "\(UUID().uuidString)-\(Date.now.timeIntervalSince1970)"
+        let folder = directory.appendingPathComponent(canvasID.uriRepresentation().lastPathComponent, conformingTo: .folder)
+        if !fileManager.fileExists(atPath: folder.path()) {
+            do {
+                try fileManager.createDirectory(at: folder, withIntermediateDirectories: true)
+            } catch {
+                NSLog("[Memola] - \(error.localizedDescription)")
+                return nil
+            }
+        }
+        let file = folder.appendingPathComponent(fileName, conformingTo: .jpeg)
+        do {
+            try data.write(to: file)
+        } catch {
+            NSLog("[Memola] - \(error.localizedDescription)")
+            return nil
+        }
+        return file
     }
 }
 

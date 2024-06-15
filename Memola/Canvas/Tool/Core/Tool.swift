@@ -19,7 +19,7 @@ public class Tool: NSObject, ObservableObject {
     @Published var selectedPen: Pen?
     @Published var draggedPen: Pen?
     // MARK: - Photo
-    @Published var selectedImage: UIImage?
+    @Published var selectedImageURL: URL?
 
     @Published var selection: ToolSelection = .none
 

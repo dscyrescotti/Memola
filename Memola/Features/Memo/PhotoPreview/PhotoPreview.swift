@@ -8,11 +8,15 @@
 import SwiftUI
 
 struct PhotoPreview: View {
-    let image: UIImage
+    let url: URL
     @ObservedObject var tool: Tool
 
+    var data: Data {
+        (try? Data(contentsOf: url)) ?? Data()
+    }
+
     var body: some View {
-        Image(uiImage: image)
+        Image(uiImage: UIImage(data: data) ?? UIImage())
             .resizable()
             .scaledToFill()
             .frame(width: 100, height: 100)
@@ -27,7 +31,7 @@ struct PhotoPreview: View {
             .overlay(alignment: .topLeading) {
                 Button {
                     withAnimation {
-                        tool.selectedImage = nil
+                        tool.selectedImageURL = nil
                     }
                 } label: {
                     Image(systemName: "xmark.circle.fill")

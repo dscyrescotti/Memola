@@ -304,11 +304,11 @@ extension GraphicContext {
 
 // MARK: - Photo
 extension GraphicContext {
-    func insertPhoto(at point: CGPoint) {
+    func insertPhoto(at point: CGPoint, url: URL) {
         let size = CGSize(width: 100, height: 100)
         let origin = point
         let bounds = [origin.x - size.width / 2, origin.y - size.height / 2, origin.x + size.width / 2, origin.y + size.height / 2]
-        let photo = Photo(size: size, origin: origin, bounds: bounds, createdAt: .now)
+        let photo = Photo(url: url, size: size, origin: origin, bounds: bounds, createdAt: .now)
         tree.insert(.photo(photo), in: photo.photoBox)
         self.previousElement = .photo(photo)
     }
