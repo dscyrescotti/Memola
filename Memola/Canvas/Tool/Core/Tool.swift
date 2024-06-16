@@ -126,16 +126,14 @@ public class Tool: NSObject, ObservableObject {
         guard let directory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
             return nil
         }
-        let fileName = "\(UUID().uuidString)-\(Date.now.timeIntervalSince1970)"
+        let fileName = "\(UUID().uuidString)-\(Int(Date.now.timeIntervalSince1970))"
         let folder = directory.appendingPathComponent(canvasID.uriRepresentation().lastPathComponent, conformingTo: .folder)
 
-        if folder.startAccessingSecurityScopedResource(), !fileManager.fileExists(atPath: folder.path()) {
+        if !fileManager.fileExists(atPath: folder.path()) {
             do {
                 try fileManager.createDirectory(at: folder, withIntermediateDirectories: true)
-                folder.stopAccessingSecurityScopedResource()
             } catch {
                 NSLog("[Memola] - \(error.localizedDescription)")
-                folder.stopAccessingSecurityScopedResource()
                 return nil
             }
         }

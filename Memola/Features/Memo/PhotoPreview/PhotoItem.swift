@@ -12,4 +12,12 @@ struct PhotoItem: Identifiable, Equatable {
     var id: URL
     let image: UIImage
     let bookmark: Data
+
+    var dimension: CGSize {
+        let size = image.size
+        let maxSize = max(size.width, size.height)
+        let width = size.width * 200 / maxSize
+        let height = size.height * 200 / maxSize
+        return CGSize(width: width, height: height)
+    }
 }
