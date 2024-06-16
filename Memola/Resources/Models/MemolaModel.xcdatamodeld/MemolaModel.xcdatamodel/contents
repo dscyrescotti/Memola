@@ -42,6 +42,7 @@
         <relationship name="tool" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ToolObject" inverseName="pens" inverseEntity="ToolObject"/>
     </entity>
     <entity name="PhotoObject" representedClassName="PhotoObject" syncable="YES">
+        <attribute name="bookmark" optional="YES" attributeType="Binary"/>
         <attribute name="bounds" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="height" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>

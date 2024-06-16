@@ -128,20 +128,26 @@ extension Canvas {
 
 // MARK: - Photo
 extension Canvas {
-    func insertPhoto(at point: CGPoint, url: URL) {
-        graphicContext.insertPhoto(at: point, url: url)
+    func insertPhoto(at point: CGPoint, photoItem: PhotoItem) {
+        graphicContext.insertPhoto(at: point, photoItem: photoItem)
     }
 
-    func savePhoto(_ data: Data) -> URL? {
+    func bookmarkPhoto(of image: UIImage) -> PhotoItem? {
+        guard let data = image.jpegData(compressionQuality: 1) else { return nil }
         let fileManager = FileManager.default
-        guard let directory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+        guard let directory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            return nil
+        }
         let fileName = "\(UUID().uuidString)-\(Date.now.timeIntervalSince1970)"
         let folder = directory.appendingPathComponent(canvasID.uriRepresentation().lastPathComponent, conformingTo: .folder)
-        if !fileManager.fileExists(atPath: folder.path()) {
+
+        if folder.startAccessingSecurityScopedResource(), !fileManager.fileExists(atPath: folder.path()) {
             do {
                 try fileManager.createDirectory(at: folder, withIntermediateDirectories: true)
+                folder.stopAccessingSecurityScopedResource()
             } catch {
                 NSLog("[Memola] - \(error.localizedDescription)")
+                folder.stopAccessingSecurityScopedResource()
                 return nil
             }
         }
@@ -152,7 +158,14 @@ extension Canvas {
             NSLog("[Memola] - \(error.localizedDescription)")
             return nil
         }
-        return file
+        var photoBookmark: PhotoItem?
+        do {
+            let bookmark = try file.bookmarkData(options: .minimalBookmark)
+            photoBookmark = PhotoItem(id: file, image: image, bookmark: bookmark)
+        } catch {
+            NSLog("[Memola] - \(error.localizedDescription)")
+        }
+        return photoBookmark
     }
 }
 

@@ -35,8 +35,8 @@ struct MemoView: View {
                     PenDock(tool: tool, canvas: canvas)
                         .transition(.move(edge: .trailing))
                 case .photo:
-                    if let url = tool.selectedImageURL {
-                        PhotoPreview(url: url, tool: tool)
+                    if let photoItem = tool.selectedPhotoItem {
+                        PhotoPreview(photoItem: photoItem, tool: tool)
                             .transition(.move(edge: .trailing))
                     }
                 default:

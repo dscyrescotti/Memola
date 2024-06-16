@@ -233,12 +233,12 @@ extension CanvasViewController {
     }
 
     @objc func recognizeTapGesture(_ gesture: UITapGestureRecognizer) {
-        guard let url = tool.selectedImageURL else { return }
+        guard let photoItem = tool.selectedPhotoItem else { return }
         withAnimation {
-            tool.selectedImageURL = nil
+            tool.selectedPhotoItem = nil
         }
         let point = gesture.location(in: drawingView)
-        canvas.insertPhoto(at: point.muliply(by: drawingView.ratio), url: url)
+        canvas.insertPhoto(at: point.muliply(by: drawingView.ratio), photoItem: photoItem)
         drawingView.draw()
     }
 }

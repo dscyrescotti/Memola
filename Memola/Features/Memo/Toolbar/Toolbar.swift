@@ -19,8 +19,8 @@ struct Toolbar: View {
 
     @State var title: String
     @State var memo: MemoObject
-    @State var photoItem: PhotosPickerItem?
     @State var opensCamera: Bool = false
+    @State var photosPickerItem: PhotosPickerItem?
     @State var isCameraAccessDenied: Bool = false
 
     @FocusState var textFieldState: Bool
@@ -56,22 +56,28 @@ struct Toolbar: View {
         }
         .font(.subheadline)
         .padding(10)
-        .onChange(of: photoItem) { oldValue, newValue in
+        .onChange(of: photosPickerItem) { oldValue, newValue in
             if newValue != nil {
                 Task {
                     let data = try? await newValue?.loadTransferable(type: Data.self)
-                    if let data {
-                        let url = canvas.savePhoto(data)
+                    if let data, let image = UIImage(data: data) {
+                        let photoItem = canvas.bookmarkPhoto(of: image)
                         withAnimation {
-                            tool.selectedImageURL = url
+                            tool.selectedPhotoItem = photoItem
                         }
                     }
-                    photoItem = nil
+                    photosPickerItem = nil
                 }
             }
         }
         .fullScreenCover(isPresented: $opensCamera) {
-            CameraView(url: $tool.selectedImageURL, canvas: canvas)
+            let image: Binding<UIImage?> = Binding {
+                tool.selectedPhotoItem?.image
+            } set: { image in
+                guard let image else { return }
+                tool.selectedPhotoItem = canvas.bookmarkPhoto(of: image)
+            }
+            CameraView(image: image, canvas: canvas)
                 .ignoresSafeArea()
         }
         .alert("Camera Access Denied", isPresented: $isCameraAccessDenied) {
@@ -167,7 +173,7 @@ struct Toolbar: View {
                                 .clipShape(.rect(cornerRadius: 8))
                         }
                         .hoverEffect(.lift)
-                        PhotosPicker(selection: $photoItem, matching: .images, preferredItemEncoding: .compatible) {
+                        PhotosPicker(selection: $photosPickerItem, matching: .images, preferredItemEncoding: .compatible) {
                             Image(systemName: "photo.fill.on.rectangle.fill")
                                 .contentShape(.circle)
                                 .frame(width: size, height: size)

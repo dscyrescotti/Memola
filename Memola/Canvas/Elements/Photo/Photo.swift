@@ -16,6 +16,7 @@ final class Photo: @unchecked Sendable, Equatable, Comparable {
     var url: URL?
     var bounds: [CGFloat]
     var createdAt: Date
+    var bookmark: Data?
 
     var object: PhotoObject?
 
@@ -24,12 +25,13 @@ final class Photo: @unchecked Sendable, Equatable, Comparable {
     var vertexCount: Int = 0
     var vertexBuffer: MTLBuffer?
 
-    init(url: URL?, size: CGSize, origin: CGPoint, bounds: [CGFloat], createdAt: Date) {
+    init(url: URL?, size: CGSize, origin: CGPoint, bounds: [CGFloat], createdAt: Date, bookmark: Data?) {
         self.size = size
         self.origin = origin
         self.url = url
         self.bounds = bounds
         self.createdAt = createdAt
+        self.bookmark = bookmark
         generateVertices()
     }
 
@@ -39,7 +41,8 @@ final class Photo: @unchecked Sendable, Equatable, Comparable {
             size: .init(width: object.width, height: object.height),
             origin: .init(x: object.originX, y: object.originY),
             bounds: object.bounds,
-            createdAt: object.createdAt ?? .now
+            createdAt: object.createdAt ?? .now,
+            bookmark: object.bookmark
         )
         self.object = object
     }
@@ -56,6 +59,17 @@ final class Photo: @unchecked Sendable, Equatable, Comparable {
             PhotoVertex(x: maxX, y: maxY, textCoord: CGPoint(x: 1, y: 1)),
         ]
     }
+
+    func getBookmarkURL() -> URL? {
+        var isStale = false
+        guard let bookmark else {
+            return nil
+        }
+        guard let bookmarkURL = try? URL(resolvingBookmarkData: bookmark, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: &isStale) else {
+            return nil
+        }
+        return bookmarkURL
+    }
 }
 
 extension Photo: Drawable {
@@ -64,7 +78,7 @@ extension Photo: Drawable {
             vertexCount = vertices.endIndex
             vertexBuffer = device.makeBuffer(bytes: vertices, length: vertexCount * MemoryLayout<PhotoVertex>.stride, options: [])
         }
-        if texture == nil, let url {
+        if texture == nil, let url = getBookmarkURL() {
             texture = Textures.createPhotoTexture(for: url, on: device)
         }
     }
