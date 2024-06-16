@@ -112,4 +112,62 @@ public class Tool: NSObject, ObservableObject {
             }
         }
     }
+
+    func selectPhoto(_ image: UIImage, for canvasID: NSManagedObjectID) {
+        let photoItem = bookmarkPhoto(of: image, with: canvasID)
+        withAnimation {
+            selectedPhotoItem = photoItem
+        }
+    }
+
+    private func bookmarkPhoto(of image: UIImage, with canvasID: NSManagedObjectID) -> PhotoItem? {
+        guard let data = image.jpegData(compressionQuality: 1) else { return nil }
+        let fileManager = FileManager.default
+        guard let directory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            return nil
+        }
+        let fileName = "\(UUID().uuidString)-\(Date.now.timeIntervalSince1970)"
+        let folder = directory.appendingPathComponent(canvasID.uriRepresentation().lastPathComponent, conformingTo: .folder)
+
+        if folder.startAccessingSecurityScopedResource(), !fileManager.fileExists(atPath: folder.path()) {
+            do {
+                try fileManager.createDirectory(at: folder, withIntermediateDirectories: true)
+                folder.stopAccessingSecurityScopedResource()
+            } catch {
+                NSLog("[Memola] - \(error.localizedDescription)")
+                folder.stopAccessingSecurityScopedResource()
+                return nil
+            }
+        }
+        let file = folder.appendingPathComponent(fileName, conformingTo: .jpeg)
+        do {
+            try data.write(to: file)
+        } catch {
+            NSLog("[Memola] - \(error.localizedDescription)")
+            return nil
+        }
+        var photoBookmark: PhotoItem?
+        do {
+            let bookmark = try file.bookmarkData(options: .minimalBookmark)
+            photoBookmark = PhotoItem(id: file, image: image, bookmark: bookmark)
+        } catch {
+            NSLog("[Memola] - \(error.localizedDescription)")
+        }
+        return photoBookmark
+    }
+
+    func unselectPhoto() {
+        guard let photoItem = selectedPhotoItem else { return }
+        let fileManager = FileManager.default
+        if let url = photoItem.bookmark.getBookmarkURL() {
+            do {
+                try fileManager.removeItem(at: url)
+            } catch {
+                NSLog("[Memola] - \(error.localizedDescription)")
+            }
+        }
+        withAnimation {
+            selectedPhotoItem = nil
+        }
+    }
 }

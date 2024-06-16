@@ -61,10 +61,7 @@ struct Toolbar: View {
                 Task {
                     let data = try? await newValue?.loadTransferable(type: Data.self)
                     if let data, let image = UIImage(data: data) {
-                        let photoItem = canvas.bookmarkPhoto(of: image)
-                        withAnimation {
-                            tool.selectedPhotoItem = photoItem
-                        }
+                        tool.selectPhoto(image, for: canvas.canvasID)
                     }
                     photosPickerItem = nil
                 }
@@ -75,7 +72,7 @@ struct Toolbar: View {
                 tool.selectedPhotoItem?.image
             } set: { image in
                 guard let image else { return }
-                tool.selectedPhotoItem = canvas.bookmarkPhoto(of: image)
+                tool.selectPhoto(image, for: canvas.canvasID)
             }
             CameraView(image: image, canvas: canvas)
                 .ignoresSafeArea()

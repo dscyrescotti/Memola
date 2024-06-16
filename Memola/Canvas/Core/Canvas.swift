@@ -131,42 +131,6 @@ extension Canvas {
     func insertPhoto(at point: CGPoint, photoItem: PhotoItem) {
         graphicContext.insertPhoto(at: point, photoItem: photoItem)
     }
-
-    func bookmarkPhoto(of image: UIImage) -> PhotoItem? {
-        guard let data = image.jpegData(compressionQuality: 1) else { return nil }
-        let fileManager = FileManager.default
-        guard let directory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            return nil
-        }
-        let fileName = "\(UUID().uuidString)-\(Date.now.timeIntervalSince1970)"
-        let folder = directory.appendingPathComponent(canvasID.uriRepresentation().lastPathComponent, conformingTo: .folder)
-
-        if folder.startAccessingSecurityScopedResource(), !fileManager.fileExists(atPath: folder.path()) {
-            do {
-                try fileManager.createDirectory(at: folder, withIntermediateDirectories: true)
-                folder.stopAccessingSecurityScopedResource()
-            } catch {
-                NSLog("[Memola] - \(error.localizedDescription)")
-                folder.stopAccessingSecurityScopedResource()
-                return nil
-            }
-        }
-        let file = folder.appendingPathComponent(fileName, conformingTo: .jpeg)
-        do {
-            try data.write(to: file)
-        } catch {
-            NSLog("[Memola] - \(error.localizedDescription)")
-            return nil
-        }
-        var photoBookmark: PhotoItem?
-        do {
-            let bookmark = try file.bookmarkData(options: .minimalBookmark)
-            photoBookmark = PhotoItem(id: file, image: image, bookmark: bookmark)
-        } catch {
-            NSLog("[Memola] - \(error.localizedDescription)")
-        }
-        return photoBookmark
-    }
 }
 
 // MARK: - Rendering

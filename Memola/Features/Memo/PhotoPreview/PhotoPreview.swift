@@ -26,9 +26,7 @@ struct PhotoPreview: View {
             .cornerRadius(5)
             .overlay(alignment: .topLeading) {
                 Button {
-                    withAnimation {
-                        tool.selectedPhotoItem = nil
-                    }
+                    tool.unselectPhoto()
                 } label: {
                     Image(systemName: "xmark.circle.fill")
                         .font(.title2)

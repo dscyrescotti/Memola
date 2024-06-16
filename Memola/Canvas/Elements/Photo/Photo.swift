@@ -59,17 +59,6 @@ final class Photo: @unchecked Sendable, Equatable, Comparable {
             PhotoVertex(x: maxX, y: maxY, textCoord: CGPoint(x: 1, y: 1)),
         ]
     }
-
-    func getBookmarkURL() -> URL? {
-        var isStale = false
-        guard let bookmark else {
-            return nil
-        }
-        guard let bookmarkURL = try? URL(resolvingBookmarkData: bookmark, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: &isStale) else {
-            return nil
-        }
-        return bookmarkURL
-    }
 }
 
 extension Photo: Drawable {
@@ -78,7 +67,7 @@ extension Photo: Drawable {
             vertexCount = vertices.endIndex
             vertexBuffer = device.makeBuffer(bytes: vertices, length: vertexCount * MemoryLayout<PhotoVertex>.stride, options: [])
         }
-        if texture == nil, let url = getBookmarkURL() {
+        if texture == nil, let url = bookmark?.getBookmarkURL() {
             texture = Textures.createPhotoTexture(for: url, on: device)
         }
     }
