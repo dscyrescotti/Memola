@@ -70,6 +70,13 @@ final class GraphicContext: @unchecked Sendable {
                 }
             }
             previousElement = nil
+        case .photo(let photo):
+            tree.remove(photo.element, in: photo.photoBox)
+            withPersistence(\.backgroundContext) { [weak photo] context in
+                photo?.object?.element?.graphicContext = nil
+                try context.saveIfNeeded()
+                context.refreshAllObjects()
+            }
         }
     }
 
@@ -105,6 +112,13 @@ final class GraphicContext: @unchecked Sendable {
                 }
             }
             previousElement = nil
+        case .photo(let photo):
+            tree.insert(photo.element, in: photo.photoBox)
+            withPersistence(\.backgroundContext) { [weak self, weak photo] context in
+                photo?.object?.element?.graphicContext = self?.object
+                try context.saveIfNeeded()
+                context.refreshAllObjects()
+            }
         }
     }
 }
@@ -304,7 +318,7 @@ extension GraphicContext {
 
 // MARK: - Photo
 extension GraphicContext {
-    func insertPhoto(at point: CGPoint, photoItem: PhotoItem) {
+    func insertPhoto(at point: CGPoint, photoItem: PhotoItem) -> Photo {
         let size = photoItem.dimension
         let origin = point
         let bounds = [origin.x - size.width / 2, origin.y - size.height / 2, origin.x + size.width / 2, origin.y + size.height / 2]
@@ -331,6 +345,7 @@ extension GraphicContext {
             try context.saveIfNeeded()
         }
         self.previousElement = .photo(photo)
+        return photo
     }
 }
 

@@ -9,4 +9,5 @@ import Foundation
 
 enum HistoryEvent {
     case stroke(any Stroke)
+    case photo(Photo)
 }

@@ -238,7 +238,8 @@ extension CanvasViewController {
             tool.selectedPhotoItem = nil
         }
         let point = gesture.location(in: drawingView)
-        canvas.insertPhoto(at: point.muliply(by: drawingView.ratio), photoItem: photoItem)
+        let photo = canvas.insertPhoto(at: point.muliply(by: drawingView.ratio), photoItem: photoItem)
+        history.addUndo(.photo(photo))
         drawingView.draw()
     }
 }
