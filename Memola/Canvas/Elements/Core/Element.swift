@@ -40,4 +40,17 @@ enum Element: Equatable, Comparable {
             photo.createdAt
         }
     }
+
+    static func < (lhs: Element, rhs: Element) -> Bool {
+        switch (lhs, rhs) {
+        case let (.stroke(leftStroke), .stroke(rightStroke)):
+            leftStroke < rightStroke
+        case let (.photo(leftPhoto), .photo(rightPhoto)):
+            leftPhoto < rightPhoto
+        case let (.photo(photo), .stroke(stroke)):
+            photo.createdAt < stroke.value.createdAt
+        case let (.stroke(stroke), .photo(photo)):
+            stroke.value.createdAt < photo.createdAt
+        }
+    }
 }

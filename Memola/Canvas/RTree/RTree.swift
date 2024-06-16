@@ -38,7 +38,11 @@ class RTree<T> where T: Equatable & Comparable {
                     .sorted(by: <)
                 result = _merge(result, children)
             } else {
-                queue.append(contentsOf: node.children)
+                let nodes = node.children.sorted {
+                    guard let first = $0.value, let second = $1.value else { return false }
+                    return first < second
+                }
+                queue.append(contentsOf: nodes)
             }
         }
         return result
