@@ -32,7 +32,7 @@ class DrawingView: UIView {
     }
 
     func updateDrawableSize(with size: CGSize) {
-        renderView.drawableSize = size.multiply(by: 3)
+        renderView.drawableSize = size.multiply(by: 2.5)
     }
 
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {

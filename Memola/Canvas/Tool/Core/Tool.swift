@@ -114,10 +114,30 @@ public class Tool: NSObject, ObservableObject {
     }
 
     func selectPhoto(_ image: UIImage, for canvasID: NSManagedObjectID) {
-        let photoItem = bookmarkPhoto(of: image, with: canvasID)
+        guard let resizedImage = resizePhoto(of: image) else { return }
+        let photoItem = bookmarkPhoto(of: resizedImage, with: canvasID)
         withAnimation {
             selectedPhotoItem = photoItem
         }
+    }
+
+    private func resizePhoto(of image: UIImage) -> UIImage? {
+        let targetSize = CGSize(width: 768, height: 768)
+        let size = image.size
+        let widthRatio = targetSize.width / size.width
+        let heightRatio = targetSize.height / size.height
+        let newSize = CGSize(
+            width: size.width * min(widthRatio, heightRatio),
+            height: size.height * min(widthRatio, heightRatio)
+        )
+        let rect = CGRect(origin: .zero, size: newSize)
+
+        UIGraphicsBeginImageContextWithOptions(newSize, true, 1.0)
+        image.draw(in: rect)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return newImage
     }
 
     private func bookmarkPhoto(of image: UIImage, with canvasID: NSManagedObjectID) -> PhotoItem? {
