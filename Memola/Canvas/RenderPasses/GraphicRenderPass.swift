@@ -67,13 +67,6 @@ class GraphicRenderPass: RenderPass {
                         strokeRenderPass.graphicDescriptor = descriptor
                         strokeRenderPass.graphicPipelineState = graphicPipelineState
                         strokeRenderPass.draw(on: canvas, with: renderer)
-
-                        if let stroke = stroke as? PenStroke, !stroke.isEmptyErasedQuads {
-                            descriptor.colorAttachments[0].loadAction = .load
-                            eraserRenderPass.stroke = stroke
-                            eraserRenderPass.descriptor = descriptor
-                            eraserRenderPass.draw(on: canvas, with: renderer)
-                        }
                     }
                 case .photo(let photo):
                     descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
@@ -103,13 +96,6 @@ class GraphicRenderPass: RenderPass {
                     strokeRenderPass.graphicDescriptor = descriptor
                     strokeRenderPass.graphicPipelineState = graphicPipelineState
                     strokeRenderPass.draw(on: canvas, with: renderer)
-
-                    if let stroke = stroke as? PenStroke, !stroke.isEmptyErasedQuads {
-                        descriptor.colorAttachments[0].loadAction = .load
-                        eraserRenderPass.stroke = stroke
-                        eraserRenderPass.descriptor = descriptor
-                        eraserRenderPass.draw(on: canvas, with: renderer)
-                    }
                 }
             case .photo(let photo):
                 photoRenderPass.photo = photo

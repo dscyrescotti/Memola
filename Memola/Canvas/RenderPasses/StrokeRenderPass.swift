@@ -21,6 +21,8 @@ class StrokeRenderPass: RenderPass {
     var stroke: (any Stroke)?
     var strokeTexture: MTLTexture?
 
+    weak var eraserRenderPass: EraserRenderPass?
+
     init(renderer: Renderer) {
         descriptor = MTLRenderPassDescriptor()
         strokePipelineState = PipelineStates.createStrokePipelineState(from: renderer)
@@ -56,6 +58,13 @@ class StrokeRenderPass: RenderPass {
         stroke?.draw(device: renderer.device, renderEncoder: renderEncoder)
         renderEncoder.endEncoding()
         commandBuffer.commit()
+
+        if let eraserRenderPass, let stroke = stroke as? PenStroke, !stroke.isEmptyErasedQuads {
+            descriptor.colorAttachments[0].loadAction = .load
+            eraserRenderPass.stroke = stroke
+            eraserRenderPass.descriptor = descriptor
+            eraserRenderPass.draw(on: canvas, with: renderer)
+        }
 
         drawStrokeTexture(on: canvas, with: renderer)
     }

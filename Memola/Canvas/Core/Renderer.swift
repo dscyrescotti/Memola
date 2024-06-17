@@ -69,6 +69,7 @@ final class Renderer {
 
     func draw(in view: MTKView, on canvas: Canvas) {
         if !updatesViewPort {
+            strokeRenderPass.eraserRenderPass = eraserRenderPass
             graphicRenderPass.photoRenderPass = photoRenderPass
             graphicRenderPass.strokeRenderPass = strokeRenderPass
             graphicRenderPass.eraserRenderPass = eraserRenderPass
