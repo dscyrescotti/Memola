@@ -324,7 +324,8 @@ extension GraphicContext {
         let bounds = [origin.x - size.width / 2, origin.y - size.height / 2, origin.x + size.width / 2, origin.y + size.height / 2]
         let photo = Photo(url: photoItem.id, size: size, origin: origin, bounds: bounds, createdAt: .now, bookmark: photoItem.bookmark)
         tree.insert(photo.element, in: photo.photoBox)
-        withPersistence(\.backgroundContext) { [_photo = photo, graphicContext = object] context in
+        withPersistence(\.backgroundContext) { [weak _photo = photo, weak graphicContext = object] context in
+            guard let _photo else { return }
             let photo = PhotoObject(\.backgroundContext)
             photo.imageURL = _photo.url
             photo.bounds = _photo.bounds
