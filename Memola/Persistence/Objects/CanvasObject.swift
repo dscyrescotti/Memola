@@ -8,7 +8,6 @@
 import CoreData
 import Foundation
 
-
 @objc(CanvasObject)
 final class CanvasObject: NSManagedObject {
     @NSManaged var width: CGFloat

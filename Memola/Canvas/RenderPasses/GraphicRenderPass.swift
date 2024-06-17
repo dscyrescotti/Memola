@@ -15,6 +15,7 @@ class GraphicRenderPass: RenderPass {
 
     var graphicPipelineState: MTLRenderPipelineState?
 
+    weak var photoRenderPass: PhotoRenderPass?
     weak var strokeRenderPass: StrokeRenderPass?
     weak var eraserRenderPass: EraserRenderPass?
 
@@ -32,7 +33,7 @@ class GraphicRenderPass: RenderPass {
     }
 
     func draw(on canvas: Canvas, with renderer: Renderer) {
-        guard let strokeRenderPass, let eraserRenderPass else { return }
+        guard let strokeRenderPass, let eraserRenderPass, let photoRenderPass else { return }
         guard let descriptor else { return }
 
         guard let graphicPipelineState else { return }
@@ -45,21 +46,59 @@ class GraphicRenderPass: RenderPass {
         let graphicContext = canvas.graphicContext
         if renderer.redrawsGraphicRender {
             canvas.setGraphicRenderType(.finished)
-            for _stroke in graphicContext.tree.search(box: canvas.bounds.box) {
-                let stroke = _stroke.value
-                if graphicContext.previousStroke === stroke || graphicContext.currentStroke === stroke {
+            for _element in graphicContext.tree.search(box: canvas.bounds.box) {
+                if graphicContext.previousElement == _element || graphicContext.currentElement == _element {
                     continue
                 }
-                guard stroke.isVisible(in: canvas.bounds) else { continue }
-                descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
-                clearsTexture = false
+                switch _element {
+                case .stroke(let _stroke):
+                    let stroke = _stroke.value
+                    guard stroke.isVisible(in: canvas.bounds) else { continue }
+                    descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
+                    clearsTexture = false
+                    switch stroke.style {
+                    case .eraser:
+                        eraserRenderPass.stroke = stroke
+                        eraserRenderPass.descriptor = descriptor
+                        eraserRenderPass.draw(on: canvas, with: renderer)
+                    case .marker:
+                        canvas.setGraphicRenderType(.finished)
+                        strokeRenderPass.stroke = stroke
+                        strokeRenderPass.graphicDescriptor = descriptor
+                        strokeRenderPass.graphicPipelineState = graphicPipelineState
+                        strokeRenderPass.draw(on: canvas, with: renderer)
+
+                        if let stroke = stroke as? PenStroke, !stroke.isEmptyErasedQuads {
+                            descriptor.colorAttachments[0].loadAction = .load
+                            eraserRenderPass.stroke = stroke
+                            eraserRenderPass.descriptor = descriptor
+                            eraserRenderPass.draw(on: canvas, with: renderer)
+                        }
+                    }
+                case .photo(let photo):
+                    descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
+                    clearsTexture = false
+                    photoRenderPass.photo = photo
+                    photoRenderPass.descriptor = descriptor
+                    photoRenderPass.draw(on: canvas, with: renderer)
+                }
+            }
+            renderer.redrawsGraphicRender = false
+        }
+
+        if let element = graphicContext.previousElement {
+            descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
+            clearsTexture = false
+            switch element {
+            case .stroke(let anyStroke):
+                let stroke = anyStroke.value
                 switch stroke.style {
                 case .eraser:
                     eraserRenderPass.stroke = stroke
                     eraserRenderPass.descriptor = descriptor
                     eraserRenderPass.draw(on: canvas, with: renderer)
                 case .marker:
-                    canvas.setGraphicRenderType(.finished)
+                    canvas.setGraphicRenderType(.newlyFinished)
                     strokeRenderPass.stroke = stroke
                     strokeRenderPass.graphicDescriptor = descriptor
                     strokeRenderPass.graphicPipelineState = graphicPipelineState
@@ -72,33 +111,12 @@ class GraphicRenderPass: RenderPass {
                         eraserRenderPass.draw(on: canvas, with: renderer)
                     }
                 }
+            case .photo(let photo):
+                photoRenderPass.photo = photo
+                photoRenderPass.descriptor = descriptor
+                photoRenderPass.draw(on: canvas, with: renderer)
             }
-            renderer.redrawsGraphicRender = false
-        }
-
-        if let stroke = graphicContext.previousStroke {
-            descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
-            clearsTexture = false
-            switch stroke.style {
-            case .eraser:
-                eraserRenderPass.stroke = stroke
-                eraserRenderPass.descriptor = descriptor
-                eraserRenderPass.draw(on: canvas, with: renderer)
-            case .marker:
-                canvas.setGraphicRenderType(.newlyFinished)
-                strokeRenderPass.stroke = stroke
-                strokeRenderPass.graphicDescriptor = descriptor
-                strokeRenderPass.graphicPipelineState = graphicPipelineState
-                strokeRenderPass.draw(on: canvas, with: renderer)
-
-                if let stroke = stroke as? PenStroke, !stroke.isEmptyErasedQuads {
-                    descriptor.colorAttachments[0].loadAction = .load
-                    eraserRenderPass.stroke = stroke
-                    eraserRenderPass.descriptor = descriptor
-                    eraserRenderPass.draw(on: canvas, with: renderer)
-                }
-            }
-            graphicContext.previousStroke = nil
+            graphicContext.previousElement = nil
         }
 
         let eraserStrokes = graphicContext.eraserStrokes

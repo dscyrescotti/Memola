@@ -14,8 +14,14 @@ public class Tool: NSObject, ObservableObject {
     let object: ToolObject
 
     @Published var pens: [Pen] = []
+
+    // MARK: - Pen
     @Published var selectedPen: Pen?
     @Published var draggedPen: Pen?
+    // MARK: - Photo
+    @Published var selectedPhotoItem: PhotoItem?
+
+    @Published var selection: ToolSelection = .none
 
     let scrollPublisher = PassthroughSubject<String, Never>()
     var markers: [Pen] {
@@ -104,6 +110,82 @@ public class Tool: NSObject, ObservableObject {
                 context.delete(_pen)
                 try context.saveIfNeeded()
             }
+        }
+    }
+
+    func selectPhoto(_ image: UIImage, for canvasID: NSManagedObjectID) {
+        guard let resizedImage = resizePhoto(of: image) else { return }
+        let photoItem = bookmarkPhoto(of: resizedImage, with: canvasID)
+        withAnimation {
+            selectedPhotoItem = photoItem
+        }
+    }
+
+    private func resizePhoto(of image: UIImage) -> UIImage? {
+        let targetSize = CGSize(width: 768, height: 768)
+        let size = image.size
+        let widthRatio = targetSize.width / size.width
+        let heightRatio = targetSize.height / size.height
+        let newSize = CGSize(
+            width: size.width * min(widthRatio, heightRatio),
+            height: size.height * min(widthRatio, heightRatio)
+        )
+        let rect = CGRect(origin: .zero, size: newSize)
+
+        UIGraphicsBeginImageContextWithOptions(newSize, true, 1.0)
+        image.draw(in: rect)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return newImage
+    }
+
+    private func bookmarkPhoto(of image: UIImage, with canvasID: NSManagedObjectID) -> PhotoItem? {
+        guard let data = image.jpegData(compressionQuality: 1) else { return nil }
+        let fileManager = FileManager.default
+        guard let directory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            return nil
+        }
+        let fileName = "\(UUID().uuidString)-\(Int(Date.now.timeIntervalSince1970))"
+        let folder = directory.appendingPathComponent(canvasID.uriRepresentation().lastPathComponent, conformingTo: .folder)
+
+        if !fileManager.fileExists(atPath: folder.path()) {
+            do {
+                try fileManager.createDirectory(at: folder, withIntermediateDirectories: true)
+            } catch {
+                NSLog("[Memola] - \(error.localizedDescription)")
+                return nil
+            }
+        }
+        let file = folder.appendingPathComponent(fileName, conformingTo: .jpeg)
+        do {
+            try data.write(to: file)
+        } catch {
+            NSLog("[Memola] - \(error.localizedDescription)")
+            return nil
+        }
+        var photoBookmark: PhotoItem?
+        do {
+            let bookmark = try file.bookmarkData(options: .minimalBookmark)
+            photoBookmark = PhotoItem(id: file, image: image, bookmark: bookmark)
+        } catch {
+            NSLog("[Memola] - \(error.localizedDescription)")
+        }
+        return photoBookmark
+    }
+
+    func unselectPhoto() {
+        guard let photoItem = selectedPhotoItem else { return }
+        let fileManager = FileManager.default
+        if let url = photoItem.bookmark.getBookmarkURL() {
+            do {
+                try fileManager.removeItem(at: url)
+            } catch {
+                NSLog("[Memola] - \(error.localizedDescription)")
+            }
+        }
+        withAnimation {
+            selectedPhotoItem = nil
         }
     }
 }

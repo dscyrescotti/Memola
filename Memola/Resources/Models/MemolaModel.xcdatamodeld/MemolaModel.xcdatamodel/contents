@@ -6,6 +6,13 @@
         <relationship name="graphicContext" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="GraphicContextObject" inverseName="canvas" inverseEntity="GraphicContextObject"/>
         <relationship name="memo" maxCount="1" deletionRule="Deny" destinationEntity="MemoObject" inverseName="canvas" inverseEntity="MemoObject"/>
     </entity>
+    <entity name="ElementObject" representedClassName="ElementObject" syncable="YES">
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="type" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="graphicContext" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GraphicContextObject" inverseName="elements" inverseEntity="GraphicContextObject"/>
+        <relationship name="photo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PhotoObject" inverseName="element" inverseEntity="PhotoObject"/>
+        <relationship name="stroke" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StrokeObject" inverseName="element" inverseEntity="StrokeObject"/>
+    </entity>
     <entity name="EraserObject" representedClassName="EraserObject" syncable="YES">
         <attribute name="bounds" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
         <attribute name="color" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
@@ -17,7 +24,7 @@
     </entity>
     <entity name="GraphicContextObject" representedClassName="GraphicContextObject" syncable="YES">
         <relationship name="canvas" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CanvasObject" inverseName="graphicContext" inverseEntity="CanvasObject"/>
-        <relationship name="strokes" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="StrokeObject" inverseName="graphicContext" inverseEntity="StrokeObject"/>
+        <relationship name="elements" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ElementObject" inverseName="graphicContext" inverseEntity="ElementObject"/>
     </entity>
     <entity name="MemoObject" representedClassName="MemoObject" syncable="YES">
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
@@ -33,6 +40,17 @@
         <attribute name="style" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thickness" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="tool" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ToolObject" inverseName="pens" inverseEntity="ToolObject"/>
+    </entity>
+    <entity name="PhotoObject" representedClassName="PhotoObject" syncable="YES">
+        <attribute name="bookmark" optional="YES" attributeType="Binary"/>
+        <attribute name="bounds" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="height" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="imageURL" optional="YES" attributeType="URI"/>
+        <attribute name="originX" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="originY" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="width" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="element" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ElementObject" inverseName="photo" inverseEntity="ElementObject"/>
     </entity>
     <entity name="QuadObject" representedClassName="QuadObject" syncable="YES">
         <attribute name="color" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
@@ -50,8 +68,8 @@
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="style" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thickness" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="element" maxCount="1" deletionRule="Nullify" destinationEntity="ElementObject" inverseName="stroke" inverseEntity="ElementObject"/>
         <relationship name="erasers" toMany="YES" deletionRule="Nullify" destinationEntity="EraserObject" inverseName="strokes" inverseEntity="EraserObject"/>
-        <relationship name="graphicContext" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GraphicContextObject" inverseName="strokes" inverseEntity="GraphicContextObject"/>
         <relationship name="quads" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="QuadObject" inverseName="stroke" inverseEntity="QuadObject"/>
     </entity>
     <entity name="ToolObject" representedClassName="ToolObject" syncable="YES">

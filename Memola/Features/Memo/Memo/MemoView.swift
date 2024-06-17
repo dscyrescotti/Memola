@@ -29,15 +29,26 @@ struct MemoView: View {
     var body: some View {
         CanvasView(tool: tool, canvas: canvas, history: history)
             .ignoresSafeArea()
-            .overlay(alignment: .trailing) {
-                PenDock(tool: tool, canvas: canvas)
+            .overlay(alignment: .bottomTrailing) {
+                switch tool.selection {
+                case .pen:
+                    PenDock(tool: tool, canvas: canvas)
+                        .transition(.move(edge: .trailing))
+                case .photo:
+                    if let photoItem = tool.selectedPhotoItem {
+                        PhotoPreview(photoItem: photoItem, tool: tool)
+                            .transition(.move(edge: .trailing))
+                    }
+                default:
+                    EmptyView()
+                }
             }
             .overlay(alignment: .bottomLeading) {
                 zoomControl
             }
             .disabled(textFieldState)
             .overlay(alignment: .top) {
-                Toolbar(size: size, memo: memo, canvas: canvas, history: history)
+                Toolbar(size: size, memo: memo, tool: tool, canvas: canvas, history: history)
             }
             .disabled(canvas.state == .loading || canvas.state == .closing)
             .overlay {

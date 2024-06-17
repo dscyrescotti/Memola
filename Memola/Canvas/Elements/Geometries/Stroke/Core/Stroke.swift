@@ -125,4 +125,8 @@ extension Stroke {
     var anyStroke: AnyStroke {
         AnyStroke(self)
     }
+
+    var element: Element {
+        .stroke(anyStroke)
+    }
 }

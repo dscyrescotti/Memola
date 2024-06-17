@@ -39,8 +39,8 @@ final class Canvas: ObservableObject, Identifiable, @unchecked Sendable {
     }
 
     var hasValidStroke: Bool {
-        if let currentStroke = graphicContext.currentStroke {
-            return Date.now.timeIntervalSince(currentStroke.createdAt) * 1000 > 80
+        if let currentElement = graphicContext.currentElement {
+            return Date.now.timeIntervalSince(currentElement.createdAt) * 1000 > 80
         }
         return false
     }
@@ -103,7 +103,7 @@ extension Canvas {
     }
 }
 
-// MARK: - Graphic Context
+// MARK: - Stroke
 extension Canvas {
     func beginTouch(at point: CGPoint, pen: Pen) -> any Stroke {
         graphicContext.beginStroke(at: point, pen: pen)
@@ -123,6 +123,13 @@ extension Canvas {
 
     func setGraphicRenderType(_ renderType: GraphicContext.RenderType) {
         graphicContext.renderType = renderType
+    }
+}
+
+// MARK: - Photo
+extension Canvas {
+    func insertPhoto(at point: CGPoint, photoItem: PhotoItem) -> Photo {
+        graphicContext.insertPhoto(at: point, photoItem: photoItem)
     }
 }
 

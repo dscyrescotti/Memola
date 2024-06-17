@@ -20,10 +20,32 @@ class Textures {
         if let penTexture = penTextures[textureName] {
             return penTexture
         }
+        let options: [MTKTextureLoader.Option: Any] = [
+            .SRGB: false,
+            .generateMipmaps: true,
+            .textureStorageMode: NSNumber(value: MTLStorageMode.private.rawValue)
+        ]
         let textureLoader = MTKTextureLoader(device: device)
-        let penTexture = try? textureLoader.newTexture(name: textureName, scaleFactor: 1.0, bundle: .main, options: [.SRGB: false])
+        let penTexture = try? textureLoader.newTexture(name: textureName, scaleFactor: 1.0, bundle: .main, options: options)
         penTextures[textureName] = penTexture
         return penTexture
+    }
+
+    @discardableResult
+    static func createPhotoTexture(for url: URL, on device: MTLDevice) -> MTLTexture? {
+        let textureLoader = MTKTextureLoader(device: device)
+        do {
+            let options: [MTKTextureLoader.Option: Any] = [
+                .SRGB: false,
+                .generateMipmaps: true,
+                .textureStorageMode: NSNumber(value: MTLStorageMode.private.rawValue)
+            ]
+            let photoTexture = try textureLoader.newTexture(URL: url, options: options)
+            return photoTexture
+        } catch {
+            NSLog("[Memola] - \(error.localizedDescription)")
+            return nil
+        }
     }
 
     static func createGraphicTexture(

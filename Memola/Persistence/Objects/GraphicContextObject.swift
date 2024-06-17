@@ -11,5 +11,5 @@ import Foundation
 @objc(GraphicContextObject)
 final class GraphicContextObject: NSManagedObject {
     @NSManaged var canvas: CanvasObject?
-    @NSManaged var strokes: NSMutableOrderedSet
+    @NSManaged var elements: NSMutableOrderedSet
 }

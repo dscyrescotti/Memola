@@ -70,6 +70,20 @@ class History: ObservableObject {
                         try context.saveIfNeeded()
                     }
                 }
+            case .photo(let _photo):
+                if let url = _photo.bookmark?.getBookmarkURL() {
+                    do {
+                        try FileManager.default.removeItem(at: url)
+                    } catch {
+                        NSLog("[Memola] - \(error.localizedDescription)")
+                    }
+                }
+                withPersistence(\.backgroundContext) { context in
+                    if let photo = _photo.object {
+                        context.delete(photo)
+                    }
+                    try context.saveIfNeeded()
+                }
             }
         }
         redoStack.removeAll()

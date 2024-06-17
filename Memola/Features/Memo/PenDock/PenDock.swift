@@ -86,9 +86,7 @@ struct PenDock: View {
         .padding(.vertical, 5)
         .contentShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10)))
         .onTapGesture {
-            if tool.selectedPen === pen {
-                tool.unselectPen(pen)
-            } else {
+            if tool.selectedPen !== pen {
                 tool.selectPen(pen)
             }
         }
