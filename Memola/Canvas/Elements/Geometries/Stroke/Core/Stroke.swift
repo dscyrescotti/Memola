@@ -83,13 +83,17 @@ extension Stroke {
 extension Stroke {
     func prepare(device: MTLDevice) {
         guard texture == nil else { return }
-        texture = penStyle.loadTexture(on: device)
+        if penStyle.textureName != nil {
+            texture = penStyle.loadTexture(on: device)
+        }
     }
 
     func draw(device: MTLDevice, renderEncoder: MTLRenderCommandEncoder) {
         guard !isEmpty, let indexBuffer else { return }
         prepare(device: device)
-        renderEncoder.setFragmentTexture(texture, index: 0)
+        if penStyle.textureName != nil {
+            renderEncoder.setFragmentTexture(texture, index: 0)
+        }
         renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         renderEncoder.drawIndexedPrimitives(
             type: .triangle,

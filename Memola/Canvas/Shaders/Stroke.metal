@@ -53,3 +53,21 @@ fragment float4 fragment_stroke(
     float4 color = float4(texture.sample(textureSampler, out.textCoord));
     return float4(1, 1, 1, color.a);
 }
+
+fragment float4 fragment_stroke_eraser(
+    VertexOut out [[stage_in]],
+    texture2d<float> texture [[texture(0)]]
+) {
+    float2 circleCenter = float2(0.5, 0.5);
+    float radius = 0.4;
+    float4 circleColor = float4(1.0, 0.0, 0.0, 1.0);
+
+    float2 fragCoord = out.textCoord;
+    float distance = length(fragCoord - circleCenter);
+
+    if (distance < radius) {
+        return circleColor;
+    } else {
+        return float4(0.0);
+    }
+}

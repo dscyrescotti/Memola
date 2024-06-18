@@ -54,7 +54,7 @@ class ViewPortRenderPass: RenderPass {
             renderEncoder.setRenderPipelineState(viewPortUpdatePipelineState)
 
             renderEncoder.setFragmentTexture(photoBackgroundTexture, index: 0)
-            canvas.renderViewPort(device: renderer.device, renderEncoder: renderEncoder)
+            canvas.renderViewPortUpdate(device: renderer.device, renderEncoder: renderEncoder)
 
             renderEncoder.setFragmentTexture(cacheTexture, index: 0)
             canvas.renderViewPortUpdate(device: renderer.device, renderEncoder: renderEncoder)

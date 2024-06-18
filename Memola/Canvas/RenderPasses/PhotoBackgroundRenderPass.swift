@@ -52,5 +52,6 @@ class PhotoBackgroundRenderPass: RenderPass {
 
         renderEncoder.endEncoding()
         commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
     }
 }
