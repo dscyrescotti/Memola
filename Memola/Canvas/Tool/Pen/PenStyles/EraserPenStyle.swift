@@ -10,8 +10,8 @@ import Foundation
 struct EraserPenStyle: PenStyle {
     var icon: (base: String, tip: String?) = ("eraser", nil)
 
-    var textureName: String = "point-texture"
-    
+    var textureName: String? = nil
+
     var thickness: (min: CGFloat, max: CGFloat) = (0.5, 30)
 
     var thicknessSteps: [CGFloat] = [0.5, 1, 2, 5, 7.5, 10, 12.5, 15, 17.5, 20, 25, 30]

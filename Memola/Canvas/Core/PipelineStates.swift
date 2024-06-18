@@ -77,7 +77,7 @@ struct PipelineStates {
         let library = renderer.library
         let pipelineDescriptor = MTLRenderPipelineDescriptor()
         pipelineDescriptor.vertexFunction = library.makeFunction(name: "vertex_stroke")
-        pipelineDescriptor.fragmentFunction = library.makeFunction(name: "fragment_stroke")
+        pipelineDescriptor.fragmentFunction = library.makeFunction(name: "fragment_stroke_eraser")
         pipelineDescriptor.colorAttachments[0].pixelFormat = pixelFormat ?? renderer.pixelFormat
         pipelineDescriptor.label = "Eraser Pipeline State"
 

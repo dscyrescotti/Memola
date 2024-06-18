@@ -10,7 +10,7 @@ import Foundation
 
 protocol PenStyle {
     var icon: (base: String, tip: String?) { get }
-    var textureName: String { get }
+    var textureName: String? { get }
     var thickness: (min: CGFloat, max: CGFloat) { get }
     var thicknessSteps: [CGFloat] { get }
     var color: [CGFloat] { get }
@@ -22,6 +22,7 @@ protocol PenStyle {
 extension PenStyle {
     @discardableResult
     func loadTexture(on device: MTLDevice) -> MTLTexture? {
-        Textures.createPenTexture(with: textureName, on: device)
+        guard let textureName else { return nil }
+        return Textures.createPenTexture(with: textureName, on: device)
     }
 }

@@ -41,5 +41,6 @@ class PhotoRenderPass: RenderPass {
 
         renderEncoder.endEncoding()
         commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
     }
 }
