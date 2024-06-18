@@ -18,6 +18,7 @@ class GraphicRenderPass: RenderPass {
     weak var photoRenderPass: PhotoRenderPass?
     weak var strokeRenderPass: StrokeRenderPass?
     weak var eraserRenderPass: EraserRenderPass?
+    weak var photoBackgroundRenderPass: PhotoBackgroundRenderPass?
 
     var clearsTexture: Bool = true
 
@@ -33,7 +34,7 @@ class GraphicRenderPass: RenderPass {
     }
 
     func draw(on canvas: Canvas, with renderer: Renderer) {
-        guard let strokeRenderPass, let eraserRenderPass, let photoRenderPass else { return }
+        guard let strokeRenderPass, let eraserRenderPass, let photoRenderPass, let photoBackgroundRenderPass else { return }
         guard let descriptor else { return }
 
         guard let graphicPipelineState else { return }
@@ -55,7 +56,6 @@ class GraphicRenderPass: RenderPass {
                     let stroke = _stroke.value
                     guard stroke.isVisible(in: canvas.bounds) else { continue }
                     descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
-                    clearsTexture = false
                     switch stroke.style {
                     case .eraser:
                         eraserRenderPass.stroke = stroke
@@ -68,12 +68,18 @@ class GraphicRenderPass: RenderPass {
                         strokeRenderPass.graphicPipelineState = graphicPipelineState
                         strokeRenderPass.draw(on: canvas, with: renderer)
                     }
+                    clearsTexture = false
                 case .photo(let photo):
                     descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
-                    clearsTexture = false
                     photoRenderPass.photo = photo
                     photoRenderPass.descriptor = descriptor
                     photoRenderPass.draw(on: canvas, with: renderer)
+
+                    photoBackgroundRenderPass.photo = photo
+                    photoBackgroundRenderPass.clearsTexture = clearsTexture
+                    photoBackgroundRenderPass.draw(on: canvas, with: renderer)
+
+                    clearsTexture = false
                 }
             }
             renderer.redrawsGraphicRender = false
@@ -81,7 +87,6 @@ class GraphicRenderPass: RenderPass {
 
         if let element = graphicContext.previousElement {
             descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
-            clearsTexture = false
             switch element {
             case .stroke(let anyStroke):
                 let stroke = anyStroke.value
@@ -101,7 +106,12 @@ class GraphicRenderPass: RenderPass {
                 photoRenderPass.photo = photo
                 photoRenderPass.descriptor = descriptor
                 photoRenderPass.draw(on: canvas, with: renderer)
+
+                photoBackgroundRenderPass.photo = photo
+                photoBackgroundRenderPass.clearsTexture = clearsTexture
+                photoBackgroundRenderPass.draw(on: canvas, with: renderer)
             }
+            clearsTexture = false
             graphicContext.previousElement = nil
         }
 

@@ -37,6 +37,9 @@ final class Renderer {
     lazy var viewPortRenderPass: ViewPortRenderPass = {
         ViewPortRenderPass(renderer: self)
     }()
+    lazy var photoBackgroundRenderPass: PhotoBackgroundRenderPass = {
+        PhotoBackgroundRenderPass(renderer: self)
+    }()
 
     init(canvasView: MTKView) {
         guard let device = MTLCreateSystemDefaultDevice() else {
@@ -59,6 +62,7 @@ final class Renderer {
 
     func resize(on view: MTKView, to size: CGSize) {
         if !updatesViewPort {
+            photoBackgroundRenderPass.resize(on: view, to: size, with: self)
             strokeRenderPass.resize(on: view, to: size, with: self)
             graphicRenderPass.resize(on: view, to: size, with: self)
             cacheRenderPass.resize(on: view, to: size, with: self)
@@ -73,6 +77,7 @@ final class Renderer {
             graphicRenderPass.photoRenderPass = photoRenderPass
             graphicRenderPass.strokeRenderPass = strokeRenderPass
             graphicRenderPass.eraserRenderPass = eraserRenderPass
+            graphicRenderPass.photoBackgroundRenderPass = photoBackgroundRenderPass
             graphicRenderPass.draw(on: canvas, with: self)
         }
 
@@ -85,6 +90,7 @@ final class Renderer {
         cacheRenderPass.draw(on: canvas, with: self)
 
         viewPortRenderPass.descriptor = view.currentRenderPassDescriptor
+        viewPortRenderPass.photoBackgroundTexture = photoBackgroundRenderPass.photoBackgroundTexture
         viewPortRenderPass.cacheTexture = cacheRenderPass.cacheTexture
         viewPortRenderPass.draw(on: canvas, with: self)
     }
