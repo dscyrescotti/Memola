@@ -79,8 +79,8 @@ class StrokeRenderPass: RenderPass {
         let quadCount = stroke.quads.endIndex
         var quads = stroke.quads
         let quadBuffer = renderer.device.makeBuffer(bytes: &quads, length: MemoryLayout<Quad>.stride * quadCount, options: [])
-        let indexBuffer = renderer.device.makeBuffer(length: MemoryLayout<UInt>.stride * quadCount * 6, options: [])
-        let vertexBuffer = renderer.device.makeBuffer(length: MemoryLayout<QuadVertex>.stride * quadCount * 4, options: [])
+        let indexBuffer = renderer.device.makeBuffer(length: MemoryLayout<UInt>.stride * quadCount * 6, options: [.cpuCacheModeWriteCombined])
+        let vertexBuffer = renderer.device.makeBuffer(length: MemoryLayout<QuadVertex>.stride * quadCount * 4, options: [.cpuCacheModeWriteCombined])
 
         computeEncoder.setComputePipelineState(quadPipelineState)
         computeEncoder.setBuffer(quadBuffer, offset: 0, index: 0)

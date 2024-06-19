@@ -48,35 +48,36 @@ final class Photo: @unchecked Sendable, Equatable, Comparable {
     }
 
     func generateVertices() {
-        let minX = origin.x - size.width / 2
-        let maxX = origin.x + size.width / 2
-        let minY = origin.y - size.height / 2
-        let maxY = origin.y + size.height / 2
+        let minX = origin.x - (size.width / 2)
+        let maxX = origin.x + (size.width / 2)
+        let minY = origin.y - (size.height / 2)
+        let maxY = origin.y + (size.height / 2)
         vertices = [
             PhotoVertex(x: minX, y: minY, textCoord: CGPoint(x: 0, y: 0)),
+            PhotoVertex(x: maxX, y: minY, textCoord: CGPoint(x: 1, y: 0)),
             PhotoVertex(x: minX, y: maxY, textCoord: CGPoint(x: 0, y: 1)),
             PhotoVertex(x: maxX, y: minY, textCoord: CGPoint(x: 1, y: 0)),
-            PhotoVertex(x: maxX, y: maxY, textCoord: CGPoint(x: 1, y: 1)),
+            PhotoVertex(x: minX, y: maxY, textCoord: CGPoint(x: 0, y: 1)),
+            PhotoVertex(x: maxX, y: maxY, textCoord: CGPoint(x: 1, y: 1))
         ]
     }
 }
 
 extension Photo: Drawable {
     func prepare(device: any MTLDevice) {
-        if vertexBuffer == nil {
-            vertexCount = vertices.endIndex
-            vertexBuffer = device.makeBuffer(bytes: vertices, length: vertexCount * MemoryLayout<PhotoVertex>.stride, options: [])
-        }
         if texture == nil, let url = bookmark?.getBookmarkURL() {
             texture = Textures.createPhotoTexture(for: url, on: device)
         }
+        vertexCount = vertices.endIndex
+        vertexBuffer = device.makeBuffer(bytes: vertices, length: vertexCount * MemoryLayout<PhotoVertex>.stride, options: [.cpuCacheModeWriteCombined])
     }
     
     func draw(device: any MTLDevice, renderEncoder: any MTLRenderCommandEncoder) {
         prepare(device: device)
         renderEncoder.setFragmentTexture(texture, index: 0)
         renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-        renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertices.count)
+        renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertices.count)
+        vertexBuffer = nil
     }
 }
 
