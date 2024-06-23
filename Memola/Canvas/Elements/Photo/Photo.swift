@@ -77,7 +77,6 @@ extension Photo: Drawable {
         renderEncoder.setFragmentTexture(texture, index: 0)
         renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertices.count)
-        vertexBuffer = nil
     }
 }
 

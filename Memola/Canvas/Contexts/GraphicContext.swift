@@ -319,7 +319,7 @@ extension GraphicContext {
 // MARK: - Photo
 extension GraphicContext {
     func insertPhoto(at point: CGPoint, photoItem: PhotoItem) -> Photo {
-        let size = photoItem.dimension
+        let size = photoItem.getDimension()
         let origin = point
         let bounds = [origin.x - size.width / 2, origin.y - size.height / 2, origin.x + size.width / 2, origin.y + size.height / 2]
         let photo = Photo(url: photoItem.id, size: size, origin: origin, bounds: bounds, createdAt: .now, bookmark: photoItem.bookmark)

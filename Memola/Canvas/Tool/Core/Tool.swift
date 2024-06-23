@@ -114,33 +114,35 @@ public class Tool: NSObject, ObservableObject {
     }
 
     func selectPhoto(_ image: UIImage, for canvasID: NSManagedObjectID) {
-        guard let resizedImage = resizePhoto(of: image) else { return }
-        let photoItem = bookmarkPhoto(of: resizedImage, with: canvasID)
+        guard let (resizedImage, dimension) = resizePhoto(of: image) else { return }
+        let photoItem = bookmarkPhoto(of: resizedImage, in: dimension, with: canvasID)
         withAnimation {
             selectedPhotoItem = photoItem
         }
     }
 
-    private func resizePhoto(of image: UIImage) -> UIImage? {
-        let targetSize = CGSize(width: 768, height: 768)
+    private func resizePhoto(of image: UIImage) -> (UIImage, CGSize)? {
+        let targetSize = CGSize(width: 512, height: 512)
         let size = image.size
         let widthRatio = targetSize.width / size.width
         let heightRatio = targetSize.height / size.height
-        let newSize = CGSize(
+        let dimension = CGSize(
             width: size.width * min(widthRatio, heightRatio),
             height: size.height * min(widthRatio, heightRatio)
         )
-        let rect = CGRect(origin: .zero, size: newSize)
+        let rect = CGRect(origin: .zero, size: targetSize)
 
-        UIGraphicsBeginImageContextWithOptions(newSize, true, 1.0)
+        UIGraphicsBeginImageContextWithOptions(targetSize, true, 1.0)
         image.draw(in: rect)
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
 
-        return newImage
+        guard let newImage else { return nil }
+
+        return (newImage, dimension)
     }
 
-    private func bookmarkPhoto(of image: UIImage, with canvasID: NSManagedObjectID) -> PhotoItem? {
+    private func bookmarkPhoto(of image: UIImage, in dimension: CGSize, with canvasID: NSManagedObjectID) -> PhotoItem? {
         guard let data = image.jpegData(compressionQuality: 1) else { return nil }
         let fileManager = FileManager.default
         guard let directory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
@@ -167,7 +169,7 @@ public class Tool: NSObject, ObservableObject {
         var photoBookmark: PhotoItem?
         do {
             let bookmark = try file.bookmarkData(options: .minimalBookmark)
-            photoBookmark = PhotoItem(id: file, image: image, bookmark: bookmark)
+            photoBookmark = PhotoItem(id: file, image: image, dimension: dimension, bookmark: bookmark)
         } catch {
             NSLog("[Memola] - \(error.localizedDescription)")
         }
