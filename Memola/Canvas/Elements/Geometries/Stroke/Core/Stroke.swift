@@ -8,7 +8,7 @@
 import MetalKit
 import Foundation
 
-protocol Stroke: AnyObject, Drawable, Hashable, Equatable, Comparable {
+protocol Stroke: AnyObject, Drawable, Hashable, Equatable {
     var id: UUID { get set }
     var bounds: [CGFloat] { get set }
     var color: [CGFloat] { get set }
@@ -102,8 +102,6 @@ extension Stroke {
             indexBuffer: indexBuffer,
             indexBufferOffset: 0
         )
-        self.vertexBuffer = nil
-        self.indexBuffer = nil
     }
 }
 

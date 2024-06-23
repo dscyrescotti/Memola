@@ -30,6 +30,10 @@ class PhotoBackgroundRenderPass: RenderPass {
         photoBackgroundTexture = Textures.createPhotoBackgroundTexture(from: renderer, size: size, pixelFormat: renderer.pixelFormat)
     }
 
+    func draw(into commandBuffer: any MTLCommandBuffer, on canvas: Canvas, with renderer: Renderer) {
+        
+    }
+
     func draw(on canvas: Canvas, with renderer: Renderer) {
         guard let descriptor else { return }
 

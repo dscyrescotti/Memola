@@ -29,18 +29,14 @@ class ViewPortRenderPass: RenderPass {
 
     func resize(on view: MTKView, to size: CGSize, with renderer: Renderer) { }
 
-    func draw(on canvas: Canvas, with renderer: Renderer) {
+    func draw(into commandBuffer: any MTLCommandBuffer, on canvas: Canvas, with renderer: Renderer) {
         guard let descriptor else {
             return
         }
-        guard let commandBuffer = renderer.commandQueue.makeCommandBuffer() else {
-            return
-        }
-        commandBuffer.label = "View Port Command Buffer"
         guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else {
             return
         }
-        renderEncoder.label = label
+        renderEncoder.label = "View Port Render Encoder"
 
         guard let gridPipelineState else { return }
         renderEncoder.setRenderPipelineState(gridPipelineState)
@@ -64,7 +60,7 @@ class ViewPortRenderPass: RenderPass {
             }
 
             renderEncoder.setRenderPipelineState(viewPortPipelineState)
-            
+
             renderEncoder.setFragmentTexture(photoBackgroundTexture, index: 0)
             canvas.renderViewPort(device: renderer.device, renderEncoder: renderEncoder)
 

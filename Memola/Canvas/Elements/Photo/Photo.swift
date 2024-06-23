@@ -8,7 +8,7 @@
 import MetalKit
 import Foundation
 
-final class Photo: @unchecked Sendable, Equatable, Comparable {
+final class Photo: @unchecked Sendable, Equatable {
     var id: UUID = UUID()
     var size: CGSize
     var origin: CGPoint
@@ -92,6 +92,10 @@ extension Photo {
 
     static func < (lhs: Photo, rhs: Photo) -> Bool {
         lhs.createdAt < rhs.createdAt
+    }
+
+    static func ^= (lhs: Photo, rhs: Photo) -> Bool {
+        lhs == rhs
     }
 }
 

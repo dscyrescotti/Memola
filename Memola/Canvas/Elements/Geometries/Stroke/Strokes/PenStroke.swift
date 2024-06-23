@@ -167,7 +167,5 @@ final class PenStroke: Stroke, @unchecked Sendable {
             indexBuffer: erasedIndexBuffer,
             indexBufferOffset: 0
         )
-        self.erasedIndexBuffer = nil
-        self.erasedVertexBuffer = nil
     }
 }

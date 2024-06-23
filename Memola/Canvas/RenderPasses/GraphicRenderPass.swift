@@ -33,94 +33,71 @@ class GraphicRenderPass: RenderPass {
         clearsTexture = true
     }
 
-    func draw(on canvas: Canvas, with renderer: Renderer) {
-        guard let strokeRenderPass, let eraserRenderPass, let photoRenderPass, let photoBackgroundRenderPass else { return }
-        guard let descriptor else { return }
-
-        guard let graphicPipelineState else { return }
-        guard let graphicTexture else { return }
-
-        descriptor.colorAttachments[0].texture = graphicTexture
-        descriptor.colorAttachments[0].clearColor = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 0)
-        descriptor.colorAttachments[0].storeAction = .store
+    func draw(into commandBuffer: any MTLCommandBuffer, on canvas: Canvas, with renderer: Renderer) {
+        descriptor?.colorAttachments[0].texture = graphicTexture
+        descriptor?.colorAttachments[0].clearColor = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 0)
+        descriptor?.colorAttachments[0].storeAction = .store
 
         let graphicContext = canvas.graphicContext
         if renderer.redrawsGraphicRender {
             canvas.setGraphicRenderType(.finished)
+            var elementGroup: ElementGroup?
+            let start = Date.now.timeIntervalSince1970 * 1000
             for _element in graphicContext.tree.search(box: canvas.bounds.box) {
                 if graphicContext.previousElement == _element || graphicContext.currentElement == _element {
                     continue
                 }
-                switch _element {
-                case .stroke(let _stroke):
-                    let stroke = _stroke.value
-                    guard stroke.isVisible(in: canvas.bounds) else { continue }
-                    descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
-                    switch stroke.style {
-                    case .eraser:
-                        eraserRenderPass.stroke = stroke
-                        eraserRenderPass.descriptor = descriptor
-                        eraserRenderPass.draw(on: canvas, with: renderer)
-                    case .marker:
-                        canvas.setGraphicRenderType(.finished)
-                        strokeRenderPass.stroke = stroke
-                        strokeRenderPass.graphicDescriptor = descriptor
-                        strokeRenderPass.graphicPipelineState = graphicPipelineState
-                        strokeRenderPass.draw(on: canvas, with: renderer)
+                if elementGroup == nil {
+                    let _elementGroup = ElementGroup(_element)
+                    elementGroup = _elementGroup
+                } else {
+                    guard let _elementGroup = elementGroup else { return }
+                    if _elementGroup.isSameElement(_element) {
+                        _elementGroup.add(_element)
+                    } else {
+                        if let elementGroup {
+                            draw(for: elementGroup, into: commandBuffer, on: canvas, with: renderer)
+                        }
+                        let _elementGroup = ElementGroup(_element)
+                        elementGroup = _elementGroup
                     }
-                    clearsTexture = false
-                case .photo(let photo):
-                    descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
-                    photoRenderPass.photo = photo
-                    photoRenderPass.descriptor = descriptor
-                    photoRenderPass.draw(on: canvas, with: renderer)
-
-                    photoBackgroundRenderPass.photo = photo
-                    photoBackgroundRenderPass.clearsTexture = clearsTexture
-                    photoBackgroundRenderPass.draw(on: canvas, with: renderer)
-
-                    clearsTexture = false
                 }
             }
+            if let elementGroup {
+                draw(for: elementGroup, into: commandBuffer, on: canvas, with: renderer)
+            }
+            let end = Date.now.timeIntervalSince1970 * 1000
+            NSLog("[Memola] - duration: \(end - start)")
             renderer.redrawsGraphicRender = false
         }
-
         if let element = graphicContext.previousElement {
-            descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
-            switch element {
-            case .stroke(let anyStroke):
-                let stroke = anyStroke.value
-                switch stroke.style {
-                case .eraser:
-                    eraserRenderPass.stroke = stroke
-                    eraserRenderPass.descriptor = descriptor
-                    eraserRenderPass.draw(on: canvas, with: renderer)
-                case .marker:
-                    canvas.setGraphicRenderType(.newlyFinished)
-                    strokeRenderPass.stroke = stroke
-                    strokeRenderPass.graphicDescriptor = descriptor
-                    strokeRenderPass.graphicPipelineState = graphicPipelineState
-                    strokeRenderPass.draw(on: canvas, with: renderer)
-                }
-            case .photo(let photo):
-                photoRenderPass.photo = photo
-                photoRenderPass.descriptor = descriptor
-                photoRenderPass.draw(on: canvas, with: renderer)
-
-                photoBackgroundRenderPass.photo = photo
-                photoBackgroundRenderPass.clearsTexture = clearsTexture
-                photoBackgroundRenderPass.draw(on: canvas, with: renderer)
-            }
-            clearsTexture = false
+            let elementGroup = ElementGroup(element)
+            draw(for: elementGroup, into: commandBuffer, on: canvas, with: renderer)
             graphicContext.previousElement = nil
         }
+    }
 
-        let eraserStrokes = graphicContext.eraserStrokes
-        for eraserStroke in eraserStrokes {
-            if eraserStroke.finishesSaving {
-                graphicContext.eraserStrokes.remove(eraserStroke)
-                continue
-            }
+    private func draw(for elementGroup: ElementGroup, into commandBuffer: MTLCommandBuffer, on canvas: Canvas, with renderer: Renderer) {
+        switch elementGroup.type {
+        case .stroke:
+            descriptor?.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
+            strokeRenderPass?.elementGroup = elementGroup
+            strokeRenderPass?.graphicDescriptor = descriptor
+            strokeRenderPass?.graphicPipelineState = graphicPipelineState
+            strokeRenderPass?.draw(into: commandBuffer, on: canvas, with: renderer)
+            clearsTexture = false
+        case .eraser:
+            descriptor?.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
+            eraserRenderPass?.elementGroup = elementGroup
+            eraserRenderPass?.descriptor = descriptor
+            eraserRenderPass?.draw(into: commandBuffer, on: canvas, with: renderer)
+            clearsTexture = false
+        case .photo:
+            descriptor?.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
+            photoRenderPass?.elementGroup = elementGroup
+            photoRenderPass?.descriptor = descriptor
+            photoRenderPass?.draw(into: commandBuffer, on: canvas, with: renderer)
+            clearsTexture = false
         }
     }
 }

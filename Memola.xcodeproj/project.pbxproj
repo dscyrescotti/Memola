@@ -22,6 +22,7 @@
 		EC35655A2BF060D900A4E0BF /* Quad.metal in Sources */ = {isa = PBXBuildFile; fileRef = EC3565592BF060D900A4E0BF /* Quad.metal */; };
 		EC35655C2BF0712A00A4E0BF /* Float++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC35655B2BF0712A00A4E0BF /* Float++.swift */; };
 		EC37FB122C1B2DD90008D976 /* ToolSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC37FB112C1B2DD90008D976 /* ToolSelection.swift */; };
+		EC42F7852C25267000E86E96 /* ElementGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42F7842C25267000E86E96 /* ElementGroup.swift */; };
 		EC4538892BEBCAE000A86FEC /* Quad.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4538882BEBCAE000A86FEC /* Quad.swift */; };
 		EC5050072BF65CED00B4D86E /* PenDropDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5050062BF65CED00B4D86E /* PenDropDelegate.swift */; };
 		EC50500D2BF6674400B4D86E /* OnDragViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC50500C2BF6674400B4D86E /* OnDragViewModifier.swift */; };
@@ -124,6 +125,7 @@
 		EC3565592BF060D900A4E0BF /* Quad.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Quad.metal; sourceTree = "<group>"; };
 		EC35655B2BF0712A00A4E0BF /* Float++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float++.swift"; sourceTree = "<group>"; };
 		EC37FB112C1B2DD90008D976 /* ToolSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolSelection.swift; sourceTree = "<group>"; };
+		EC42F7842C25267000E86E96 /* ElementGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementGroup.swift; sourceTree = "<group>"; };
 		EC4538882BEBCAE000A86FEC /* Quad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quad.swift; sourceTree = "<group>"; };
 		EC5050062BF65CED00B4D86E /* PenDropDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenDropDelegate.swift; sourceTree = "<group>"; };
 		EC50500C2BF6674400B4D86E /* OnDragViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDragViewModifier.swift; sourceTree = "<group>"; };
@@ -713,6 +715,7 @@
 			isa = PBXGroup;
 			children = (
 				ECD12A892C19EFB000B96E12 /* Element.swift */,
+				EC42F7842C25267000E86E96 /* ElementGroup.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -906,6 +909,7 @@
 				ECA738F42BE612A000A4542E /* Array++.swift in Sources */,
 				EC4538892BEBCAE000A86FEC /* Quad.swift in Sources */,
 				ECE883BD2C00AA170045C53D /* EraserStroke.swift in Sources */,
+				EC42F7852C25267000E86E96 /* ElementGroup.swift in Sources */,
 				ECD12A8F2C1AEBA400B96E12 /* Photo.swift in Sources */,
 				ECD12A932C1B062000B96E12 /* Photo.metal in Sources */,
 				ECA7388F2BE600DA00A4542E /* Grid.metal in Sources */,
