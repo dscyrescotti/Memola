@@ -97,6 +97,10 @@ class GraphicRenderPass: RenderPass {
             photoRenderPass?.elementGroup = elementGroup
             photoRenderPass?.descriptor = descriptor
             photoRenderPass?.draw(into: commandBuffer, on: canvas, with: renderer)
+
+            photoBackgroundRenderPass?.elementGroup = elementGroup
+            photoBackgroundRenderPass?.clearsTexture = clearsTexture
+            photoBackgroundRenderPass?.draw(into: commandBuffer, on: canvas, with: renderer)
             clearsTexture = false
         }
     }

@@ -34,9 +34,9 @@ class PhotoRenderPass: RenderPass {
             guard case .photo(let photo) = element else { return nil }
             return photo
         }
-
+        
         guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else { return }
-        renderEncoder.label = label
+        renderEncoder.label = "Photo Render Encoder"
 
         guard let photoPipelineState else { return }
         renderEncoder.setRenderPipelineState(photoPipelineState)
