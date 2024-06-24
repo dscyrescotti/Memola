@@ -133,7 +133,20 @@ struct Toolbar: View {
         HStack(spacing: 0) {
             Button {
                 withAnimation {
-                    tool.selection = tool.selection == .pen ? .none : .pen
+                    tool.selectTool(.hand)
+                }
+            } label: {
+                Image(systemName: "hand.draw.fill")
+                    .fontWeight(.heavy)
+                    .contentShape(.circle)
+                    .frame(width: size, height: size)
+                    .background(tool.selection == .hand ? Color.accentColor : Color.clear)
+                    .foregroundStyle(tool.selection == .hand ? Color.white : Color.accentColor)
+                    .clipShape(.rect(cornerRadius: 8))
+            }
+            Button {
+                withAnimation {
+                    tool.selectTool(.pen)
                 }
             } label: {
                 Image(systemName: "pencil")
@@ -148,7 +161,7 @@ struct Toolbar: View {
             HStack(spacing: 0) {
                 Button {
                     withAnimation {
-                        tool.selection = tool.selection == .photo ? .none : .photo
+                        tool.selectTool(.photo)
                     }
                 } label: {
                     Image(systemName: "photo")

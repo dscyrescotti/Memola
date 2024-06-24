@@ -21,7 +21,7 @@ public class Tool: NSObject, ObservableObject {
     // MARK: - Photo
     @Published var selectedPhotoItem: PhotoItem?
 
-    @Published var selection: ToolSelection = .none
+    @Published var selection: ToolSelection = .hand
 
     let scrollPublisher = PassthroughSubject<String, Never>()
     var markers: [Pen] {
@@ -30,6 +30,10 @@ public class Tool: NSObject, ObservableObject {
 
     init(object: ToolObject) {
         self.object = object
+    }
+
+    func selectTool(_ selection: ToolSelection) {
+        self.selection = selection
     }
 
     func load() {

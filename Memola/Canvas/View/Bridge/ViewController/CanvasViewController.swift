@@ -335,7 +335,7 @@ extension CanvasViewController {
         let enablesDrawing: Bool
         let enablesPhotoInsertion: Bool
         switch selection {
-        case .none:
+        case .hand:
             enablesScrolling = true
             enablesDrawing = false
             enablesPhotoInsertion = false
