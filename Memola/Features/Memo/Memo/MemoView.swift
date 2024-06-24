@@ -46,7 +46,7 @@ struct MemoView: View {
             .overlay(alignment: .bottomLeading) {
                 zoomControl
             }
-            .disabled(textFieldState)
+            .disabled(textFieldState || tool.isLoadingPhoto)
             .overlay(alignment: .top) {
                 Toolbar(size: size, memo: memo, tool: tool, canvas: canvas, history: history)
             }
@@ -59,6 +59,11 @@ struct MemoView: View {
                     loadingIndicator("Saving memo...")
                 default:
                     EmptyView()
+                }
+            }
+            .overlay {
+                if tool.isLoadingPhoto {
+                    loadingIndicator("Loading photo...")
                 }
             }
     }

@@ -20,6 +20,7 @@ public class Tool: NSObject, ObservableObject {
     @Published var draggedPen: Pen?
     // MARK: - Photo
     @Published var selectedPhotoItem: PhotoItem?
+    @Published var isLoadingPhoto: Bool = false
 
     @Published var selection: ToolSelection = .hand
 
@@ -120,6 +121,7 @@ public class Tool: NSObject, ObservableObject {
     func selectPhoto(_ image: UIImage, for canvasID: NSManagedObjectID) {
         guard let (resizedImage, dimension) = resizePhoto(of: image) else { return }
         let photoItem = bookmarkPhoto(of: resizedImage, in: dimension, with: canvasID)
+        isLoadingPhoto = false
         withAnimation {
             selectedPhotoItem = photoItem
         }

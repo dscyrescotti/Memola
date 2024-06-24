@@ -62,6 +62,7 @@ struct Toolbar: View {
         .onChange(of: photosPickerItem) { oldValue, newValue in
             if newValue != nil {
                 Task {
+                    tool.isLoadingPhoto = true
                     let data = try? await newValue?.loadTransferable(type: Data.self)
                     if let data, let image = UIImage(data: data) {
                         tool.selectPhoto(image, for: canvas.canvasID)
