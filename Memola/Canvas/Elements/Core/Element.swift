@@ -70,8 +70,8 @@ enum Element: Equatable, Comparable {
         switch (lhs, rhs) {
         case let (.stroke(leftStroke), .stroke(rightStroke)):
             leftStroke ^= rightStroke
-        case let (.photo(leftPhoto), .photo(rightPhoto)):
-            leftPhoto == rightPhoto
+        case (.photo, .photo):
+            true
         default:
             false
         }
