@@ -241,6 +241,7 @@ struct PenDock: View {
                     .frame(width: size + 2, height: size + 2)
             }
         }
+        .hoverEffect(.lift)
         .pickerStyle(.wheel)
         .frame(width: width * factor - 18, height: 35)
         .onChange(of: pen.thickness) { _, _ in
