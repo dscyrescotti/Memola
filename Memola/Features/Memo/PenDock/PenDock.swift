@@ -11,6 +11,7 @@ struct PenDock: View {
     @ObservedObject var tool: Tool
     @ObservedObject var canvas: Canvas
 
+    let size: CGFloat
     let width: CGFloat = 90
     let height: CGFloat = 30
     let factor: CGFloat = 0.9
@@ -19,15 +20,20 @@ struct PenDock: View {
     @State var opensColorPicker: Bool = false
 
     var body: some View {
-        if !canvas.locksCanvas {
-            VStack(alignment: .trailing) {
-                penPropertyTool
-                penItemList
+        ZStack(alignment: .bottomTrailing) {
+            if !canvas.locksCanvas {
+                VStack(alignment: .trailing) {
+                    penPropertyTool
+                    penItemList
+                }
+                .fixedSize()
+                .frame(maxHeight: .infinity)
+                .padding(10)
+                .transition(.move(edge: .trailing).combined(with: .blurReplace))
             }
-            .fixedSize()
-            .frame(maxHeight: .infinity)
-            .padding(10)
-            .transition(.move(edge: .trailing).combined(with: .blurReplace))
+            lockButton
+                .padding(10)
+                .transition(.move(edge: .trailing).combined(with: .blurReplace))
         }
     }
 
@@ -45,7 +51,6 @@ struct PenDock: View {
                     }
                 }
                 .padding(.vertical, 10)
-                .padding(.leading, 40)
                 .id(refreshScrollId)
             }
             .onReceive(tool.scrollPublisher) { id in
@@ -56,7 +61,7 @@ struct PenDock: View {
                 }
             }
         }
-        .frame(maxHeight:( (height * factor + 10) * 6) + 20)
+        .frame(maxHeight: ((height * factor + 10) * 6) + 20)
         .fixedSize()
         .background(alignment: .trailing) {
             RoundedRectangle(cornerRadius: 8)
@@ -66,7 +71,7 @@ struct PenDock: View {
         .clipShape(.rect(cornerRadii: .init(bottomTrailing: 8, topTrailing: 8)))
         .overlay(alignment: .bottomLeading) {
             newPenButton
-                .offset(x: 60, y: 10)
+                .offset(x: 15, y: 10)
         }
     }
 
@@ -235,6 +240,7 @@ struct PenDock: View {
                     .frame(width: size + 2, height: size + 2)
             }
         }
+        .hoverEffect(.lift)
         .pickerStyle(.wheel)
         .frame(width: width * factor - 18, height: 35)
         .onChange(of: pen.thickness) { _, _ in
@@ -309,5 +315,21 @@ struct PenDock: View {
                     .blur(radius: 0.5)
             }
         }
+    }
+
+    var lockButton: some View {
+        Button {
+            withAnimation {
+                canvas.locksCanvas.toggle()
+            }
+        } label: {
+            Image(systemName: canvas.locksCanvas ? "lock.fill" : "lock.open.fill")
+                .contentShape(.circle)
+                .frame(width: size, height: size)
+                .background(.regularMaterial)
+                .clipShape(.rect(cornerRadius: 8))
+        }
+        .hoverEffect(.lift)
+        .contentTransition(.symbolEffect(.replace))
     }
 }

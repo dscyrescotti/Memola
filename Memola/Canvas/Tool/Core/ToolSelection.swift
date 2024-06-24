@@ -8,7 +8,7 @@
 import Foundation
 
 enum ToolSelection: Equatable {
-    case none
+    case hand
     case pen
     case photo
 }

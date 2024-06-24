@@ -32,7 +32,7 @@ struct MemoView: View {
             .overlay(alignment: .bottomTrailing) {
                 switch tool.selection {
                 case .pen:
-                    PenDock(tool: tool, canvas: canvas)
+                    PenDock(tool: tool, canvas: canvas, size: size)
                         .transition(.move(edge: .trailing))
                 case .photo:
                     if let photoItem = tool.selectedPhotoItem {
@@ -46,7 +46,7 @@ struct MemoView: View {
             .overlay(alignment: .bottomLeading) {
                 zoomControl
             }
-            .disabled(textFieldState)
+            .disabled(textFieldState || tool.isLoadingPhoto)
             .overlay(alignment: .top) {
                 Toolbar(size: size, memo: memo, tool: tool, canvas: canvas, history: history)
             }
@@ -59,6 +59,11 @@ struct MemoView: View {
                     loadingIndicator("Saving memo...")
                 default:
                     EmptyView()
+                }
+            }
+            .overlay {
+                if tool.isLoadingPhoto {
+                    loadingIndicator("Loading photo...")
                 }
             }
     }
@@ -96,6 +101,7 @@ struct MemoView: View {
                     .clipShape(.rect(cornerRadius: 8))
                     .padding(10)
             }
+            .hoverEffect(.lift)
             .transition(.move(edge: .bottom).combined(with: .blurReplace))
         }
     }
