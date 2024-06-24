@@ -32,7 +32,7 @@ struct MemoView: View {
             .overlay(alignment: .bottomTrailing) {
                 switch tool.selection {
                 case .pen:
-                    PenDock(tool: tool, canvas: canvas)
+                    PenDock(tool: tool, canvas: canvas, size: size)
                         .transition(.move(edge: .trailing))
                 case .photo:
                     if let photoItem = tool.selectedPhotoItem {

@@ -47,12 +47,13 @@ struct Toolbar: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            elementTool
-            HStack(spacing: 5) {
+            if !canvas.locksCanvas {
+                elementTool
+            }
+            Group {
                 if !canvas.locksCanvas {
                     historyControl
                 }
-                lockButton
             }
             .frame(maxWidth: .infinity, alignment: .trailing)
         }
@@ -217,13 +218,14 @@ struct Toolbar: View {
                         .hoverEffect(.lift)
                     }
                     .matchedGeometryEffect(id: "element.toolbar.photo.options", in: namespace)
-                    .transition(.opacity.animation(.easeIn(duration: 0.1)))
+                    .transition(.blurReplace.animation(.easeIn(duration: 0.1)))
                 }
             }
             .background {
                 if tool.selection == .photo {
                     RoundedRectangle(cornerRadius: 8)
                         .fill(Color.white.tertiary)
+                        .transition(.move(edge: .leading).animation(.easeIn(duration: 0.1)))
                 }
             }
         }
@@ -231,6 +233,7 @@ struct Toolbar: View {
             RoundedRectangle(cornerRadius: 8)
                 .fill(.regularMaterial)
         }
+        .transition(.move(edge: .top).combined(with: .blurReplace))
     }
 
     var historyControl: some View {
@@ -257,30 +260,6 @@ struct Toolbar: View {
         .clipShape(.rect(cornerRadius: 8))
         .disabled(textFieldState)
         .transition(.move(edge: .top).combined(with: .blurReplace))
-    }
-
-    var lockButton: some View {
-        Button {
-            #warning("TODO: need to revisit toggale logic")
-            withAnimation {
-                canvas.locksCanvas.toggle()
-            }
-        } label: {
-            ZStack {
-                if canvas.locksCanvas {
-                    Image(systemName: "lock.open")
-                        .transition(.move(edge: .trailing).combined(with: .blurReplace))
-                } else {
-                    Image(systemName: "lock")
-                        .transition(.move(edge: .leading).combined(with: .blurReplace))
-                }
-            }
-            .contentShape(.circle)
-            .frame(width: size, height: size)
-            .background(.regularMaterial)
-            .clipShape(.rect(cornerRadius: 8))
-        }
-        .hoverEffect(.lift)
     }
 
     func openCamera() {

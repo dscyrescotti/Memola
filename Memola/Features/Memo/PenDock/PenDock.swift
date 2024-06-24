@@ -11,6 +11,7 @@ struct PenDock: View {
     @ObservedObject var tool: Tool
     @ObservedObject var canvas: Canvas
 
+    let size: CGFloat
     let width: CGFloat = 90
     let height: CGFloat = 30
     let factor: CGFloat = 0.9
@@ -19,15 +20,20 @@ struct PenDock: View {
     @State var opensColorPicker: Bool = false
 
     var body: some View {
-        if !canvas.locksCanvas {
-            VStack(alignment: .trailing) {
-                penPropertyTool
-                penItemList
+        ZStack(alignment: .bottomTrailing) {
+            if !canvas.locksCanvas {
+                VStack(alignment: .trailing) {
+                    penPropertyTool
+                    penItemList
+                }
+                .fixedSize()
+                .frame(maxHeight: .infinity)
+                .padding(10)
+                .transition(.move(edge: .trailing).combined(with: .blurReplace))
             }
-            .fixedSize()
-            .frame(maxHeight: .infinity)
-            .padding(10)
-            .transition(.move(edge: .trailing).combined(with: .blurReplace))
+            lockButton
+                .padding(10)
+                .transition(.move(edge: .trailing).combined(with: .blurReplace))
         }
     }
 
@@ -309,5 +315,28 @@ struct PenDock: View {
                     .blur(radius: 0.5)
             }
         }
+    }
+
+    var lockButton: some View {
+        Button {
+            withAnimation {
+                canvas.locksCanvas.toggle()
+            }
+        } label: {
+            ZStack {
+                if canvas.locksCanvas {
+                    Image(systemName: "lock.open")
+                        .transition(.move(edge: .trailing).combined(with: .blurReplace))
+                } else {
+                    Image(systemName: "lock")
+                        .transition(.move(edge: .leading).combined(with: .blurReplace))
+                }
+            }
+            .contentShape(.circle)
+            .frame(width: size, height: size)
+            .background(.regularMaterial)
+            .clipShape(.rect(cornerRadius: 8))
+        }
+        .hoverEffect(.lift)
     }
 }
