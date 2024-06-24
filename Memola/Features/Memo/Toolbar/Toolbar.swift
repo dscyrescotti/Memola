@@ -25,6 +25,8 @@ struct Toolbar: View {
 
     @FocusState var textFieldState: Bool
 
+    @Namespace var namespace
+
     let size: CGFloat
 
     init(size: CGFloat, memo: MemoObject, tool: Tool, canvas: Canvas, history: History) {
@@ -140,9 +142,16 @@ struct Toolbar: View {
                     .fontWeight(.heavy)
                     .contentShape(.circle)
                     .frame(width: size, height: size)
-                    .background(tool.selection == .hand ? Color.accentColor : Color.clear)
                     .foregroundStyle(tool.selection == .hand ? Color.white : Color.accentColor)
                     .clipShape(.rect(cornerRadius: 8))
+            }
+            .hoverEffect(.lift)
+            .background {
+                if tool.selection == .hand {
+                    Color.accentColor
+                        .clipShape(.rect(cornerRadius: 8))
+                        .matchedGeometryEffect(id: "element.toolbar.bg", in: namespace)
+                }
             }
             Button {
                 withAnimation {
@@ -153,11 +162,17 @@ struct Toolbar: View {
                     .fontWeight(.heavy)
                     .contentShape(.circle)
                     .frame(width: size, height: size)
-                    .background(tool.selection == .pen ? Color.accentColor : Color.clear)
                     .foregroundStyle(tool.selection == .pen ? Color.white : Color.accentColor)
                     .clipShape(.rect(cornerRadius: 8))
             }
             .hoverEffect(.lift)
+            .background {
+                if tool.selection == .pen {
+                    Color.accentColor
+                        .clipShape(.rect(cornerRadius: 8))
+                        .matchedGeometryEffect(id: "element.toolbar.bg", in: namespace)
+                }
+            }
             HStack(spacing: 0) {
                 Button {
                     withAnimation {
@@ -167,11 +182,21 @@ struct Toolbar: View {
                     Image(systemName: "photo")
                         .contentShape(.circle)
                         .frame(width: size, height: size)
-                        .background(tool.selection == .photo ? Color.accentColor : Color.clear)
                         .foregroundStyle(tool.selection == .photo ? Color.white : Color.accentColor)
                         .clipShape(.rect(cornerRadius: 8))
                 }
                 .hoverEffect(.lift)
+                .background {
+                    if tool.selection == .photo {
+                        Color.accentColor
+                            .clipShape(.rect(cornerRadius: 8))
+                            .matchedGeometryEffect(id: "element.toolbar.bg", in: namespace)
+                    }
+                    if tool.selection != .photo {
+                        Color.clear
+                            .matchedGeometryEffect(id: "element.toolbar.photo.options", in: namespace)
+                    }
+                }
                 if tool.selection == .photo {
                     HStack(spacing: 0) {
                         Button {
@@ -191,6 +216,8 @@ struct Toolbar: View {
                         }
                         .hoverEffect(.lift)
                     }
+                    .matchedGeometryEffect(id: "element.toolbar.photo.options", in: namespace)
+                    .transition(.opacity.animation(.easeIn(duration: 0.1)))
                 }
             }
             .background {
