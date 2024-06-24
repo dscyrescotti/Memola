@@ -51,7 +51,6 @@ struct PenDock: View {
                     }
                 }
                 .padding(.vertical, 10)
-                .padding(.leading, 40)
                 .id(refreshScrollId)
             }
             .onReceive(tool.scrollPublisher) { id in
@@ -62,7 +61,7 @@ struct PenDock: View {
                 }
             }
         }
-        .frame(maxHeight:( (height * factor + 10) * 6) + 20)
+        .frame(maxHeight: ((height * factor + 10) * 6) + 20)
         .fixedSize()
         .background(alignment: .trailing) {
             RoundedRectangle(cornerRadius: 8)
@@ -72,7 +71,7 @@ struct PenDock: View {
         .clipShape(.rect(cornerRadii: .init(bottomTrailing: 8, topTrailing: 8)))
         .overlay(alignment: .bottomLeading) {
             newPenButton
-                .offset(x: 60, y: 10)
+                .offset(x: 15, y: 10)
         }
     }
 
