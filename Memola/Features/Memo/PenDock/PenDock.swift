@@ -323,20 +323,13 @@ struct PenDock: View {
                 canvas.locksCanvas.toggle()
             }
         } label: {
-            ZStack {
-                if canvas.locksCanvas {
-                    Image(systemName: "lock.open")
-                        .transition(.move(edge: .trailing).combined(with: .blurReplace))
-                } else {
-                    Image(systemName: "lock")
-                        .transition(.move(edge: .leading).combined(with: .blurReplace))
-                }
-            }
-            .contentShape(.circle)
-            .frame(width: size, height: size)
-            .background(.regularMaterial)
-            .clipShape(.rect(cornerRadius: 8))
+            Image(systemName: canvas.locksCanvas ? "lock.fill" : "lock.open.fill")
+                .contentShape(.circle)
+                .frame(width: size, height: size)
+                .background(.regularMaterial)
+                .clipShape(.rect(cornerRadius: 8))
         }
         .hoverEffect(.lift)
+        .contentTransition(.symbolEffect(.replace))
     }
 }
