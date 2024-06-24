@@ -18,6 +18,10 @@ struct AnyStroke: Equatable, Comparable {
         lhs.value.id == rhs.value.id
     }
 
+    static func ^= (lhs: AnyStroke, rhs: AnyStroke) -> Bool {
+        lhs.value.color == rhs.value.color && lhs.value.style == rhs.value.style
+    }
+
     static func < (lhs: AnyStroke, rhs: AnyStroke) -> Bool {
         lhs.value.createdAt < rhs.value.createdAt
     }

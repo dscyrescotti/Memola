@@ -11,13 +11,13 @@ import Foundation
 struct PhotoItem: Identifiable, Equatable {
     var id: URL
     let image: UIImage
+    let dimension: CGSize
     let bookmark: Data
 
-    var dimension: CGSize {
-        let size = image.size
-        let maxSize = max(size.width, size.height)
-        let width = size.width * 128 / maxSize
-        let height = size.height * 128 / maxSize
+    func getDimension() -> CGSize {
+        let maxSize = max(dimension.width, dimension.height)
+        let width = dimension.width * 100 / maxSize
+        let height = dimension.height * 100 / maxSize
         return CGSize(width: width, height: height)
     }
 }

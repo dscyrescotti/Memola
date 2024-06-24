@@ -18,6 +18,7 @@ class PhotoBackgroundRenderPass: RenderPass {
     var photoBackgroundTexture: MTLTexture?
 
     var photo: Photo?
+    var elementGroup: ElementGroup?
 
     var clearsTexture: Bool = true
 
@@ -30,7 +31,8 @@ class PhotoBackgroundRenderPass: RenderPass {
         photoBackgroundTexture = Textures.createPhotoBackgroundTexture(from: renderer, size: size, pixelFormat: renderer.pixelFormat)
     }
 
-    func draw(on canvas: Canvas, with renderer: Renderer) {
+    func draw(into commandBuffer: any MTLCommandBuffer, on canvas: Canvas, with renderer: Renderer) {
+        guard let elementGroup else { return }
         guard let descriptor else { return }
 
         descriptor.colorAttachments[0].texture = photoBackgroundTexture
@@ -38,20 +40,25 @@ class PhotoBackgroundRenderPass: RenderPass {
         descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
         descriptor.colorAttachments[0].clearColor = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 0)
 
-        guard let commandBuffer = renderer.commandQueue.makeCommandBuffer() else { return }
-        commandBuffer.label = "Photo Background Command Buffer"
+        guard !elementGroup.isEmpty else { return }
+
+        let photos = elementGroup.elements.compactMap { element -> Photo? in
+            guard case .photo(let photo) = element else { return nil }
+            return photo
+        }
 
         guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else { return }
-        renderEncoder.label = label
+        renderEncoder.label = "Photo Background Render Encoder"
 
         guard let photoBackgroundPipelineState else { return }
         renderEncoder.setRenderPipelineState(photoBackgroundPipelineState)
 
         canvas.setUniformsBuffer(device: renderer.device, renderEncoder: renderEncoder)
-        photo?.draw(device: renderer.device, renderEncoder: renderEncoder)
+
+        for photo in photos {
+            photo.draw(device: renderer.device, renderEncoder: renderEncoder)
+        }
 
         renderEncoder.endEncoding()
-        commandBuffer.commit()
-        commandBuffer.waitUntilCompleted()
     }
 }

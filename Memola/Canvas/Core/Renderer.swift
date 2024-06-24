@@ -72,13 +72,17 @@ final class Renderer {
     }
 
     func draw(in view: MTKView, on canvas: Canvas) {
+        guard let commandBuffer = commandQueue.makeCommandBuffer() else {
+            NSLog("[Memola] - Unable to create command buffer")
+            return
+        }
         if !updatesViewPort {
             strokeRenderPass.eraserRenderPass = eraserRenderPass
             graphicRenderPass.photoRenderPass = photoRenderPass
             graphicRenderPass.strokeRenderPass = strokeRenderPass
             graphicRenderPass.eraserRenderPass = eraserRenderPass
             graphicRenderPass.photoBackgroundRenderPass = photoBackgroundRenderPass
-            graphicRenderPass.draw(on: canvas, with: self)
+            graphicRenderPass.draw(into: commandBuffer, on: canvas, with: self)
         }
 
         cacheRenderPass.clearsTexture = graphicRenderPass.clearsTexture
@@ -87,11 +91,11 @@ final class Renderer {
         cacheRenderPass.eraserRenderPass = eraserRenderPass
         cacheRenderPass.graphicTexture = graphicRenderPass.graphicTexture
         cacheRenderPass.graphicPipelineState = graphicRenderPass.graphicPipelineState
-        cacheRenderPass.draw(on: canvas, with: self)
+        cacheRenderPass.draw(into: commandBuffer, on: canvas, with: self)
 
         viewPortRenderPass.descriptor = view.currentRenderPassDescriptor
         viewPortRenderPass.photoBackgroundTexture = photoBackgroundRenderPass.photoBackgroundTexture
         viewPortRenderPass.cacheTexture = cacheRenderPass.cacheTexture
-        viewPortRenderPass.draw(on: canvas, with: self)
+        viewPortRenderPass.draw(into: commandBuffer, on: canvas, with: self)
     }
 }

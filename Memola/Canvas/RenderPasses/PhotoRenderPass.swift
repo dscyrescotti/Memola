@@ -16,7 +16,7 @@ class PhotoRenderPass: RenderPass {
     var photoPipelineState: MTLRenderPipelineState?
     weak var graphicTexture: MTLTexture?
 
-    var photo: Photo?
+    var elementGroup: ElementGroup?
 
     init(renderer: Renderer) {
         photoPipelineState = PipelineStates.createPhotoPipelineState(from: renderer)
@@ -24,23 +24,29 @@ class PhotoRenderPass: RenderPass {
 
     func resize(on view: MTKView, to size: CGSize, with renderer: Renderer) { }
 
-    func draw(on canvas: Canvas, with renderer: Renderer) {
+    func draw(into commandBuffer: any MTLCommandBuffer, on canvas: Canvas, with renderer: Renderer) {
+        guard let elementGroup else { return }
         guard let descriptor else { return }
 
-        guard let commandBuffer = renderer.commandQueue.makeCommandBuffer() else { return }
-        commandBuffer.label = "Photo Command Buffer"
+        guard !elementGroup.isEmpty else { return }
 
+        let photos = elementGroup.elements.compactMap { element -> Photo? in
+            guard case .photo(let photo) = element else { return nil }
+            return photo
+        }
+        
         guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else { return }
-        renderEncoder.label = label
+        renderEncoder.label = "Photo Render Encoder"
 
         guard let photoPipelineState else { return }
         renderEncoder.setRenderPipelineState(photoPipelineState)
 
         canvas.setUniformsBuffer(device: renderer.device, renderEncoder: renderEncoder)
-        photo?.draw(device: renderer.device, renderEncoder: renderEncoder)
+
+        for photo in photos {
+            photo.draw(device: renderer.device, renderEncoder: renderEncoder)
+        }
 
         renderEncoder.endEncoding()
-        commandBuffer.commit()
-        commandBuffer.waitUntilCompleted()
     }
 }

@@ -18,7 +18,7 @@ class StrokeRenderPass: RenderPass {
     var quadPipelineState: MTLComputePipelineState?
     weak var graphicPipelineState: MTLRenderPipelineState?
 
-    var stroke: (any Stroke)?
+    var elementGroup: ElementGroup?
     var strokeTexture: MTLTexture?
 
     weak var eraserRenderPass: EraserRenderPass?
@@ -33,52 +33,27 @@ class StrokeRenderPass: RenderPass {
         guard size != .zero else { return }
         strokeTexture = Textures.createStrokeTexture(from: renderer, size: size, pixelFormat: view.colorPixelFormat)
     }
-
-    func draw(on canvas: Canvas, with renderer: Renderer) {
+    
+    func draw(into commandBuffer: any MTLCommandBuffer, on canvas: Canvas, with renderer: Renderer) {
+        guard let elementGroup else { return }
         guard let descriptor else { return }
 
-        generateVertexBuffer(on: canvas, with: renderer)
-
-        guard let strokeTexture else { return }
-        descriptor.colorAttachments[0].texture = strokeTexture
-        descriptor.colorAttachments[0].clearColor = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 0)
-        descriptor.colorAttachments[0].loadAction = .clear
-        descriptor.colorAttachments[0].storeAction = .store
-
-        guard let commandBuffer = renderer.commandQueue.makeCommandBuffer() else { return }
-        commandBuffer.label = "Stroke Command Buffer"
-
-        guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else { return }
-        renderEncoder.label = label
-
-        guard let strokePipelineState else { return }
-        renderEncoder.setRenderPipelineState(strokePipelineState)
-
-        canvas.setUniformsBuffer(device: renderer.device, renderEncoder: renderEncoder)
-        stroke?.draw(device: renderer.device, renderEncoder: renderEncoder)
-        renderEncoder.endEncoding()
-        commandBuffer.commit()
-
-        if let eraserRenderPass, let stroke = stroke as? PenStroke, !stroke.isEmptyErasedQuads {
-            descriptor.colorAttachments[0].loadAction = .load
-            eraserRenderPass.stroke = stroke
-            eraserRenderPass.descriptor = descriptor
-            eraserRenderPass.draw(on: canvas, with: renderer)
+        // MARK: - Generating vertices
+        guard !elementGroup.isEmpty, let quadPipelineState else { return }
+        let penStrokes = elementGroup.elements.compactMap { element -> PenStroke? in
+            guard case .stroke(let anyStroke) = element else { return nil }
+            return anyStroke.value as? PenStroke
         }
+        let penStroke = penStrokes.first
+        let quads = penStrokes.flatMap { $0.quads }
+        let erasedQuads = Set(penStrokes.flatMap { $0.eraserStrokes }).flatMap { $0.quads }
+        guard !quads.isEmpty else { return }
+        guard let computeEncoder = commandBuffer.makeComputeCommandEncoder() else { return }
 
-        drawStrokeTexture(on: canvas, with: renderer)
-    }
+        computeEncoder.label = "Quad Compute Encoder"
 
-    private func generateVertexBuffer(on canvas: Canvas, with renderer: Renderer) {
-        guard let stroke, !stroke.isEmpty, let quadPipelineState else { return }
-        guard let quadCommandBuffer = renderer.commandQueue.makeCommandBuffer() else { return }
-        guard let computeEncoder = quadCommandBuffer.makeComputeCommandEncoder() else { return }
-
-        computeEncoder.label = "Quad Render Pass"
-
-        let quadCount = stroke.quads.endIndex
-        var quads = stroke.quads
-        let quadBuffer = renderer.device.makeBuffer(bytes: &quads, length: MemoryLayout<Quad>.stride * quadCount, options: [])
+        let quadCount = quads.endIndex
+        let quadBuffer = renderer.device.makeBuffer(bytes: quads, length: MemoryLayout<Quad>.stride * quadCount, options: [])
         let indexBuffer = renderer.device.makeBuffer(length: MemoryLayout<UInt>.stride * quadCount * 6, options: [.cpuCacheModeWriteCombined])
         let vertexBuffer = renderer.device.makeBuffer(length: MemoryLayout<QuadVertex>.stride * quadCount * 4, options: [.cpuCacheModeWriteCombined])
 
@@ -87,33 +62,94 @@ class StrokeRenderPass: RenderPass {
         computeEncoder.setBuffer(indexBuffer, offset: 0, index: 1)
         computeEncoder.setBuffer(vertexBuffer, offset: 0, index: 2)
 
-        stroke.indexBuffer = indexBuffer
-        stroke.vertexBuffer = vertexBuffer
-
         let threadsPerGroup = MTLSize(width: 1, height: 1, depth: 1)
         let numThreadgroups = MTLSize(width: quadCount + 1, height: 1, depth: 1)
         computeEncoder.dispatchThreadgroups(numThreadgroups, threadsPerThreadgroup: threadsPerGroup)
         computeEncoder.endEncoding()
-        quadCommandBuffer.commit()
-        quadCommandBuffer.waitUntilCompleted()
-    }
 
-    private func drawStrokeTexture(on canvas: Canvas, with renderer: Renderer) {
-        guard let stroke else { return }
+        // MARK: - Rendering stroke
+        guard let strokeTexture else { return }
+        descriptor.colorAttachments[0].texture = strokeTexture
+        descriptor.colorAttachments[0].clearColor = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 0)
+        descriptor.colorAttachments[0].loadAction = .clear
+        descriptor.colorAttachments[0].storeAction = .store
+
+        guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else { return }
+        renderEncoder.label = "Stroke Render Encoder"
+
+        guard let strokePipelineState else { return }
+        renderEncoder.setRenderPipelineState(strokePipelineState)
+
+        canvas.setUniformsBuffer(device: renderer.device, renderEncoder: renderEncoder)
+        
+        if let penStyle = penStroke?.penStyle, let indexBuffer {
+            if penStyle.textureName != nil {
+                let texture = penStyle.loadTexture(on: renderer.device)
+                renderEncoder.setFragmentTexture(texture, index: 0)
+            }
+            renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
+            renderEncoder.drawIndexedPrimitives(
+                type: .triangle,
+                indexCount: quads.endIndex * 6,
+                indexType: .uint32,
+                indexBuffer: indexBuffer,
+                indexBufferOffset: 0
+            )
+        }
+        renderEncoder.endEncoding()
+
+        // MARK: Erasing path
+        if let eraserPipelineState = eraserRenderPass?.eraserPipelineState, !erasedQuads.isEmpty {
+            guard let computeEncoder = commandBuffer.makeComputeCommandEncoder() else { return }
+
+            computeEncoder.label = "Erased Quad Compute Encoder"
+
+            let erasedQuadCount = erasedQuads.endIndex
+            let erasedQuadBuffer = renderer.device.makeBuffer(bytes: erasedQuads, length: MemoryLayout<Quad>.stride * erasedQuadCount, options: [])
+            let erasedIndexBuffer = renderer.device.makeBuffer(length: MemoryLayout<UInt>.stride * erasedQuadCount * 6, options: [.cpuCacheModeWriteCombined])
+            let erasedVertexBuffer = renderer.device.makeBuffer(length: MemoryLayout<QuadVertex>.stride * erasedQuadCount * 4, options: [.cpuCacheModeWriteCombined])
+
+            computeEncoder.setComputePipelineState(quadPipelineState)
+            computeEncoder.setBuffer(erasedQuadBuffer, offset: 0, index: 0)
+            computeEncoder.setBuffer(erasedIndexBuffer, offset: 0, index: 1)
+            computeEncoder.setBuffer(erasedVertexBuffer, offset: 0, index: 2)
+
+            let threadsPerGroup = MTLSize(width: 1, height: 1, depth: 1)
+            let numThreadgroups = MTLSize(width: erasedQuadCount + 1, height: 1, depth: 1)
+            computeEncoder.dispatchThreadgroups(numThreadgroups, threadsPerThreadgroup: threadsPerGroup)
+            computeEncoder.endEncoding()
+
+            descriptor.colorAttachments[0].loadAction = .load
+            guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else { return }
+            renderEncoder.label = "Stroke Eraser Render Encoder"
+            
+            renderEncoder.setRenderPipelineState(eraserPipelineState)
+
+            canvas.setUniformsBuffer(device: renderer.device, renderEncoder: renderEncoder)
+            if let erasedIndexBuffer {
+                renderEncoder.setVertexBuffer(erasedVertexBuffer, offset: 0, index: 0)
+                renderEncoder.drawIndexedPrimitives(
+                    type: .triangle,
+                    indexCount: erasedQuadCount * 6,
+                    indexType: .uint32,
+                    indexBuffer: erasedIndexBuffer,
+                    indexBufferOffset: 0
+                )
+            }
+            renderEncoder.endEncoding()
+        }
+
+        // MARK: Drawing on graphic texture
         guard let graphicDescriptor, let graphicPipelineState else { return }
-
-        guard let commandBuffer = renderer.commandQueue.makeCommandBuffer() else { return }
-        commandBuffer.label = "Graphic Command Buffer"
         guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: graphicDescriptor) else { return }
-        renderEncoder.label = "Graphic Render Pass"
+        renderEncoder.label = "Stroke Graphic Render Encoder"
         renderEncoder.setRenderPipelineState(graphicPipelineState)
 
         renderEncoder.setFragmentTexture(strokeTexture, index: 0)
-        var uniforms = GraphicUniforms(color: stroke.color)
+        var uniforms = GraphicUniforms(color: elementGroup.getPenColor() ?? [])
         let uniformsBuffer = renderer.device.makeBuffer(bytes: &uniforms, length: MemoryLayout<Uniforms>.size)
         renderEncoder.setVertexBuffer(uniformsBuffer, offset: 0, index: 11)
         canvas.renderGraphic(device: renderer.device, renderEncoder: renderEncoder)
         renderEncoder.endEncoding()
-        commandBuffer.commit()
     }
 }

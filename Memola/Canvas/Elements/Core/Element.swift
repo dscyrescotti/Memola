@@ -41,6 +41,18 @@ enum Element: Equatable, Comparable {
         }
     }
 
+    var elementGroupType: ElementGroup.ElementGroupType {
+        switch self {
+        case .stroke(let anyStroke):
+            switch anyStroke.value.style {
+            case .marker: return .stroke
+            case .eraser: return .eraser
+            }
+        case .photo:
+            return .photo
+        }
+    }
+
     static func < (lhs: Element, rhs: Element) -> Bool {
         switch (lhs, rhs) {
         case let (.stroke(leftStroke), .stroke(rightStroke)):
@@ -51,6 +63,17 @@ enum Element: Equatable, Comparable {
             photo.createdAt < stroke.value.createdAt
         case let (.stroke(stroke), .photo(photo)):
             stroke.value.createdAt < photo.createdAt
+        }
+    }
+
+    static func ^= (lhs: Element, rhs: Element) -> Bool {
+        switch (lhs, rhs) {
+        case let (.stroke(leftStroke), .stroke(rightStroke)):
+            leftStroke ^= rightStroke
+        case (.photo, .photo):
+            true
+        default:
+            false
         }
     }
 }

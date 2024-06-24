@@ -8,7 +8,7 @@
 import MetalKit
 import Foundation
 
-final class Photo: @unchecked Sendable, Equatable, Comparable {
+final class Photo: @unchecked Sendable, Equatable {
     var id: UUID = UUID()
     var size: CGSize
     var origin: CGPoint
@@ -77,7 +77,6 @@ extension Photo: Drawable {
         renderEncoder.setFragmentTexture(texture, index: 0)
         renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertices.count)
-        vertexBuffer = nil
     }
 }
 
@@ -92,6 +91,10 @@ extension Photo {
 
     static func < (lhs: Photo, rhs: Photo) -> Bool {
         lhs.createdAt < rhs.createdAt
+    }
+
+    static func ^= (lhs: Photo, rhs: Photo) -> Bool {
+        lhs == rhs
     }
 }
 
