@@ -362,7 +362,6 @@ extension CanvasViewController {
     }
 
     func lockModeChanged(_ state: Bool) {
-        scrollView.isScrollEnabled = !state
         scrollView.pinchGestureRecognizer?.isEnabled = !state
     }
 }
