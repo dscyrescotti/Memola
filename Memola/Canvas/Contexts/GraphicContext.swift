@@ -174,9 +174,6 @@ extension GraphicContext {
 
 extension GraphicContext: Drawable {
     func prepare(device: MTLDevice) {
-        guard vertexBuffer == nil else {
-            return
-        }
         vertexCount = vertices.count
         vertexBuffer = device.makeBuffer(bytes: vertices, length: vertexCount * MemoryLayout<ViewPortVertex>.stride, options: [])
     }

@@ -30,9 +30,6 @@ class GridContext {
 
 extension GridContext: Drawable {
     func prepare(device: MTLDevice) {
-        guard vertexBuffer == nil else {
-            return
-        }
         vertexBuffer = device.makeBuffer(bytes: vertices, length: vertexCount * MemoryLayout<GridVertex>.stride, options: [])
     }
 
