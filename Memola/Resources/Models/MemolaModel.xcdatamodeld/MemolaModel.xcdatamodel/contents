@@ -73,6 +73,7 @@
         <relationship name="quads" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="QuadObject" inverseName="stroke" inverseEntity="QuadObject"/>
     </entity>
     <entity name="ToolObject" representedClassName="ToolObject" syncable="YES">
+        <attribute name="selection" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="memo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MemoObject" inverseName="tool" inverseEntity="MemoObject"/>
         <relationship name="pens" toMany="YES" deletionRule="Cascade" destinationEntity="PenObject" inverseName="tool" inverseEntity="PenObject"/>
     </entity>

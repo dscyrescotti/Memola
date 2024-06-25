@@ -152,20 +152,4 @@ final class PenStroke: Stroke, @unchecked Sendable {
     func getAllErasedQuads() -> [Quad] {
         eraserStrokes.flatMap { $0.quads }
     }
-
-    func erase(device: MTLDevice, renderEncoder: MTLRenderCommandEncoder) {
-        guard !isEmptyErasedQuads, let erasedIndexBuffer else {
-            return
-        }
-        prepare(device: device)
-        renderEncoder.setFragmentTexture(texture, index: 0)
-        renderEncoder.setVertexBuffer(erasedVertexBuffer, offset: 0, index: 0)
-        renderEncoder.drawIndexedPrimitives(
-            type: .triangle,
-            indexCount: erasedQuadCount * 6,
-            indexType: .uint32,
-            indexBuffer: erasedIndexBuffer,
-            indexBufferOffset: 0
-        )
-    }
 }

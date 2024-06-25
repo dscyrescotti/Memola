@@ -8,7 +8,7 @@
 import MetalKit
 import Foundation
 
-protocol Stroke: AnyObject, Drawable, Hashable, Equatable {
+protocol Stroke: AnyObject, Hashable, Equatable {
     var id: UUID { get set }
     var bounds: [CGFloat] { get set }
     var color: [CGFloat] { get set }
@@ -77,31 +77,6 @@ extension Stroke {
             color: color
         )
         quads.append(quad)
-    }
-}
-
-extension Stroke {
-    func prepare(device: MTLDevice) {
-        guard texture == nil else { return }
-        if penStyle.textureName != nil {
-            texture = penStyle.loadTexture(on: device)
-        }
-    }
-
-    func draw(device: MTLDevice, renderEncoder: MTLRenderCommandEncoder) {
-        guard !isEmpty, let indexBuffer else { return }
-        prepare(device: device)
-        if penStyle.textureName != nil {
-            renderEncoder.setFragmentTexture(texture, index: 0)
-        }
-        renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-        renderEncoder.drawIndexedPrimitives(
-            type: .triangle,
-            indexCount: quads.endIndex * 6,
-            indexType: .uint32,
-            indexBuffer: indexBuffer,
-            indexBufferOffset: 0
-        )
     }
 }
 

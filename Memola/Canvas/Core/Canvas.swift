@@ -19,7 +19,7 @@ final class Canvas: ObservableObject, Identifiable, @unchecked Sendable {
     let viewPortContext = ViewPortContext()
 
     let maximumZoomScale: CGFloat = 35
-    let minimumZoomScale: CGFloat = 5
+    let minimumZoomScale: CGFloat = 8
     let defaultZoomScale: CGFloat = 20
 
     var transform: simd_float4x4 = .init()
