@@ -45,7 +45,11 @@ enum Element: Equatable, Comparable {
         switch self {
         case .stroke(let anyStroke):
             switch anyStroke.value.style {
-            case .marker: return .stroke
+            case .marker: 
+                guard let penStroke = anyStroke.stroke(as: PenStroke.self) else {
+                    return .stroke(penStyle: .marker, color: [0, 0, 0, 0])
+                }
+                return .stroke(penStyle: penStroke.penStyle, color: penStroke.color)
             case .eraser: return .eraser
             }
         case .photo:

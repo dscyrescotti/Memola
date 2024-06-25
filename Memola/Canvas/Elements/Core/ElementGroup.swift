@@ -28,15 +28,15 @@ class ElementGroup {
     }
 
     func getPenStyle() -> PenStyle? {
-        if let last = elements.last, case let .stroke(anyStroke) = last {
-            return anyStroke.value.penStyle
+        if case let .stroke(penStyle, _) = type {
+            return penStyle
         }
         return nil
     }
 
     func getPenColor() -> [CGFloat]? {
-        if let last = elements.last, case let .stroke(anyStroke) = last {
-            return anyStroke.value.color
+        if case let .stroke(_, color) = type {
+            return color
         }
         return nil
     }
@@ -44,7 +44,7 @@ class ElementGroup {
 
 extension ElementGroup {
     enum ElementGroupType {
-        case stroke
+        case stroke(penStyle: PenStyle, color: [CGFloat])
         case eraser
         case photo
     }
