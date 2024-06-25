@@ -9,14 +9,35 @@ import MetalKit
 import Foundation
 
 struct PipelineStates {
-    static func createGridPipelineState(from renderer: Renderer, pixelFormat: MTLPixelFormat? = nil) -> MTLRenderPipelineState? {
+    static func createPointGridPipelineState(from renderer: Renderer, pixelFormat: MTLPixelFormat? = nil) -> MTLRenderPipelineState? {
         let device = renderer.device
         let library = renderer.library
         let pipelineDescriptor = MTLRenderPipelineDescriptor()
-        pipelineDescriptor.vertexFunction = library.makeFunction(name: "vertex_grid")
-        pipelineDescriptor.fragmentFunction = library.makeFunction(name: "fragment_grid")
+        pipelineDescriptor.vertexFunction = library.makeFunction(name: "vertex_point_grid")
+        pipelineDescriptor.fragmentFunction = library.makeFunction(name: "fragment_point_grid")
         pipelineDescriptor.colorAttachments[0].pixelFormat = pixelFormat ?? renderer.pixelFormat
-        pipelineDescriptor.label = "Grid Pipeline State"
+        pipelineDescriptor.label = "Point Grid Pipeline State"
+
+        let attachment = pipelineDescriptor.colorAttachments[0]
+        attachment?.isBlendingEnabled = true
+        attachment?.rgbBlendOperation = .add
+        attachment?.sourceRGBBlendFactor = .one
+        attachment?.destinationRGBBlendFactor = .oneMinusSourceAlpha
+        attachment?.alphaBlendOperation = .add
+        attachment?.sourceAlphaBlendFactor = .sourceAlpha
+        attachment?.destinationAlphaBlendFactor = .oneMinusSourceAlpha
+
+        return try? device.makeRenderPipelineState(descriptor: pipelineDescriptor)
+    }
+
+    static func createLineGridPipelineState(from renderer: Renderer, pixelFormat: MTLPixelFormat? = nil) -> MTLRenderPipelineState? {
+        let device = renderer.device
+        let library = renderer.library
+        let pipelineDescriptor = MTLRenderPipelineDescriptor()
+        pipelineDescriptor.vertexFunction = library.makeFunction(name: "vertex_line_grid")
+        pipelineDescriptor.fragmentFunction = library.makeFunction(name: "fragment_line_grid")
+        pipelineDescriptor.colorAttachments[0].pixelFormat = pixelFormat ?? renderer.pixelFormat
+        pipelineDescriptor.label = "Line Grid Pipeline State"
 
         let attachment = pipelineDescriptor.colorAttachments[0]
         attachment?.isBlendingEnabled = true

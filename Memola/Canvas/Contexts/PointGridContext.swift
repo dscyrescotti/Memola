@@ -1,5 +1,5 @@
 //
-//  GridContext.swift
+//  PointGridContext.swift
 //  Memola
 //
 //  Created by Dscyre Scotti on 5/4/24.
@@ -8,8 +8,8 @@
 import MetalKit
 import Foundation
 
-class GridContext {
-    var vertices: [GridVertex] = []
+class PointGridContext {
+    var vertices: [PointGridVertex] = []
     var vertexCount: Int = 0
     var vertexBuffer: MTLBuffer?
 
@@ -21,19 +21,16 @@ class GridContext {
         let steps = stride(from: -10, through: 110, by: 0.25)
         for y in steps {
             for x in steps {
-                vertices.append(GridVertex(x: CGFloat(x), y: CGFloat(y)))
+                vertices.append(PointGridVertex(x: CGFloat(x), y: CGFloat(y)))
             }
         }
         vertexCount = vertices.count
     }
 }
 
-extension GridContext: Drawable {
+extension PointGridContext: Drawable {
     func prepare(device: MTLDevice) {
-        guard vertexBuffer == nil else {
-            return
-        }
-        vertexBuffer = device.makeBuffer(bytes: vertices, length: vertexCount * MemoryLayout<GridVertex>.stride, options: [])
+        vertexBuffer = device.makeBuffer(bytes: vertices, length: vertexCount * MemoryLayout<PointGridVertex>.stride, options: [])
     }
 
     func draw(device: MTLDevice, renderEncoder: MTLRenderCommandEncoder) {

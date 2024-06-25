@@ -36,9 +36,6 @@ class ViewPortContext {
 
 extension ViewPortContext: Drawable {
     func prepare(device: MTLDevice) {
-        guard vertexBuffer == nil else {
-            return
-        }
         vertexBuffer = device.makeBuffer(bytes: vertices, length: vertexCount * MemoryLayout<ViewPortVertex>.stride, options: [])
     }
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22757" systemVersion="23B74" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CanvasObject" representedClassName="CanvasObject" syncable="YES">
+        <attribute name="gridMode" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="height" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" customClassName="CGFloat"/>
         <attribute name="width" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" customClassName="CGFloat"/>
         <relationship name="graphicContext" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="GraphicContextObject" inverseName="canvas" inverseEntity="GraphicContextObject"/>

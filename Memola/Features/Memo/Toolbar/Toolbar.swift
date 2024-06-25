@@ -50,8 +50,9 @@ struct Toolbar: View {
             if !canvas.locksCanvas {
                 elementTool
             }
-            Group {
+            HStack(spacing: 5) {
                 if !canvas.locksCanvas {
+                    gridModeControl
                     historyControl
                 }
             }
@@ -261,6 +262,31 @@ struct Toolbar: View {
         .clipShape(.rect(cornerRadius: 8))
         .disabled(textFieldState)
         .transition(.move(edge: .top).combined(with: .blurReplace))
+    }
+
+    var gridModeControl: some View {
+        Menu {
+            ForEach(GridMode.all, id: \.self) { mode in
+                Button {
+                    canvas.setGridMode(mode)
+                } label: {
+                    Label {
+                        Text(mode.title)
+                    } icon: {
+                        Image(systemName: mode.icon)
+                    }
+                    .font(.headline)
+                }
+            }
+        } label: {
+            Image(systemName: canvas.gridMode.icon)
+                .contentShape(.circle)
+                .frame(width: size, height: size)
+                .background(.regularMaterial)
+                .clipShape(.rect(cornerRadius: 8))
+        }
+        .hoverEffect(.lift)
+        .contentTransition(.symbolEffect(.replace))
     }
 
     func openCamera() {

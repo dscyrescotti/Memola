@@ -31,6 +31,9 @@
 		EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */; };
 		EC7F6BF02BE5E6E400A34A7B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */; };
 		EC7F6BF32BE5E6E400A34A7B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BF22BE5E6E400A34A7B /* Preview Assets.xcassets */; };
+		EC8F54AC2C2ACDA8001C7C74 /* GridMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8F54AB2C2ACDA8001C7C74 /* GridMode.swift */; };
+		EC8F54AE2C2AF5A4001C7C74 /* LineGridVertex.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8F54AD2C2AF5A4001C7C74 /* LineGridVertex.swift */; };
+		EC8F54B02C2AF5E9001C7C74 /* LineGridContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8F54AF2C2AF5E9001C7C74 /* LineGridContext.swift */; };
 		EC9AB09F2C1401A40076AF58 /* EraserObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9AB09E2C1401A40076AF58 /* EraserObject.swift */; };
 		ECA7387A2BE5EF0400A4542E /* MemosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738792BE5EF0400A4542E /* MemosView.swift */; };
 		ECA7387D2BE5EF4B00A4542E /* MemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA7387C2BE5EF4B00A4542E /* MemoView.swift */; };
@@ -44,7 +47,7 @@
 		ECA738932BE6011100A4542E /* Stroke.metal in Sources */ = {isa = PBXBuildFile; fileRef = ECA738922BE6011100A4542E /* Stroke.metal */; };
 		ECA738952BE6012D00A4542E /* ViewPort.metal in Sources */ = {isa = PBXBuildFile; fileRef = ECA738942BE6012D00A4542E /* ViewPort.metal */; };
 		ECA738972BE6014200A4542E /* Graphic.metal in Sources */ = {isa = PBXBuildFile; fileRef = ECA738962BE6014200A4542E /* Graphic.metal */; };
-		ECA7389C2BE601AF00A4542E /* GridVertex.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA7389B2BE601AF00A4542E /* GridVertex.swift */; };
+		ECA7389C2BE601AF00A4542E /* PointGridVertex.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA7389B2BE601AF00A4542E /* PointGridVertex.swift */; };
 		ECA7389E2BE601CB00A4542E /* QuadVertex.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA7389D2BE601CB00A4542E /* QuadVertex.swift */; };
 		ECA738A02BE601E400A4542E /* ViewPortVertex.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA7389F2BE601E400A4542E /* ViewPortVertex.swift */; };
 		ECA738A32BE6020A00A4542E /* CGFloat++.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738A22BE6020A00A4542E /* CGFloat++.swift */; };
@@ -64,7 +67,7 @@
 		ECA738C62BE60E9D00A4542E /* EraserPenStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738C52BE60E9D00A4542E /* EraserPenStyle.swift */; };
 		ECA738C92BE60EF700A4542E /* GraphicContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738C82BE60EF700A4542E /* GraphicContext.swift */; };
 		ECA738CB2BE60F1900A4542E /* ViewPortContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738CA2BE60F1900A4542E /* ViewPortContext.swift */; };
-		ECA738CD2BE60F2F00A4542E /* GridContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738CC2BE60F2F00A4542E /* GridContext.swift */; };
+		ECA738CD2BE60F2F00A4542E /* PointGridContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738CC2BE60F2F00A4542E /* PointGridContext.swift */; };
 		ECA738D22BE60F7B00A4542E /* PenStroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738D12BE60F7B00A4542E /* PenStroke.swift */; };
 		ECA738D42BE60F9100A4542E /* StrokeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738D32BE60F9100A4542E /* StrokeGenerator.swift */; };
 		ECA738D72BE60FC100A4542E /* SolidPointStrokeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA738D62BE60FC100A4542E /* SolidPointStrokeGenerator.swift */; };
@@ -136,6 +139,9 @@
 		EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemolaApp.swift; sourceTree = "<group>"; };
 		EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EC7F6BF22BE5E6E400A34A7B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		EC8F54AB2C2ACDA8001C7C74 /* GridMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridMode.swift; sourceTree = "<group>"; };
+		EC8F54AD2C2AF5A4001C7C74 /* LineGridVertex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineGridVertex.swift; sourceTree = "<group>"; };
+		EC8F54AF2C2AF5E9001C7C74 /* LineGridContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineGridContext.swift; sourceTree = "<group>"; };
 		EC9AB09E2C1401A40076AF58 /* EraserObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EraserObject.swift; sourceTree = "<group>"; };
 		ECA738792BE5EF0400A4542E /* MemosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemosView.swift; sourceTree = "<group>"; };
 		ECA7387C2BE5EF4B00A4542E /* MemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoView.swift; sourceTree = "<group>"; };
@@ -149,7 +155,7 @@
 		ECA738922BE6011100A4542E /* Stroke.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Stroke.metal; sourceTree = "<group>"; };
 		ECA738942BE6012D00A4542E /* ViewPort.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ViewPort.metal; sourceTree = "<group>"; };
 		ECA738962BE6014200A4542E /* Graphic.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Graphic.metal; sourceTree = "<group>"; };
-		ECA7389B2BE601AF00A4542E /* GridVertex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridVertex.swift; sourceTree = "<group>"; };
+		ECA7389B2BE601AF00A4542E /* PointGridVertex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointGridVertex.swift; sourceTree = "<group>"; };
 		ECA7389D2BE601CB00A4542E /* QuadVertex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuadVertex.swift; sourceTree = "<group>"; };
 		ECA7389F2BE601E400A4542E /* ViewPortVertex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPortVertex.swift; sourceTree = "<group>"; };
 		ECA738A22BE6020A00A4542E /* CGFloat++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGFloat++.swift"; sourceTree = "<group>"; };
@@ -169,7 +175,7 @@
 		ECA738C52BE60E9D00A4542E /* EraserPenStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EraserPenStyle.swift; sourceTree = "<group>"; };
 		ECA738C82BE60EF700A4542E /* GraphicContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphicContext.swift; sourceTree = "<group>"; };
 		ECA738CA2BE60F1900A4542E /* ViewPortContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPortContext.swift; sourceTree = "<group>"; };
-		ECA738CC2BE60F2F00A4542E /* GridContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridContext.swift; sourceTree = "<group>"; };
+		ECA738CC2BE60F2F00A4542E /* PointGridContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointGridContext.swift; sourceTree = "<group>"; };
 		ECA738D12BE60F7B00A4542E /* PenStroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenStroke.swift; sourceTree = "<group>"; };
 		ECA738D32BE60F9100A4542E /* StrokeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeGenerator.swift; sourceTree = "<group>"; };
 		ECA738D62BE60FC100A4542E /* SolidPointStrokeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolidPointStrokeGenerator.swift; sourceTree = "<group>"; };
@@ -376,6 +382,14 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		EC8F54AA2C2ACD9D001C7C74 /* Grid */ = {
+			isa = PBXGroup;
+			children = (
+				EC8F54AB2C2ACDA8001C7C74 /* GridMode.swift */,
+			);
+			path = Grid;
+			sourceTree = "<group>";
+		};
 		ECA738762BE5EE4E00A4542E /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -415,6 +429,7 @@
 		ECA7387E2BE5FE4200A4542E /* Canvas */ = {
 			isa = PBXGroup;
 			children = (
+				EC8F54AA2C2ACD9D001C7C74 /* Grid */,
 				ECD12A872C19EF8700B96E12 /* Elements */,
 				EC2BEBF22C0F5FE1005DB0AF /* RTree */,
 				ECA738812BE5FEEE00A4542E /* Abstracts */,
@@ -494,10 +509,11 @@
 		ECA7389A2BE6019700A4542E /* Vertices */ = {
 			isa = PBXGroup;
 			children = (
-				ECA7389B2BE601AF00A4542E /* GridVertex.swift */,
+				ECA7389B2BE601AF00A4542E /* PointGridVertex.swift */,
 				ECA7389D2BE601CB00A4542E /* QuadVertex.swift */,
 				ECA7389F2BE601E400A4542E /* ViewPortVertex.swift */,
 				ECD12A942C1B1FA200B96E12 /* PhotoVertex.swift */,
+				EC8F54AD2C2AF5A4001C7C74 /* LineGridVertex.swift */,
 			);
 			path = Vertices;
 			sourceTree = "<group>";
@@ -595,7 +611,8 @@
 			children = (
 				ECA738C82BE60EF700A4542E /* GraphicContext.swift */,
 				ECA738CA2BE60F1900A4542E /* ViewPortContext.swift */,
-				ECA738CC2BE60F2F00A4542E /* GridContext.swift */,
+				ECA738CC2BE60F2F00A4542E /* PointGridContext.swift */,
+				EC8F54AF2C2AF5E9001C7C74 /* LineGridContext.swift */,
 			);
 			path = Contexts;
 			sourceTree = "<group>";
@@ -854,10 +871,12 @@
 				ECA738AD2BE60CC600A4542E /* DrawingView.swift in Sources */,
 				EC1B783D2BFA0AC9005A34E2 /* Toolbar.swift in Sources */,
 				ECA738E02BE610B900A4542E /* EraserRenderPass.swift in Sources */,
+				EC8F54B02C2AF5E9001C7C74 /* LineGridContext.swift in Sources */,
 				EC35655A2BF060D900A4E0BF /* Quad.metal in Sources */,
 				ECA738912BE600F500A4542E /* Cache.metal in Sources */,
-				ECA7389C2BE601AF00A4542E /* GridVertex.swift in Sources */,
+				ECA7389C2BE601AF00A4542E /* PointGridVertex.swift in Sources */,
 				ECA738A82BE6025900A4542E /* GraphicUniforms.swift in Sources */,
+				EC8F54AE2C2AF5A4001C7C74 /* LineGridVertex.swift in Sources */,
 				ECA738E62BE611FD00A4542E /* CGRect++.swift in Sources */,
 				EC5E83902BFDB69C00261D9C /* MovingAverage.swift in Sources */,
 				ECFA15262BEF224900455818 /* StrokeObject.swift in Sources */,
@@ -870,7 +889,7 @@
 				ECA738AA2BE6026D00A4542E /* Uniforms.swift in Sources */,
 				ECA7387D2BE5EF4B00A4542E /* MemoView.swift in Sources */,
 				ECA738DA2BE60FF100A4542E /* CacheRenderPass.swift in Sources */,
-				ECA738CD2BE60F2F00A4542E /* GridContext.swift in Sources */,
+				ECA738CD2BE60F2F00A4542E /* PointGridContext.swift in Sources */,
 				ECFA15202BEF21EF00455818 /* MemoObject.swift in Sources */,
 				ECE883C12C00C9CB0045C53D /* StrokeStyle.swift in Sources */,
 				EC37FB122C1B2DD90008D976 /* ToolSelection.swift in Sources */,
@@ -934,6 +953,7 @@
 				ECA738C12BE60E5300A4542E /* PenStyle.swift in Sources */,
 				ECBE52962C1D5900006BDB3D /* PhotoPreview.swift in Sources */,
 				ECA738DE2BE610A000A4542E /* ViewPortRenderPass.swift in Sources */,
+				EC8F54AC2C2ACDA8001C7C74 /* GridMode.swift in Sources */,
 				EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */,
 				EC2BEBF82C0F601A005DB0AF /* Node.swift in Sources */,
 				ECC995A52C1EB4CC00B2699A /* Data++.swift in Sources */,

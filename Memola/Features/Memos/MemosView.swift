@@ -71,6 +71,7 @@ struct MemosView: View {
         let canvasObject = CanvasObject(context: managedObjectContext)
         canvasObject.width = 8_000
         canvasObject.height = 8_000
+        canvasObject.gridMode = 1
 
         let toolObject = ToolObject(\.viewContext)
         toolObject.selection = 0
