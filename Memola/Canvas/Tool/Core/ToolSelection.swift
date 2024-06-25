@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ToolSelection: Equatable {
+enum ToolSelection: Int16, Equatable {
     case hand
     case pen
     case photo

@@ -73,6 +73,7 @@ struct MemosView: View {
         canvasObject.height = 8_000
 
         let toolObject = ToolObject(\.viewContext)
+        toolObject.selection = 0
         toolObject.pens = []
 
         let eraserPenObject = PenObject.createObject(\.viewContext, penStyle: .eraser)

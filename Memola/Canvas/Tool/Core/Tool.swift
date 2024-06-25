@@ -31,10 +31,15 @@ public class Tool: NSObject, ObservableObject {
 
     init(object: ToolObject) {
         self.object = object
+        selection = ToolSelection(rawValue: object.selection) ?? .hand
     }
 
     func selectTool(_ selection: ToolSelection) {
         self.selection = selection
+        withPersistence(\.viewContext) { [weak object] context in
+            object?.selection = selection.rawValue
+            try context.saveIfNeeded()
+        }
     }
 
     func load() {
