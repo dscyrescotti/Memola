@@ -12,6 +12,7 @@ import Foundation
 final class CanvasObject: NSManagedObject {
     @NSManaged var width: CGFloat
     @NSManaged var height: CGFloat
+    @NSManaged var gridMode: Int16
     @NSManaged var memo: MemoObject?
     @NSManaged var graphicContext: GraphicContextObject
 

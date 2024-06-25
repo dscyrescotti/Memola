@@ -12,7 +12,8 @@ class ViewPortRenderPass: RenderPass {
     var label: String { "View Port Render Pass"}
     var descriptor: MTLRenderPassDescriptor?
 
-    var gridPipelineState: MTLRenderPipelineState?
+    var pointGridPipelineState: MTLRenderPipelineState?
+    var lineGridPipelineState: MTLRenderPipelineState?
     var viewPortPipelineState: MTLRenderPipelineState?
     var viewPortUpdatePipelineState: MTLRenderPipelineState?
 
@@ -22,7 +23,8 @@ class ViewPortRenderPass: RenderPass {
     weak var view: MTKView?
 
     init(renderer: Renderer) {
-        gridPipelineState = PipelineStates.createGridPipelineState(from: renderer)
+        pointGridPipelineState = PipelineStates.createPointGridPipelineState(from: renderer)
+        lineGridPipelineState = PipelineStates.createLineGridPipelineState(from: renderer)
         viewPortPipelineState = PipelineStates.createViewPortPipelineState(from: renderer)
         viewPortUpdatePipelineState = PipelineStates.createViewPortPipelineState(from: renderer, isUpdate: true)
     }
@@ -38,9 +40,18 @@ class ViewPortRenderPass: RenderPass {
         }
         renderEncoder.label = "View Port Render Encoder"
 
-        guard let gridPipelineState else { return }
-        renderEncoder.setRenderPipelineState(gridPipelineState)
-        canvas.renderGrid(device: renderer.device, renderEncoder: renderEncoder)
+        switch canvas.gridMode {
+        case .none:
+            break
+        case .point:
+            guard let pointGridPipelineState else { return }
+            renderEncoder.setRenderPipelineState(pointGridPipelineState)
+            canvas.renderPointGrid(device: renderer.device, renderEncoder: renderEncoder)
+        case .line:
+            guard let lineGridPipelineState else { return }
+            renderEncoder.setRenderPipelineState(lineGridPipelineState)
+            canvas.renderLineGrid(device: renderer.device, renderEncoder: renderEncoder)
+        }
 
         if renderer.updatesViewPort {
             guard let viewPortUpdatePipelineState else {

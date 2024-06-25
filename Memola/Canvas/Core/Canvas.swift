@@ -13,8 +13,10 @@ import Foundation
 final class Canvas: ObservableObject, Identifiable, @unchecked Sendable {
     let size: CGSize
     let canvasID: NSManagedObjectID
+    var object: CanvasObject?
 
-    let gridContext = GridContext()
+    let pointGridContext = PointGridContext()
+    let lineGridContext = LineGridContext()
     var graphicContext = GraphicContext()
     let viewPortContext = ViewPortContext()
 
@@ -31,11 +33,14 @@ final class Canvas: ObservableObject, Identifiable, @unchecked Sendable {
     @Published var zoomScale: CGFloat = .zero
     @Published var locksCanvas: Bool = false
 
+    @Published var gridMode: GridMode = .point
+
     let zoomPublisher = PassthroughSubject<CGFloat, Never>()
 
-    init(size: CGSize, canvasID: NSManagedObjectID) {
+    init(size: CGSize, canvasID: NSManagedObjectID, gridMode: Int16) {
         self.size = size
         self.canvasID = canvasID
+        self.gridMode = GridMode(rawValue: gridMode) ?? .point
     }
 
     var hasValidStroke: Bool {
@@ -56,6 +61,7 @@ extension Canvas {
             guard let canvas = context.object(with: canvasID) as? CanvasObject else {
                 return
             }
+            self?.object = canvas
             let graphicContext = canvas.graphicContext
             self?.graphicContext.object = graphicContext
             self?.graphicContext.loadStrokes(bounds)
@@ -103,6 +109,18 @@ extension Canvas {
     }
 }
 
+// MARK: - Grid Mode
+extension Canvas {
+    func setGridMode(_ gridMode: GridMode) {
+        guard self.gridMode != gridMode else { return }
+        self.gridMode = gridMode
+        withPersistence(\.backgroundContext) { [weak object] context in
+            object?.gridMode = gridMode.rawValue
+            try context.saveIfNeeded()
+        }
+    }
+}
+
 // MARK: - Stroke
 extension Canvas {
     func beginTouch(at point: CGPoint, pen: Pen) -> any Stroke {
@@ -135,7 +153,7 @@ extension Canvas {
 
 // MARK: - Rendering
 extension Canvas {
-    func renderGrid(device: MTLDevice, renderEncoder: MTLRenderCommandEncoder) {
+    func renderPointGrid(device: MTLDevice, renderEncoder: MTLRenderCommandEncoder) {
         var uniforms = GridUniforms(
             ratio: size.width.float / 100,
             zoom: zoomScale.float,
@@ -143,7 +161,18 @@ extension Canvas {
         )
         uniformsBuffer = device.makeBuffer(bytes: &uniforms, length: MemoryLayout<GridUniforms>.size)
         renderEncoder.setVertexBuffer(uniformsBuffer, offset: 0, index: 11)
-        gridContext.draw(device: device, renderEncoder: renderEncoder)
+        pointGridContext.draw(device: device, renderEncoder: renderEncoder)
+    }
+
+    func renderLineGrid(device: MTLDevice, renderEncoder: MTLRenderCommandEncoder) {
+        var uniforms = GridUniforms(
+            ratio: size.width.float / 100,
+            zoom: zoomScale.float,
+            transform: transform
+        )
+        uniformsBuffer = device.makeBuffer(bytes: &uniforms, length: MemoryLayout<GridUniforms>.size)
+        renderEncoder.setVertexBuffer(uniformsBuffer, offset: 0, index: 11)
+        lineGridContext.draw(device: device, renderEncoder: renderEncoder)
     }
 
     func renderGraphic(device: MTLDevice, renderEncoder: MTLRenderCommandEncoder) {

@@ -161,16 +161,20 @@ extension CanvasViewController {
                 self?.canvasStateChanged(state)
             }
             .store(in: &cancellables)
-
         canvas.zoomPublisher
             .sink { [weak self] zoomScale in
                 self?.zoomChanged(zoomScale)
             }
             .store(in: &cancellables)
-
         canvas.$locksCanvas
             .sink { [weak self] state in
                 self?.lockModeChanged(state)
+            }
+            .store(in: &cancellables)
+        canvas.$gridMode
+            .delay(for: .milliseconds(100), scheduler: DispatchQueue.main)
+            .sink { [weak self] mode in
+                self?.gridModeChanged(mode)
             }
             .store(in: &cancellables)
 
@@ -363,6 +367,13 @@ extension CanvasViewController {
 
     func lockModeChanged(_ state: Bool) {
         scrollView.pinchGestureRecognizer?.isEnabled = !state
+    }
+
+    func gridModeChanged(_ mode: GridMode) {
+        drawingView.disableUserInteraction()
+        renderer.resize(on: renderView, to: renderView.drawableSize)
+        renderView.draw()
+        drawingView.enableUserInteraction()
     }
 }
 

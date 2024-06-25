@@ -23,7 +23,7 @@ struct MemoView: View {
         self.memo = memo
         self.title = memo.title
         self._tool = StateObject(wrappedValue: Tool(object: memo.tool))
-        self._canvas = StateObject(wrappedValue: Canvas(size: memo.canvas.size, canvasID: memo.canvas.objectID))
+        self._canvas = StateObject(wrappedValue: Canvas(size: memo.canvas.size, canvasID: memo.canvas.objectID, gridMode: memo.canvas.gridMode))
     }
 
     var body: some View {
