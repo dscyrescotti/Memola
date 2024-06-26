@@ -251,9 +251,6 @@ extension GraphicContext {
 
     func appendStroke(with point: CGPoint) {
         guard let currentStroke = currentElement?.stroke() else { return }
-        guard let currentPoint, point.distance(to: currentPoint) > currentStroke.thickness * currentStroke.penStyle.stepRate else {
-            return
-        }
         currentStroke.append(to: point)
         self.currentPoint = point
     }
