@@ -259,7 +259,7 @@ extension CanvasViewController: UIScrollViewDelegate {
 
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
         canvas.setZoomScale(scrollView.zoomScale)
-        renderer.resize(on: renderView, to: renderView.drawableSize)
+//        renderer.resize(on: renderView, to: renderView.drawableSize)
         renderView.draw()
     }
 
@@ -274,7 +274,7 @@ extension CanvasViewController: UIScrollViewDelegate {
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        renderer.resize(on: renderView, to: renderView.drawableSize)
+//        renderer.resize(on: renderView, to: renderView.drawableSize)
         renderView.draw()
     }
 
@@ -302,12 +302,12 @@ extension CanvasViewController {
         drawingView.touchCancelled()
         canvas.updateClipBounds(scrollView, on: drawingView)
         drawingView.disableUserInteraction()
-        renderer.updatesViewPort = true
+        renderer.setUpdatesViewPort(true)
     }
 
     func magnificationEnded() {
-        renderer.updatesViewPort = false
-        renderer.resize(on: renderView, to: renderView.drawableSize)
+        renderer.setUpdatesViewPort(false)
+        renderer.setRedrawsGraphicRender()
         renderView.draw()
         drawingView.enableUserInteraction()
     }
@@ -316,12 +316,12 @@ extension CanvasViewController {
         guard !renderer.updatesViewPort else { return }
         canvas.updateClipBounds(scrollView, on: drawingView)
         drawingView.disableUserInteraction()
-        renderer.updatesViewPort = true
+        renderer.setUpdatesViewPort(true)
     }
 
     func draggingEnded() {
-        renderer.updatesViewPort = false
-        renderer.resize(on: renderView, to: renderView.drawableSize)
+        renderer.setUpdatesViewPort(false)
+        renderer.setRedrawsGraphicRender()
         renderView.draw()
         drawingView.enableUserInteraction()
     }
@@ -371,7 +371,7 @@ extension CanvasViewController {
 
     func gridModeChanged(_ mode: GridMode) {
         drawingView.disableUserInteraction()
-        renderer.resize(on: renderView, to: renderView.drawableSize)
+        renderer.setRedrawsGraphicRender()
         renderView.draw()
         drawingView.enableUserInteraction()
     }
@@ -382,8 +382,7 @@ extension CanvasViewController {
         guard let event = history.undo() else { return }
         drawingView.disableUserInteraction()
         canvas.graphicContext.undoGraphic(for: event)
-        renderer.redrawsGraphicRender = true
-        renderer.resize(on: renderView, to: renderView.drawableSize)
+        renderer.setRedrawsGraphicRender()
         renderView.draw()
         drawingView.enableUserInteraction()
     }
@@ -392,8 +391,7 @@ extension CanvasViewController {
         guard let event = history.redo() else { return }
         drawingView.disableUserInteraction()
         canvas.graphicContext.redoGraphic(for: event)
-        renderer.redrawsGraphicRender = true
-        renderer.resize(on: renderView, to: renderView.drawableSize)
+        renderer.setRedrawsGraphicRender()
         renderView.draw()
         drawingView.enableUserInteraction()
     }

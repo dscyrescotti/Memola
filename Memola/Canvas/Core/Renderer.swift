@@ -60,15 +60,21 @@ final class Renderer {
         self.viewPortRenderPass.view = canvasView
     }
 
-    func resize(on view: MTKView, to size: CGSize) {
-        if !updatesViewPort {
-            photoBackgroundRenderPass.resize(on: view, to: size, with: self)
-            strokeRenderPass.resize(on: view, to: size, with: self)
-            graphicRenderPass.resize(on: view, to: size, with: self)
-            cacheRenderPass.resize(on: view, to: size, with: self)
-        }
-        viewPortRenderPass.resize(on: view, to: size, with: self)
+    func setUpdatesViewPort(_ value: Bool) {
+        updatesViewPort = value
+    }
+
+    func setRedrawsGraphicRender() {
         redrawsGraphicRender = true
+    }
+
+    func resize(on view: MTKView, to size: CGSize) {
+        photoBackgroundRenderPass.resize(on: view, to: size, with: self)
+        strokeRenderPass.resize(on: view, to: size, with: self)
+        graphicRenderPass.resize(on: view, to: size, with: self)
+        cacheRenderPass.resize(on: view, to: size, with: self)
+        viewPortRenderPass.resize(on: view, to: size, with: self)
+        setRedrawsGraphicRender()
     }
 
     func draw(in view: MTKView, on canvas: Canvas) {
@@ -94,6 +100,7 @@ final class Renderer {
         cacheRenderPass.draw(into: commandBuffer, on: canvas, with: self)
 
         viewPortRenderPass.descriptor = view.currentRenderPassDescriptor
+        viewPortRenderPass.excludesPhotoBackground = photoBackgroundRenderPass.clearsTexture
         viewPortRenderPass.photoBackgroundTexture = photoBackgroundRenderPass.photoBackgroundTexture
         viewPortRenderPass.cacheTexture = cacheRenderPass.cacheTexture
         viewPortRenderPass.draw(into: commandBuffer, on: canvas, with: self)

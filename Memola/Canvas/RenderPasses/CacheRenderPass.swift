@@ -34,14 +34,15 @@ class CacheRenderPass: RenderPass {
         cacheTexture = Textures.createCacheTexture(from: renderer, size: size, pixelFormat: view.colorPixelFormat)
     }
 
-    func draw(into commandBuffer: any MTLCommandBuffer, on canvas: Canvas, with renderer: Renderer) {
-        guard let descriptor else { return }
+    @discardableResult
+    func draw(into commandBuffer: any MTLCommandBuffer, on canvas: Canvas, with renderer: Renderer) -> Bool {
+        guard let descriptor else { return false }
 
         // MARK: - Copying texture
-        guard let graphicTexture, let cacheTexture else { return }
-        guard let cachePipelineState else { return }
+        guard let graphicTexture, let cacheTexture else { return false }
+        guard let cachePipelineState else { return false }
         guard let computeEncoder = commandBuffer.makeComputeCommandEncoder() else {
-            return
+            return false
         }
         computeEncoder.label = "Cache Compute Encoder"
 
@@ -58,7 +59,7 @@ class CacheRenderPass: RenderPass {
         computeEncoder.endEncoding()
 
         // MARK: - Drawing 
-        guard let graphicPipelineState else { return }
+        guard let graphicPipelineState else { return false }
         descriptor.colorAttachments[0].texture = cacheTexture
         descriptor.colorAttachments[0].clearColor = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 0)
         descriptor.colorAttachments[0].loadAction = clearsTexture ? .clear : .load
@@ -67,23 +68,25 @@ class CacheRenderPass: RenderPass {
         let graphicContext = canvas.graphicContext
         if let element = graphicContext.currentElement {
             let elementGroup = ElementGroup(element)
+            var status: Bool?
             switch elementGroup.type {
             case .stroke:
                 canvas.setGraphicRenderType(.inProgress)
                 strokeRenderPass?.elementGroup = elementGroup
                 strokeRenderPass?.graphicDescriptor = descriptor
                 strokeRenderPass?.graphicPipelineState = graphicPipelineState
-                strokeRenderPass?.draw(into: commandBuffer, on: canvas, with: renderer)
+                status = strokeRenderPass?.draw(into: commandBuffer, on: canvas, with: renderer)
             case .eraser:
                 eraserRenderPass?.elementGroup = elementGroup
                 eraserRenderPass?.descriptor = descriptor
-                eraserRenderPass?.draw(into: commandBuffer, on: canvas, with: renderer)
+                status = eraserRenderPass?.draw(into: commandBuffer, on: canvas, with: renderer)
             case .photo:
                 photoRenderPass?.elementGroup = elementGroup
                 photoRenderPass?.descriptor = descriptor
-                photoRenderPass?.draw(into: commandBuffer, on: canvas, with: renderer)
+                status = photoRenderPass?.draw(into: commandBuffer, on: canvas, with: renderer)
             }
-            clearsTexture = false
+            clearsTexture = !(status ?? false)
         }
+        return true
     }
 }
