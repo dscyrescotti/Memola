@@ -13,6 +13,7 @@ struct MemosView: View {
     @FetchRequest var memoObjects: FetchedResults<MemoObject>
 
     @State var memo: MemoObject?
+    @State var query: String = ""
 
     @AppStorage("memola.memo-objects.sort") var sort: Sort = .recent
 
@@ -31,24 +32,28 @@ struct MemosView: View {
         NavigationStack {
             memoGrid
                 .navigationTitle("Memos")
+                .searchable(text: $query, placement: .toolbar, prompt: Text("Search"))
                 .toolbar {
                     ToolbarItemGroup(placement: .primaryAction) {
-                        Menu {
-                            Picker("", selection: $sort) {
-                                ForEach(Sort.all) { sort in
-                                    Text(sort.name)
-                                        .tag(sort)
-                                }
+                        HStack(spacing: 5) {
+                            Button {
+                                createMemo(title: "Untitled")
+                            } label: {
+                                Image(systemName: "square.and.pencil")
                             }
-                        } label: {
-                            Image(systemName: "arrow.up.arrow.down.circle")
+                            .hoverEffect(.lift)
+                            Menu {
+                                Picker("", selection: $sort) {
+                                    ForEach(Sort.all) { sort in
+                                        Text(sort.name)
+                                            .tag(sort)
+                                    }
+                                }
+                            } label: {
+                                Image(systemName: "arrow.up.arrow.down.circle")
+                            }
+                            .hoverEffect(.lift)
                         }
-                        Button {
-                            createMemo(title: "Untitled")
-                        } label: {
-                            Image(systemName: "square.and.pencil")
-                        }
-                        .hoverEffect()
                     }
                 }
         }
@@ -63,6 +68,9 @@ struct MemosView: View {
         }
         .onChange(of: sort) { oldValue, newValue in
             memoObjects.sortDescriptors = newValue.memoSortDescriptors
+        }
+        .onChange(of: query) { oldValue, newValue in
+            updatePredicate()
         }
     }
 
@@ -147,5 +155,16 @@ struct MemosView: View {
 
     func openMemo(for memo: MemoObject) {
         self.memo = memo
+    }
+
+    func updatePredicate() {
+        var predicates: [NSPredicate] = []
+        if !query.isEmpty {
+            predicates.append(NSPredicate(format: "title contains[c] %@", query))
+        }
+//        if filter == .favorites {
+//            predicates.append(NSPredicate(format: "isFavorite = YES"))
+//        }
+        memoObjects.nsPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
     }
 }
