@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct MemosView: View {
-    @Environment(\.managedObjectContext) var managedObjectContext
+    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     @FetchRequest var memoObjects: FetchedResults<MemoObject>
 
@@ -39,10 +40,14 @@ struct MemosView: View {
     var body: some View {
         NavigationStack {
             memoGrid
-                .navigationTitle("Memola")
                 .searchable(text: $query, placement: .toolbar, prompt: Text("Search"))
                 .toolbar {
-                    ToolbarItemGroup(placement: .primaryAction) {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Text("Memola")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                    }
+                    ToolbarItemGroup(placement: .topBarTrailing) {
                         HStack(spacing: 5) {
                             Button {
                                 createMemo(title: "Untitled")
@@ -50,27 +55,50 @@ struct MemosView: View {
                                 Image(systemName: "square.and.pencil")
                             }
                             .hoverEffect(.lift)
-                            Menu {
-                                Picker("", selection: $sort) {
-                                    ForEach(Sort.all) { sort in
-                                        Text(sort.name)
-                                            .tag(sort)
+                            if horizontalSizeClass == .compact {
+                                Menu {
+                                    VStack {
+                                        Picker("", selection: $sort) {
+                                            ForEach(Sort.all) { sort in
+                                                Text(sort.name)
+                                                    .tag(sort)
+                                            }
+                                        }
+                                        .pickerStyle(.automatic)
+                                        Picker("", selection: $filter) {
+                                            ForEach(Filter.all) { filter in
+                                                Text(filter.name)
+                                                    .tag(filter)
+                                            }
+                                        }
+                                        .pickerStyle(.automatic)
                                     }
+                                } label: {
+                                    Image(systemName: "ellipsis.circle")
                                 }
-                            } label: {
-                                Image(systemName: "arrow.up.arrow.down.circle")
-                            }
-                            .hoverEffect(.lift)
-                            Menu {
-                                Picker("", selection: $filter) {
-                                    ForEach(Filter.all) { filter in
-                                        Text(filter.name)
-                                            .tag(filter)
+                            } else {
+                                Menu {
+                                    Picker("", selection: $sort) {
+                                        ForEach(Sort.all) { sort in
+                                            Text(sort.name)
+                                                .tag(sort)
+                                        }
                                     }
+                                } label: {
+                                    Image(systemName: "arrow.up.arrow.down.circle")
                                 }
-                                .pickerStyle(.automatic)
-                            } label: {
-                                Image(systemName: "line.3.horizontal.decrease.circle")
+                                .hoverEffect(.lift)
+                                Menu {
+                                    Picker("", selection: $filter) {
+                                        ForEach(Filter.all) { filter in
+                                            Text(filter.name)
+                                                .tag(filter)
+                                        }
+                                    }
+                                    .pickerStyle(.automatic)
+                                } label: {
+                                    Image(systemName: "line.3.horizontal.decrease.circle")
+                                }
                             }
                         }
                     }
@@ -128,6 +156,23 @@ struct MemosView: View {
             Rectangle()
                 .frame(height: cellHeight)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
+                .overlay(alignment: .topTrailing) {
+                    Image(systemName: memoObject.isFavorite ? "star.fill" : "star")
+                        .foregroundStyle(memoObject.isFavorite ? .yellow : .white)
+                        .frame(width: 20, height: 20)
+                        .padding(5)
+                        .background(.black.opacity(0.5))
+                        .cornerRadius(5)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            memoObject.isFavorite.toggle()
+                            withPersistence(\.viewContext) { context in
+                                try context.saveIfNeeded()
+                            }
+                        }
+                        .contentTransition(.symbolEffect(.replace))
+                        .padding(5)
+                }
             VStack(alignment: .leading, spacing: 2) {
                 Text(memoObject.title)
                     .font(.headline)
@@ -149,7 +194,7 @@ struct MemosView: View {
         memoObject.createdAt = .now
         memoObject.updatedAt = .now
 
-        let canvasObject = CanvasObject(context: managedObjectContext)
+        let canvasObject = CanvasObject(\.viewContext)
         canvasObject.width = 8_000
         canvasObject.height = 8_000
         canvasObject.gridMode = 1
