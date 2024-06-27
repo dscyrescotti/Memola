@@ -27,13 +27,14 @@ struct MemosView: View {
     init() {
         let standard = UserDefaults.standard
         var descriptors: [SortDescriptor<MemoObject>] = []
-        var predicate: NSPredicate?
+        var predicates: [NSPredicate] = [NSPredicate(format: "isTrash = NO")]
         let sort = Sort(rawValue: standard.value(forKey: "memola.memo-objects.sort") as? String ?? "") ?? .recent
         let filter = Filter(rawValue: standard.value(forKey: "memola.memo-objects.filter") as? String ?? "") ?? .none
         if filter == .favorites {
-            predicate = NSPredicate(format: "isFavorite = YES")
+            predicates.append(NSPredicate(format: "isFavorite = YES"))
         }
         descriptors = sort.memoSortDescriptors
+        let predicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
         _memoObjects = FetchRequest(sortDescriptors: descriptors, predicate: predicate)
     }
 
@@ -156,6 +157,18 @@ struct MemosView: View {
             Rectangle()
                 .frame(height: cellHeight)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
+                .contextMenu {
+                    Button {
+                        openMemo(for: memoObject)
+                    } label: {
+                        Label("Open", systemImage: "doc.text")
+                    }
+                    Button(role: .destructive) {
+                        markAsTrash(for: memoObject)
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
                 .overlay(alignment: .topTrailing) {
                     Image(systemName: memoObject.isFavorite ? "star.fill" : "star")
                         .foregroundStyle(memoObject.isFavorite ? .yellow : .white)
@@ -165,10 +178,7 @@ struct MemosView: View {
                         .cornerRadius(5)
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            memoObject.isFavorite.toggle()
-                            withPersistence(\.viewContext) { context in
-                                try context.saveIfNeeded()
-                            }
+                            toggleFavorite(for: memoObject)
                         }
                         .contentTransition(.symbolEffect(.replace))
                         .padding(5)
@@ -243,7 +253,7 @@ struct MemosView: View {
     }
 
     func updatePredicate() {
-        var predicates: [NSPredicate] = []
+        var predicates: [NSPredicate] = [NSPredicate(format: "isTrash = NO")]
         if !query.isEmpty {
             predicates.append(NSPredicate(format: "title contains[c] %@", query))
         }
@@ -251,5 +261,19 @@ struct MemosView: View {
             predicates.append(NSPredicate(format: "isFavorite = YES"))
         }
         memoObjects.nsPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
+    }
+
+    func toggleFavorite(for memo: MemoObject) {
+        memo.isFavorite.toggle()
+        withPersistence(\.viewContext) { context in
+            try context.saveIfNeeded()
+        }
+    }
+
+    func markAsTrash(for memo: MemoObject) {
+        memo.isTrash = true
+        withPersistence(\.viewContext) { context in
+            try context.saveIfNeeded()
+        }
     }
 }
