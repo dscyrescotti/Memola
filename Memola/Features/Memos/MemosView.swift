@@ -37,7 +37,7 @@ struct MemosView: View {
     var body: some View {
         NavigationStack {
             memoGrid
-                .navigationTitle("Memos")
+                .navigationTitle("Memola")
                 .searchable(text: $query, placement: .toolbar, prompt: Text("Search"))
                 .toolbar {
                     ToolbarItemGroup(placement: .primaryAction) {
@@ -98,17 +98,22 @@ struct MemosView: View {
         }
     }
 
+    @ViewBuilder
     var memoGrid: some View {
-        GeometryReader { proxy in
-            let count = Int(proxy.size.width / cellWidth)
-            let columns: [GridItem] = .init(repeating: GridItem(.flexible(), spacing: 15), count: count)
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 15) {
-                    ForEach(memoObjects) { memo in
-                        memoCard(memo)
+        if memoObjects.isEmpty {
+            Placeholder(info: query.isEmpty ? .memoEmpty : .memoNotFound)
+        } else {
+            GeometryReader { proxy in
+                let count = Int(proxy.size.width / cellWidth)
+                let columns: [GridItem] = .init(repeating: GridItem(.flexible(), spacing: 15), count: count)
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 15) {
+                        ForEach(memoObjects) { memo in
+                            memoCard(memo)
+                        }
                     }
+                    .padding()
                 }
-                .padding()
             }
         }
     }
