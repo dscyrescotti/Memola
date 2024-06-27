@@ -101,6 +101,7 @@ final class Renderer {
 
         viewPortRenderPass.descriptor = view.currentRenderPassDescriptor
         viewPortRenderPass.excludesPhotoBackground = photoBackgroundRenderPass.clearsTexture
+        viewPortRenderPass.excludesGraphic = cacheRenderPass.clearsTexture
         viewPortRenderPass.photoBackgroundTexture = photoBackgroundRenderPass.photoBackgroundTexture
         viewPortRenderPass.cacheTexture = cacheRenderPass.cacheTexture
         viewPortRenderPass.draw(into: commandBuffer, on: canvas, with: self)

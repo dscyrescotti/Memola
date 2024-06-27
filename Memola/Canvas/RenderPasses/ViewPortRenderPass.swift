@@ -22,6 +22,7 @@ class ViewPortRenderPass: RenderPass {
 
     weak var view: MTKView?
 
+    var excludesGraphic: Bool = false
     var excludesPhotoBackground: Bool = false
 
     init(renderer: Renderer) {
@@ -68,8 +69,10 @@ class ViewPortRenderPass: RenderPass {
                 canvas.renderViewPortUpdate(device: renderer.device, renderEncoder: renderEncoder)
             }
 
-            renderEncoder.setFragmentTexture(cacheTexture, index: 0)
-            canvas.renderViewPortUpdate(device: renderer.device, renderEncoder: renderEncoder)
+            if !excludesGraphic {
+                renderEncoder.setFragmentTexture(cacheTexture, index: 0)
+                canvas.renderViewPortUpdate(device: renderer.device, renderEncoder: renderEncoder)
+            }
         } else {
             guard let viewPortPipelineState else {
                 return false
@@ -82,8 +85,10 @@ class ViewPortRenderPass: RenderPass {
                 canvas.renderViewPort(device: renderer.device, renderEncoder: renderEncoder)
             }
 
-            renderEncoder.setFragmentTexture(cacheTexture, index: 0)
-            canvas.renderViewPort(device: renderer.device, renderEncoder: renderEncoder)
+            if !excludesGraphic {
+                renderEncoder.setFragmentTexture(cacheTexture, index: 0)
+                canvas.renderViewPort(device: renderer.device, renderEncoder: renderEncoder)
+            }
         }
 
         renderEncoder.endEncoding()
