@@ -10,23 +10,43 @@ import SwiftUI
 struct MemosView: View {
     @Environment(\.managedObjectContext) var managedObjectContext
 
-    @FetchRequest(sortDescriptors: []) var memoObjects: FetchedResults<MemoObject>
+    @FetchRequest var memoObjects: FetchedResults<MemoObject>
 
     @State var memo: MemoObject?
 
+    @AppStorage("memola.memo-objects.sort") var sort: Sort = .recent
+
     let cellWidth: CGFloat = 250
     let cellHeight: CGFloat = 150
+
+    init() {
+        let standard = UserDefaults.standard
+        var descriptors: [SortDescriptor<MemoObject>] = []
+        let sort = Sort(rawValue: standard.value(forKey: "memola.memo-objects.sort") as? String ?? "") ?? .recent
+        descriptors = sort.memoSortDescriptors
+        _memoObjects = FetchRequest(sortDescriptors: descriptors)
+    }
 
     var body: some View {
         NavigationStack {
             memoGrid
                 .navigationTitle("Memos")
                 .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
+                    ToolbarItemGroup(placement: .primaryAction) {
+                        Menu {
+                            Picker("", selection: $sort) {
+                                ForEach(Sort.all) { sort in
+                                    Text(sort.name)
+                                        .tag(sort)
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "arrow.up.arrow.down.circle")
+                        }
                         Button {
                             createMemo(title: "Untitled")
                         } label: {
-                            Image(systemName: "plus")
+                            Image(systemName: "square.and.pencil")
                         }
                         .hoverEffect()
                     }
@@ -40,6 +60,9 @@ struct MemosView: View {
                         context.refreshAllObjects()
                     }
                 }
+        }
+        .onChange(of: sort) { oldValue, newValue in
+            memoObjects.sortDescriptors = newValue.memoSortDescriptors
         }
     }
 
