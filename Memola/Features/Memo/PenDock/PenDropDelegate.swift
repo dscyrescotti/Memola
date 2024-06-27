@@ -29,10 +29,11 @@ struct PenDropDelegate: DropDelegate {
                 tool.pens.move(fromOffsets: IndexSet(integer: fromIndex), toOffset: toIndex > fromIndex ? toIndex + 1 : toIndex)
                 tool.objectWillChange.send()
             }
-            withPersistence(\.viewContext) { context in
+            withPersistence(\.viewContext) { [weak object = tool.object] context in
                 for (index, pen) in tool.pens.enumerated() {
                     pen.object?.orderIndex = Int16(index)
                 }
+                object?.memo?.updatedAt = .now
                 try context.saveIfNeeded()
             }
         }

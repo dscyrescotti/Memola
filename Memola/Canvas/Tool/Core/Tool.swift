@@ -38,6 +38,7 @@ public class Tool: NSObject, ObservableObject {
         self.selection = selection
         withPersistence(\.viewContext) { [weak object] context in
             object?.selection = selection.rawValue
+            object?.memo?.updatedAt = .now
             try context.saveIfNeeded()
         }
     }
@@ -85,10 +86,11 @@ public class Tool: NSObject, ObservableObject {
             pens.insert(pen, at: index + 1)
         }
         selectPen(pen)
-        withPersistence(\.viewContext) { [pens] context in
+        withPersistence(\.viewContext) { [pens, weak object] context in
             for (index, pen) in pens.enumerated() {
                 pen.object?.orderIndex = Int16(index)
             }
+            object?.memo?.updatedAt = .now
             try context.saveIfNeeded()
         }
     }
@@ -102,7 +104,8 @@ public class Tool: NSObject, ObservableObject {
             object.pens.add(_pen)
         }
         scrollPublisher.send(pen.id)
-        withPersistence(\.viewContext) { context in
+        withPersistence(\.viewContext) { [weak object] context in
+            object?.memo?.updatedAt = .now
             try context.saveIfNeeded()
         }
     }
@@ -116,8 +119,9 @@ public class Tool: NSObject, ObservableObject {
         if let _pen = deletedPen.object {
             _pen.tool = nil
             object.pens.remove(_pen)
-            withPersistence(\.viewContext) { context in
+            withPersistence(\.viewContext) { [weak object] context in
                 context.delete(_pen)
+                object?.memo?.updatedAt = .now
                 try context.saveIfNeeded()
             }
         }

@@ -123,6 +123,7 @@ struct Toolbar: View {
                 if !newValue {
                     if !title.isEmpty {
                         memo.title = title
+                        memo.updatedAt = .now
                     } else {
                         title = memo.title
                     }
@@ -313,8 +314,11 @@ struct Toolbar: View {
         withAnimation {
             canvas.state = .closing
         }
+        withPersistenceSync(\.viewContext) { context in
+            try context.saveIfNeeded()
+        }
         withPersistence(\.backgroundContext) { context in
-            try? context.saveIfNeeded()
+            try context.saveIfNeeded()
             context.refreshAllObjects()
             DispatchQueue.main.async {
                 withAnimation {

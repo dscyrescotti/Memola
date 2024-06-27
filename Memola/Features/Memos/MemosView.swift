@@ -14,6 +14,9 @@ struct MemosView: View {
 
     @State var memo: MemoObject?
 
+    let cellWidth: CGFloat = 250
+    let cellHeight: CGFloat = 150
+
     var body: some View {
         NavigationStack {
             memoGrid
@@ -41,21 +44,28 @@ struct MemosView: View {
     }
 
     var memoGrid: some View {
-        ScrollView {
-            LazyVGrid(columns: .init(repeating: GridItem(.flexible()), count: 3)) {
-                ForEach(memoObjects) { memo in
-                    memoCard(memo)
+        GeometryReader { proxy in
+            let count = Int(proxy.size.width / cellWidth)
+            let columns: [GridItem] = .init(repeating: GridItem(.flexible(), spacing: 15), count: count)
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 15) {
+                    ForEach(memoObjects) { memo in
+                        memoCard(memo)
+                    }
                 }
+                .padding()
             }
-            .padding()
         }
     }
 
     func memoCard(_ memoObject: MemoObject) -> some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 5) {
             Rectangle()
-                .frame(height: 150)
+                .frame(height: cellHeight)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
             Text(memoObject.title)
+                .font(.headline)
+                .fontWeight(.semibold)
         }
         .onTapGesture {
             openMemo(for: memoObject)

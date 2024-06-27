@@ -11,7 +11,7 @@ import CoreData
 struct MemoView: View {
     @StateObject var tool: Tool
     @StateObject var canvas: Canvas
-    @StateObject var history = History()
+    @StateObject var history: History
 
     @State var memo: MemoObject
     @State var title: String
@@ -24,6 +24,7 @@ struct MemoView: View {
         self.title = memo.title
         self._tool = StateObject(wrappedValue: Tool(object: memo.tool))
         self._canvas = StateObject(wrappedValue: Canvas(size: memo.canvas.size, canvasID: memo.canvas.objectID, gridMode: memo.canvas.gridMode))
+        self._history = StateObject(wrappedValue: History(memo: memo))
     }
 
     var body: some View {

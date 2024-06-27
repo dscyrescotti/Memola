@@ -9,6 +9,12 @@ import Combine
 import Foundation
 
 class History: ObservableObject {
+    var memo: MemoObject?
+
+    init(memo: MemoObject?) {
+        self.memo = memo
+    }
+
     @Published var undoStack: [HistoryEvent] = []
     @Published var redoStack: [HistoryEvent] = []
 
@@ -41,10 +47,18 @@ class History: ObservableObject {
 
     func addUndo(_ event: HistoryEvent) {
         undoStack.append(event)
+        withPersistence(\.viewContext) { [weak memo] context in
+            memo?.updatedAt = .now
+            try context.saveIfNeeded()
+        }
     }
 
     func addRedo(_ event: HistoryEvent) {
         redoStack.append(event)
+        withPersistence(\.viewContext) { [weak memo] context in
+            memo?.updatedAt = .now
+            try context.saveIfNeeded()
+        }
     }
 
     func resetRedo() {
@@ -87,6 +101,10 @@ class History: ObservableObject {
             }
         }
         redoStack.removeAll()
+        withPersistence(\.viewContext) { [weak memo] context in
+            memo?.updatedAt = .now
+            try context.saveIfNeeded()
+        }
     }
 
     func restoreUndo() {
