@@ -16,6 +16,7 @@ struct MemosView: View {
     @State var query: String = ""
 
     @AppStorage("memola.memo-objects.sort") var sort: Sort = .recent
+    @AppStorage("memola.memo-objects.filter") var filter: Filter = .none
 
     let cellWidth: CGFloat = 250
     let cellHeight: CGFloat = 150
@@ -23,9 +24,14 @@ struct MemosView: View {
     init() {
         let standard = UserDefaults.standard
         var descriptors: [SortDescriptor<MemoObject>] = []
+        var predicate: NSPredicate?
         let sort = Sort(rawValue: standard.value(forKey: "memola.memo-objects.sort") as? String ?? "") ?? .recent
+        let filter = Filter(rawValue: standard.value(forKey: "memola.memo-objects.filter") as? String ?? "") ?? .none
+        if filter == .favorites {
+            predicate = NSPredicate(format: "isFavorite = YES")
+        }
         descriptors = sort.memoSortDescriptors
-        _memoObjects = FetchRequest(sortDescriptors: descriptors)
+        _memoObjects = FetchRequest(sortDescriptors: descriptors, predicate: predicate)
     }
 
     var body: some View {
@@ -53,6 +59,17 @@ struct MemosView: View {
                                 Image(systemName: "arrow.up.arrow.down.circle")
                             }
                             .hoverEffect(.lift)
+                            Menu {
+                                Picker("", selection: $filter) {
+                                    ForEach(Filter.all) { filter in
+                                        Text(filter.name)
+                                            .tag(filter)
+                                    }
+                                }
+                                .pickerStyle(.automatic)
+                            } label: {
+                                Image(systemName: "line.3.horizontal.decrease.circle")
+                            }
                         }
                     }
                 }
@@ -70,6 +87,13 @@ struct MemosView: View {
             memoObjects.sortDescriptors = newValue.memoSortDescriptors
         }
         .onChange(of: query) { oldValue, newValue in
+            updatePredicate()
+        }
+        .onChange(of: filter) { oldValue, newValue in
+            updatePredicate()
+        }
+        .onAppear {
+            memoObjects.sortDescriptors = sort.memoSortDescriptors
             updatePredicate()
         }
     }
@@ -162,9 +186,9 @@ struct MemosView: View {
         if !query.isEmpty {
             predicates.append(NSPredicate(format: "title contains[c] %@", query))
         }
-//        if filter == .favorites {
-//            predicates.append(NSPredicate(format: "isFavorite = YES"))
-//        }
+        if filter == .favorites {
+            predicates.append(NSPredicate(format: "isFavorite = YES"))
+        }
         memoObjects.nsPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
     }
 }
