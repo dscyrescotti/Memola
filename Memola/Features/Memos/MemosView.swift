@@ -14,12 +14,14 @@ struct MemosView: View {
 
     @State var memo: MemoObject?
     @State var query: String = ""
+    @State var currentDate: Date = .now
 
     @AppStorage("memola.memo-objects.sort") var sort: Sort = .recent
     @AppStorage("memola.memo-objects.filter") var filter: Filter = .none
 
     let cellWidth: CGFloat = 250
     let cellHeight: CGFloat = 150
+    let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
 
     init() {
         let standard = UserDefaults.standard
@@ -92,6 +94,9 @@ struct MemosView: View {
         .onChange(of: filter) { oldValue, newValue in
             updatePredicate()
         }
+        .onReceive(timer) { date in
+            currentDate = date
+        }
         .onAppear {
             memoObjects.sortDescriptors = sort.memoSortDescriptors
             updatePredicate()
@@ -123,9 +128,15 @@ struct MemosView: View {
             Rectangle()
                 .frame(height: cellHeight)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
-            Text(memoObject.title)
-                .font(.headline)
-                .fontWeight(.semibold)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(memoObject.title)
+                    .font(.headline)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                Text("Edited \(memoObject.updatedAt.getTimeDifference(to: currentDate))")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
         .onTapGesture {
             openMemo(for: memoObject)

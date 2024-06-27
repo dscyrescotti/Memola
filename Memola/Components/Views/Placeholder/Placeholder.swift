@@ -47,7 +47,7 @@ extension Placeholder {
         }()
 
         static let memoEmpty: Info = {
-            let icon: String = "wand.and.stars"
+            let icon: String = "note.text"
             let title: String = "No Memos"
             let description: String = "Create a new memo to jot your thoughts or notes down."
             return Placeholder.Info(title: title, description: description, icon: icon)
