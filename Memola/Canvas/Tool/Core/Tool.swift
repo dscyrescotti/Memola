@@ -125,10 +125,10 @@ public class Tool: NSObject, ObservableObject {
 
     func selectPhoto(_ image: UIImage, for canvasID: NSManagedObjectID) {
         guard let (resizedImage, dimension) = resizePhoto(of: image) else { return }
-        let photoItem = bookmarkPhoto(of: resizedImage, in: dimension, with: canvasID)
-        isLoadingPhoto = false
+        let photoItem = bookmarkPhoto(of: resizedImage, and: image, in: dimension, with: canvasID)
         withAnimation {
             selectedPhotoItem = photoItem
+            isLoadingPhoto = false
         }
     }
 
@@ -153,7 +153,7 @@ public class Tool: NSObject, ObservableObject {
         return (newImage, dimension)
     }
 
-    private func bookmarkPhoto(of image: UIImage, in dimension: CGSize, with canvasID: NSManagedObjectID) -> PhotoItem? {
+    private func bookmarkPhoto(of image: UIImage, and previewImage: UIImage, in dimension: CGSize, with canvasID: NSManagedObjectID) -> PhotoItem? {
         guard let data = image.jpegData(compressionQuality: 1) else { return nil }
         let fileManager = FileManager.default
         guard let directory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
@@ -180,7 +180,7 @@ public class Tool: NSObject, ObservableObject {
         var photoBookmark: PhotoItem?
         do {
             let bookmark = try file.bookmarkData(options: .minimalBookmark)
-            photoBookmark = PhotoItem(id: file, image: image, dimension: dimension, bookmark: bookmark)
+            photoBookmark = PhotoItem(id: file, image: image, previewImage: previewImage, dimension: dimension, bookmark: bookmark)
         } catch {
             NSLog("[Memola] - \(error.localizedDescription)")
         }

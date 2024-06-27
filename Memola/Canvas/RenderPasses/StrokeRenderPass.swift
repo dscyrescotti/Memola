@@ -34,12 +34,13 @@ class StrokeRenderPass: RenderPass {
         strokeTexture = Textures.createStrokeTexture(from: renderer, size: size, pixelFormat: view.colorPixelFormat)
     }
     
-    func draw(into commandBuffer: any MTLCommandBuffer, on canvas: Canvas, with renderer: Renderer) {
-        guard let elementGroup else { return }
-        guard let descriptor else { return }
+    @discardableResult
+    func draw(into commandBuffer: any MTLCommandBuffer, on canvas: Canvas, with renderer: Renderer) -> Bool {
+        guard let elementGroup else { return false }
+        guard let descriptor else { return false }
 
         // MARK: - Generating vertices
-        guard !elementGroup.isEmpty, let quadPipelineState else { return }
+        guard !elementGroup.isEmpty, let quadPipelineState else { return false }
         let penStrokes = elementGroup.elements.compactMap { element -> PenStroke? in
             guard case .stroke(let anyStroke) = element else { return nil }
             return anyStroke.value as? PenStroke
@@ -47,8 +48,8 @@ class StrokeRenderPass: RenderPass {
         let penStroke = penStrokes.first
         let quads = penStrokes.flatMap { $0.quads }
         let erasedQuads = Set(penStrokes.flatMap { $0.eraserStrokes }).flatMap { $0.quads }
-        guard !quads.isEmpty else { return }
-        guard let computeEncoder = commandBuffer.makeComputeCommandEncoder() else { return }
+        guard !quads.isEmpty else { return false }
+        guard let computeEncoder = commandBuffer.makeComputeCommandEncoder() else { return false }
 
         computeEncoder.label = "Quad Compute Encoder"
 
@@ -68,16 +69,16 @@ class StrokeRenderPass: RenderPass {
         computeEncoder.endEncoding()
 
         // MARK: - Rendering stroke
-        guard let strokeTexture else { return }
+        guard let strokeTexture else { return false }
         descriptor.colorAttachments[0].texture = strokeTexture
         descriptor.colorAttachments[0].clearColor = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 0)
         descriptor.colorAttachments[0].loadAction = .clear
         descriptor.colorAttachments[0].storeAction = .store
 
-        guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else { return }
+        guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else { return false }
         renderEncoder.label = "Stroke Render Encoder"
 
-        guard let strokePipelineState else { return }
+        guard let strokePipelineState else { return false }
         renderEncoder.setRenderPipelineState(strokePipelineState)
 
         canvas.setUniformsBuffer(device: renderer.device, renderEncoder: renderEncoder)
@@ -100,7 +101,7 @@ class StrokeRenderPass: RenderPass {
 
         // MARK: Erasing path
         if let eraserPipelineState = eraserRenderPass?.eraserPipelineState, !erasedQuads.isEmpty {
-            guard let computeEncoder = commandBuffer.makeComputeCommandEncoder() else { return }
+            guard let computeEncoder = commandBuffer.makeComputeCommandEncoder() else { return false }
 
             computeEncoder.label = "Erased Quad Compute Encoder"
 
@@ -120,7 +121,7 @@ class StrokeRenderPass: RenderPass {
             computeEncoder.endEncoding()
 
             descriptor.colorAttachments[0].loadAction = .load
-            guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else { return }
+            guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else { return false }
             renderEncoder.label = "Stroke Eraser Render Encoder"
             
             renderEncoder.setRenderPipelineState(eraserPipelineState)
@@ -140,8 +141,8 @@ class StrokeRenderPass: RenderPass {
         }
 
         // MARK: Drawing on graphic texture
-        guard let graphicDescriptor, let graphicPipelineState else { return }
-        guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: graphicDescriptor) else { return }
+        guard let graphicDescriptor, let graphicPipelineState else { return false }
+        guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: graphicDescriptor) else { return false }
         renderEncoder.label = "Stroke Graphic Render Encoder"
         renderEncoder.setRenderPipelineState(graphicPipelineState)
 
@@ -151,5 +152,7 @@ class StrokeRenderPass: RenderPass {
         renderEncoder.setVertexBuffer(uniformsBuffer, offset: 0, index: 11)
         canvas.renderGraphic(device: renderer.device, renderEncoder: renderEncoder)
         renderEncoder.endEncoding()
+
+        return true
     }
 }

@@ -11,6 +11,7 @@ import Foundation
 struct PhotoItem: Identifiable, Equatable {
     var id: URL
     let image: UIImage
+    let previewImage: UIImage
     let dimension: CGSize
     let bookmark: Data
 

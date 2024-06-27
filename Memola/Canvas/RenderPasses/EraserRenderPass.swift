@@ -26,19 +26,20 @@ class EraserRenderPass: RenderPass {
 
     func resize(on view: MTKView, to size: CGSize, with renderer: Renderer) { }
 
-    func draw(into commandBuffer: any MTLCommandBuffer, on canvas: Canvas, with renderer: Renderer) {
-        guard let elementGroup else { return }
-        guard let descriptor else { return }
+    @discardableResult
+    func draw(into commandBuffer: any MTLCommandBuffer, on canvas: Canvas, with renderer: Renderer) -> Bool {
+        guard let elementGroup else { return false }
+        guard let descriptor else { return false }
 
         // MARK: - Generating vertices
-        guard !elementGroup.isEmpty, let quadPipelineState else { return }
+        guard !elementGroup.isEmpty, let quadPipelineState else { return false }
         let eraserStrokes = elementGroup.elements.compactMap { element -> EraserStroke? in
             guard case .stroke(let anyStroke) = element else { return nil }
             return anyStroke.value as? EraserStroke
         }
         let quads = eraserStrokes.flatMap { $0.quads }
-        guard !quads.isEmpty else { return }
-        guard let computeEncoder = commandBuffer.makeComputeCommandEncoder() else { return }
+        guard !quads.isEmpty else { return false }
+        guard let computeEncoder = commandBuffer.makeComputeCommandEncoder() else { return false }
 
         computeEncoder.label = "Quad Compute Encoder"
 
@@ -58,10 +59,10 @@ class EraserRenderPass: RenderPass {
         computeEncoder.endEncoding()
 
         // MARK: - Rendering eraser
-        guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else { return }
+        guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else { return false }
         renderEncoder.label = "Stroke Render Encoder"
 
-        guard let eraserPipelineState else { return }
+        guard let eraserPipelineState else { return false }
         renderEncoder.setRenderPipelineState(eraserPipelineState)
 
         canvas.setUniformsBuffer(device: renderer.device, renderEncoder: renderEncoder)
@@ -77,5 +78,6 @@ class EraserRenderPass: RenderPass {
             )
         }
         renderEncoder.endEncoding()
+        return true
     }
 }

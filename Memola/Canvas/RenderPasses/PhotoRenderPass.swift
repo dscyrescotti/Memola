@@ -24,21 +24,22 @@ class PhotoRenderPass: RenderPass {
 
     func resize(on view: MTKView, to size: CGSize, with renderer: Renderer) { }
 
-    func draw(into commandBuffer: any MTLCommandBuffer, on canvas: Canvas, with renderer: Renderer) {
-        guard let elementGroup else { return }
-        guard let descriptor else { return }
+    @discardableResult
+    func draw(into commandBuffer: any MTLCommandBuffer, on canvas: Canvas, with renderer: Renderer) -> Bool {
+        guard let elementGroup else { return false }
+        guard let descriptor else { return false }
 
-        guard !elementGroup.isEmpty else { return }
+        guard !elementGroup.isEmpty else { return false }
 
         let photos = elementGroup.elements.compactMap { element -> Photo? in
             guard case .photo(let photo) = element else { return nil }
             return photo
         }
         
-        guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else { return }
+        guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else { return false }
         renderEncoder.label = "Photo Render Encoder"
 
-        guard let photoPipelineState else { return }
+        guard let photoPipelineState else { return false }
         renderEncoder.setRenderPipelineState(photoPipelineState)
 
         canvas.setUniformsBuffer(device: renderer.device, renderEncoder: renderEncoder)
@@ -48,5 +49,6 @@ class PhotoRenderPass: RenderPass {
         }
 
         renderEncoder.endEncoding()
+        return true
     }
 }

@@ -85,6 +85,7 @@ struct MemosView: View {
             penObject.color = color.components
             return penObject
         }
+        markerPenObjects.first?.isSelected = true
 
         let graphicContextObject = GraphicContextObject(\.viewContext)
         graphicContextObject.elements = []

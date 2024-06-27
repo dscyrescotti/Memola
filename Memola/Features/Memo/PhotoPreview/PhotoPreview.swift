@@ -12,10 +12,10 @@ struct PhotoPreview: View {
     @ObservedObject var tool: Tool
 
     var body: some View {
-        Image(uiImage: photoItem.image)
+        Image(uiImage: photoItem.previewImage)
             .resizable()
-            .scaledToFill()
-            .frame(width: 100, height: 100)
+            .scaledToFit()
+            .frame(height: 100)
             .cornerRadius(5)
             .overlay {
                 RoundedRectangle(cornerRadius: 5)
