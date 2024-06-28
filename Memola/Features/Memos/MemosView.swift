@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct MemosView: View {
-    @Environment(\.colorScheme) var colorScheme
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     @FetchRequest var memoObjects: FetchedResults<MemoObject>
@@ -171,16 +170,17 @@ struct MemosView: View {
                 }
                 .overlay(alignment: .topTrailing) {
                     Image(systemName: memoObject.isFavorite ? "star.fill" : "star")
-                        .foregroundStyle(memoObject.isFavorite ? .yellow : .white)
+                        .contentTransition(.symbolEffect(.replace))
+                        .foregroundStyle(memoObject.isFavorite ? .yellow : .primary)
+                        .animation(.easeInOut, value: memoObject.isFavorite)
                         .frame(width: 20, height: 20)
                         .padding(5)
-                        .background(.black.opacity(0.5))
+                        .background(.gray)
                         .cornerRadius(5)
                         .contentShape(Rectangle())
                         .onTapGesture {
                             toggleFavorite(for: memoObject)
                         }
-                        .contentTransition(.symbolEffect(.replace))
                         .padding(5)
                 }
             VStack(alignment: .leading, spacing: 2) {
