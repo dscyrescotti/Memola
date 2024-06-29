@@ -43,66 +43,37 @@ struct MemosView: View {
 
     var body: some View {
         MemoGrid(memoObjects: memoObjects, placeholder: placeholder) { memoObject in
-                memoCard(memoObject)
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .searchable(text: $query, placement: .toolbar, prompt: Text("Search"))
-            .toolbar {
-                if horizontalSizeClass == .compact {
-                    ToolbarItem(placement: .principal) {
-                        Text("Memos")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                    }
-                } else {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Text("Memola")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                    }
+            memoCard(memoObject)
+        }
+        .navigationTitle(horizontalSizeClass == .compact ? "Memos" : "")
+        .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $query, placement: .toolbar, prompt: Text("Search"))
+        .toolbar {
+            if horizontalSizeClass == .regular {
+                ToolbarItem(placement: .topBarLeading) {
+                    Text("Memola")
+                        .font(.title3)
+                        .fontWeight(.bold)
                 }
-                ToolbarItemGroup(placement: .topBarTrailing) {
-                    HStack(spacing: 5) {
-                        Button {
-                            createMemo(title: "Untitled")
-                        } label: {
-                            Image(systemName: "square.and.pencil")
-                        }
-                        .hoverEffect(.lift)
-                        if horizontalSizeClass == .compact {
-                            Menu {
-                                VStack {
-                                    Picker("", selection: $sort) {
-                                        ForEach(Sort.all) { sort in
-                                            Text(sort.name)
-                                                .tag(sort)
-                                        }
-                                    }
-                                    .pickerStyle(.automatic)
-                                    Picker("", selection: $filter) {
-                                        ForEach(Filter.all) { filter in
-                                            Text(filter.name)
-                                                .tag(filter)
-                                        }
-                                    }
-                                    .pickerStyle(.automatic)
-                                }
-                            } label: {
-                                Image(systemName: "ellipsis.circle")
-                            }
-                        } else {
-                            Menu {
+            }
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                HStack(spacing: 5) {
+                    Button {
+                        createMemo(title: "Untitled")
+                    } label: {
+                        Image(systemName: "square.and.pencil")
+                    }
+                    .hoverEffect(.lift)
+                    if horizontalSizeClass == .compact {
+                        Menu {
+                            VStack {
                                 Picker("", selection: $sort) {
                                     ForEach(Sort.all) { sort in
                                         Text(sort.name)
                                             .tag(sort)
                                     }
                                 }
-                            } label: {
-                                Image(systemName: "arrow.up.arrow.down.circle")
-                            }
-                            .hoverEffect(.lift)
-                            Menu {
+                                .pickerStyle(.automatic)
                                 Picker("", selection: $filter) {
                                     ForEach(Filter.all) { filter in
                                         Text(filter.name)
@@ -110,29 +81,53 @@ struct MemosView: View {
                                     }
                                 }
                                 .pickerStyle(.automatic)
-                            } label: {
-                                Image(systemName: "line.3.horizontal.decrease.circle")
                             }
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
+                        }
+                    } else {
+                        Menu {
+                            Picker("", selection: $sort) {
+                                ForEach(Sort.all) { sort in
+                                    Text(sort.name)
+                                        .tag(sort)
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "arrow.up.arrow.down.circle")
+                        }
+                        .hoverEffect(.lift)
+                        Menu {
+                            Picker("", selection: $filter) {
+                                ForEach(Filter.all) { filter in
+                                    Text(filter.name)
+                                        .tag(filter)
+                                }
+                            }
+                            .pickerStyle(.automatic)
+                        } label: {
+                            Image(systemName: "line.3.horizontal.decrease.circle")
                         }
                     }
                 }
             }
-            .onChange(of: sort) { oldValue, newValue in
-                memoObjects.sortDescriptors = newValue.memoSortDescriptors
-            }
-            .onChange(of: query) { oldValue, newValue in
-                updatePredicate()
-            }
-            .onChange(of: filter) { oldValue, newValue in
-                updatePredicate()
-            }
-            .onReceive(timer) { date in
-                currentDate = date
-            }
-            .onAppear {
-                memoObjects.sortDescriptors = sort.memoSortDescriptors
-                updatePredicate()
-            }
+        }
+        .onChange(of: sort) { oldValue, newValue in
+            memoObjects.sortDescriptors = newValue.memoSortDescriptors
+        }
+        .onChange(of: query) { oldValue, newValue in
+            updatePredicate()
+        }
+        .onChange(of: filter) { oldValue, newValue in
+            updatePredicate()
+        }
+        .onReceive(timer) { date in
+            currentDate = date
+        }
+        .onAppear {
+            memoObjects.sortDescriptors = sort.memoSortDescriptors
+            updatePredicate()
+        }
     }
 
     func memoCard(_ memoObject: MemoObject) -> some View {

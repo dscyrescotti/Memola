@@ -45,51 +45,46 @@ struct TrashView: View {
         MemoGrid(memoObjects: memoObjects, placeholder: placeholder) { memoObject in
                 memoCard(memoObject)
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .searchable(text: $query, placement: .toolbar, prompt: Text("Search"))
-            .toolbar {
-                if horizontalSizeClass == .compact {
-                    ToolbarItem(placement: .principal) {
-                        Text("Trash")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                    }
-                } else {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Text("Memola")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                    }
+        .navigationTitle(horizontalSizeClass == .compact ? "Trash" : "")
+        .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $query, placement: .toolbar, prompt: Text("Search"))
+        .toolbar {
+            if horizontalSizeClass == .regular {
+                ToolbarItem(placement: .topBarLeading) {
+                    Text("Memola")
+                        .font(.title3)
+                        .fontWeight(.bold)
                 }
             }
-            .onChange(of: query) { oldValue, newValue in
-                updatePredicate()
+        }
+        .onChange(of: query) { oldValue, newValue in
+            updatePredicate()
+        }
+        .alert("Restore Memo", isPresented: restoresMemo) {
+            Button {
+                restoreMemo(for: restoredMemo)
+            } label: {
+                Text("Restore")
             }
-            .alert("Restore Memo", isPresented: restoresMemo) {
-                Button {
-                    restoreMemo(for: restoredMemo)
-                } label: {
-                    Text("Restore")
-                }
-                Button {
-                    restoreAndOpenMemo(for: restoredMemo)
-                } label: {
-                    Text("Restore and Open")
-                }
-                Button("Cancel", role: .cancel) { }
-            } message: {
-                Text("Would you like to restore this memo or restore and open it?")
+            Button {
+                restoreAndOpenMemo(for: restoredMemo)
+            } label: {
+                Text("Restore and Open")
             }
-            .alert("Delete Memo Permanently", isPresented: deletesMemo) {
-                Button(role: .destructive) {
-                    deleteMemo(for: deletedMemo)
-                } label: {
-                    Text("Delete")
-                }
-                Button("Cancel", role: .cancel) { }
-            } message: {
-                Text("Are you sure you want to permanently delete this memo? This action cannot be undone.")
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Would you like to restore this memo or restore and open it?")
+        }
+        .alert("Delete Memo Permanently", isPresented: deletesMemo) {
+            Button(role: .destructive) {
+                deleteMemo(for: deletedMemo)
+            } label: {
+                Text("Delete")
             }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Are you sure you want to permanently delete this memo? This action cannot be undone.")
+        }
     }
 
     func memoCard(_ memoObject: MemoObject) -> some View {

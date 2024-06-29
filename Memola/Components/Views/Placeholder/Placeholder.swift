@@ -8,23 +8,25 @@
 import SwiftUI
 
 struct Placeholder: View {
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
     let info: Info
 
     var body: some View {
         VStack(spacing: 15) {
+            let iconSize: CGFloat = horizontalSizeClass == .compact ? 40 : 50
             Image(systemName: info.icon)
-                .font(.system(size: 50))
-                .frame(width: 55, height: 55)
+                .font(.system(size: iconSize))
+                .frame(width: iconSize * 1.1, height: iconSize * 1.1)
             VStack(spacing: 3) {
                 Text(info.title)
-                    .font(.title2)
+                    .font(horizontalSizeClass == .compact ? .headline : .title2)
                     .fontWeight(.bold)
                     .foregroundStyle(.primary)
                 Text(info.description)
-                    .font(.callout)
+                    .font(horizontalSizeClass == .compact ? .caption : .callout)
                     .lineLimit(.none)
                     .fontWeight(.regular)
-                    .frame(minHeight: 50, alignment: .top)
             }
         }
         .foregroundStyle(.secondary)

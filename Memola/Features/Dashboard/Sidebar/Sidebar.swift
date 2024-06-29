@@ -16,14 +16,23 @@ struct Sidebar: View {
     var body: some View {
         List(selection: $sidebarItem) {
             ForEach(sidebarItems) { item in
-                Button {
-                    sidebarItem = item
-                } label: {
-                    Label(item.title, systemImage: item.icon)
-                        .foregroundColor(.primary)
+                if horizontalSizeClass == .compact {
+                    Button {
+                        sidebarItem = item
+                    } label: {
+                        Label(item.title, systemImage: item.icon)
+                            .foregroundColor(.primary)
+                    }
+                } else {
+                    Button {
+                        sidebarItem = item
+                    } label: {
+                        Label(item.title, systemImage: item.icon)
+                            .foregroundColor(.primary)
+                    }
+                    .buttonStyle(sidebarItem == item ? .selected : .unselected)
+                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                 }
-                .buttonStyle(sidebarItem == item ? .selected : .unselected)
-                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
             }
         }
         .listStyle(.sidebar)
