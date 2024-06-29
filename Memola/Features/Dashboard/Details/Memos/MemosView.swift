@@ -12,9 +12,10 @@ struct MemosView: View {
 
     @FetchRequest var memoObjects: FetchedResults<MemoObject>
 
-    @State var memo: MemoObject?
     @State var query: String = ""
     @State var currentDate: Date = .now
+
+    @Binding var memo: MemoObject?
 
     @AppStorage("memola.memo-objects.memos.sort") var sort: Sort = .recent
     @AppStorage("memola.memo-objects.memos.filter") var filter: Filter = .none
@@ -25,7 +26,8 @@ struct MemosView: View {
         query.isEmpty ? .memoEmpty : .memoNotFound
     }
 
-    init() {
+    init(memo: Binding<MemoObject?>) {
+        _memo = memo
         let standard = UserDefaults.standard
         var descriptors: [SortDescriptor<MemoObject>] = []
         var predicates: [NSPredicate] = [NSPredicate(format: "isTrash = NO")]
@@ -114,15 +116,6 @@ struct MemosView: View {
                         }
                     }
                 }
-            }
-            .fullScreenCover(item: $memo) { memo in
-                MemoView(memo: memo)
-                    .onDisappear {
-                        withPersistence(\.viewContext) { context in
-                            try context.saveIfNeeded()
-                            context.refreshAllObjects()
-                        }
-                    }
             }
             .onChange(of: sort) { oldValue, newValue in
                 memoObjects.sortDescriptors = newValue.memoSortDescriptors

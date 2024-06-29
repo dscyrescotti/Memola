@@ -10,6 +10,7 @@ import SwiftUI
 struct DashboardView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
+    @State var memo: MemoObject?
     @State var sidebarItem: SidebarItem? = .memos
 
     var body: some View {
@@ -18,12 +19,21 @@ struct DashboardView: View {
         } detail: {
             switch sidebarItem {
             case .memos:
-                MemosView()
+                MemosView(memo: $memo)
             case .trash:
-                TrashView()
+                TrashView(memo: $memo, sidebarItem: $sidebarItem)
             default:
-                MemosView()
+                MemosView(memo: $memo)
             }
+        }
+        .fullScreenCover(item: $memo) { memo in
+            MemoView(memo: memo)
+                .onDisappear {
+                    withPersistence(\.viewContext) { context in
+                        try context.saveIfNeeded()
+                        context.refreshAllObjects()
+                    }
+                }
         }
     }
 }

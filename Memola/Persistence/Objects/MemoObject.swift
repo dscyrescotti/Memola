@@ -14,7 +14,7 @@ final class MemoObject: NSManagedObject, Identifiable {
     @NSManaged var title: String
     @NSManaged var createdAt: Date
     @NSManaged var updatedAt: Date
-    @NSManaged var deletedAt: Date
+    @NSManaged var deletedAt: Date?
     @NSManaged var isFavorite: Bool
     @NSManaged var isTrash: Bool
     @NSManaged var tool: ToolObject
