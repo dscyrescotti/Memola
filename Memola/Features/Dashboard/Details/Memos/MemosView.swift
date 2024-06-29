@@ -16,12 +16,14 @@ struct MemosView: View {
     @State var query: String = ""
     @State var currentDate: Date = .now
 
-    @AppStorage("memola.memo-objects.sort") var sort: Sort = .recent
-    @AppStorage("memola.memo-objects.filter") var filter: Filter = .none
+    @AppStorage("memola.memo-objects.memos.sort") var sort: Sort = .recent
+    @AppStorage("memola.memo-objects.memos.filter") var filter: Filter = .none
 
-    let cellWidth: CGFloat = 250
-    let cellHeight: CGFloat = 150
     let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
+
+    var placeholder: Placeholder.Info {
+        query.isEmpty ? .memoEmpty : .memoNotFound
+    }
 
     init() {
         let standard = UserDefaults.standard
@@ -38,57 +40,43 @@ struct MemosView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            memoGrid
-                .searchable(text: $query, placement: .toolbar, prompt: Text("Search"))
-                .toolbar {
+        MemoGrid(memoObjects: memoObjects, placeholder: placeholder) { memoObject in
+                memoCard(memoObject)
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .searchable(text: $query, placement: .toolbar, prompt: Text("Search"))
+            .toolbar {
+                if horizontalSizeClass == .compact {
+                    ToolbarItem(placement: .principal) {
+                        Text("Memos")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                    }
+                } else {
                     ToolbarItem(placement: .topBarLeading) {
                         Text("Memola")
                             .font(.title3)
                             .fontWeight(.bold)
                     }
-                    ToolbarItemGroup(placement: .topBarTrailing) {
-                        HStack(spacing: 5) {
-                            Button {
-                                createMemo(title: "Untitled")
-                            } label: {
-                                Image(systemName: "square.and.pencil")
-                            }
-                            .hoverEffect(.lift)
-                            if horizontalSizeClass == .compact {
-                                Menu {
-                                    VStack {
-                                        Picker("", selection: $sort) {
-                                            ForEach(Sort.all) { sort in
-                                                Text(sort.name)
-                                                    .tag(sort)
-                                            }
-                                        }
-                                        .pickerStyle(.automatic)
-                                        Picker("", selection: $filter) {
-                                            ForEach(Filter.all) { filter in
-                                                Text(filter.name)
-                                                    .tag(filter)
-                                            }
-                                        }
-                                        .pickerStyle(.automatic)
-                                    }
-                                } label: {
-                                    Image(systemName: "ellipsis.circle")
-                                }
-                            } else {
-                                Menu {
+                }
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    HStack(spacing: 5) {
+                        Button {
+                            createMemo(title: "Untitled")
+                        } label: {
+                            Image(systemName: "square.and.pencil")
+                        }
+                        .hoverEffect(.lift)
+                        if horizontalSizeClass == .compact {
+                            Menu {
+                                VStack {
                                     Picker("", selection: $sort) {
                                         ForEach(Sort.all) { sort in
                                             Text(sort.name)
                                                 .tag(sort)
                                         }
                                     }
-                                } label: {
-                                    Image(systemName: "arrow.up.arrow.down.circle")
-                                }
-                                .hoverEffect(.lift)
-                                Menu {
+                                    .pickerStyle(.automatic)
                                     Picker("", selection: $filter) {
                                         ForEach(Filter.all) { filter in
                                             Text(filter.name)
@@ -96,66 +84,67 @@ struct MemosView: View {
                                         }
                                     }
                                     .pickerStyle(.automatic)
-                                } label: {
-                                    Image(systemName: "line.3.horizontal.decrease.circle")
                                 }
+                            } label: {
+                                Image(systemName: "ellipsis.circle")
+                            }
+                        } else {
+                            Menu {
+                                Picker("", selection: $sort) {
+                                    ForEach(Sort.all) { sort in
+                                        Text(sort.name)
+                                            .tag(sort)
+                                    }
+                                }
+                            } label: {
+                                Image(systemName: "arrow.up.arrow.down.circle")
+                            }
+                            .hoverEffect(.lift)
+                            Menu {
+                                Picker("", selection: $filter) {
+                                    ForEach(Filter.all) { filter in
+                                        Text(filter.name)
+                                            .tag(filter)
+                                    }
+                                }
+                                .pickerStyle(.automatic)
+                            } label: {
+                                Image(systemName: "line.3.horizontal.decrease.circle")
                             }
                         }
                     }
                 }
-        }
-        .fullScreenCover(item: $memo) { memo in
-            MemoView(memo: memo)
-                .onDisappear {
-                    withPersistence(\.viewContext) { context in
-                        try context.saveIfNeeded()
-                        context.refreshAllObjects()
-                    }
-                }
-        }
-        .onChange(of: sort) { oldValue, newValue in
-            memoObjects.sortDescriptors = newValue.memoSortDescriptors
-        }
-        .onChange(of: query) { oldValue, newValue in
-            updatePredicate()
-        }
-        .onChange(of: filter) { oldValue, newValue in
-            updatePredicate()
-        }
-        .onReceive(timer) { date in
-            currentDate = date
-        }
-        .onAppear {
-            memoObjects.sortDescriptors = sort.memoSortDescriptors
-            updatePredicate()
-        }
-    }
-
-    @ViewBuilder
-    var memoGrid: some View {
-        if memoObjects.isEmpty {
-            Placeholder(info: query.isEmpty ? .memoEmpty : .memoNotFound)
-        } else {
-            GeometryReader { proxy in
-                let count = Int(proxy.size.width / cellWidth)
-                let columns: [GridItem] = .init(repeating: GridItem(.flexible(), spacing: 15), count: count)
-                ScrollView {
-                    LazyVGrid(columns: columns, spacing: 15) {
-                        ForEach(memoObjects) { memo in
-                            memoCard(memo)
+            }
+            .fullScreenCover(item: $memo) { memo in
+                MemoView(memo: memo)
+                    .onDisappear {
+                        withPersistence(\.viewContext) { context in
+                            try context.saveIfNeeded()
+                            context.refreshAllObjects()
                         }
                     }
-                    .padding()
-                }
             }
-        }
+            .onChange(of: sort) { oldValue, newValue in
+                memoObjects.sortDescriptors = newValue.memoSortDescriptors
+            }
+            .onChange(of: query) { oldValue, newValue in
+                updatePredicate()
+            }
+            .onChange(of: filter) { oldValue, newValue in
+                updatePredicate()
+            }
+            .onReceive(timer) { date in
+                currentDate = date
+            }
+            .onAppear {
+                memoObjects.sortDescriptors = sort.memoSortDescriptors
+                updatePredicate()
+            }
     }
 
     func memoCard(_ memoObject: MemoObject) -> some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Rectangle()
-                .frame(height: cellHeight)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
+        MemoCard(memoObject: memoObject) { card in
+            card
                 .contextMenu {
                     Button {
                         openMemo(for: memoObject)
@@ -183,15 +172,10 @@ struct MemosView: View {
                         }
                         .padding(5)
                 }
-            VStack(alignment: .leading, spacing: 2) {
-                Text(memoObject.title)
-                    .font(.headline)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                Text("Edited \(memoObject.updatedAt.getTimeDifference(to: currentDate))")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
+        } details: {
+            Text("Edited \(memoObject.updatedAt.getTimeDifference(to: currentDate))")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
         .onTapGesture {
             openMemo(for: memoObject)
@@ -272,6 +256,7 @@ struct MemosView: View {
 
     func markAsTrash(for memo: MemoObject) {
         memo.isTrash = true
+        memo.deletedAt = .now
         withPersistence(\.viewContext) { context in
             try context.saveIfNeeded()
         }

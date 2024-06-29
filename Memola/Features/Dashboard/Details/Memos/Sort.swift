@@ -46,4 +46,19 @@ extension Sort {
             return [SortDescriptor(\.createdAt)]
         }
     }
+
+    var trashSortDescriptors: [SortDescriptor<MemoObject>] {
+        switch self {
+        case .recent:
+            return [SortDescriptor(\.updatedAt, order: .reverse)]
+        case .aToZ:
+            return [SortDescriptor(\.title), SortDescriptor(\.updatedAt, order: .reverse)]
+        case .zToA:
+            return [SortDescriptor(\.title, order: .reverse), SortDescriptor(\.updatedAt, order: .reverse)]
+        case .newest:
+            return [SortDescriptor(\.createdAt, order: .reverse)]
+        case .oldest:
+            return [SortDescriptor(\.createdAt)]
+        }
+    }
 }

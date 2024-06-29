@@ -11,7 +11,7 @@ import SwiftUI
 struct MemolaApp: App {
     var body: some Scene {
         WindowGroup {
-            MemosView()
+            DashboardView()
                 .persistence(\.viewContext)
                 .onReceive(NotificationCenter.default.publisher(for: UIApplication.willTerminateNotification)) { _ in
                     withPersistenceSync(\.viewContext) { context in
