@@ -8,12 +8,17 @@
 import SwiftUI
 
 struct MemoGrid<Card: View>: View {
-    let cellWidth: CGFloat = 250
-    let cellHeight: CGFloat = 150
-
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
     let memoObjects: FetchedResults<MemoObject>
     let placeholder: Placeholder.Info
     @ViewBuilder let card: (MemoObject) -> Card
+
+    var cellWidth: CGFloat {
+        if horizontalSizeClass == .compact {
+            return 180
+        }
+        return 250
+    }
 
     var body: some View {
         if memoObjects.isEmpty {

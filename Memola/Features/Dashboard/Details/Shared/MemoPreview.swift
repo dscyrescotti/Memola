@@ -8,7 +8,14 @@
 import SwiftUI
 
 struct MemoPreview: View {
-    let cellHeight: CGFloat = 150
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
+    var cellHeight: CGFloat {
+        if horizontalSizeClass == .compact {
+            return 120
+        }
+        return 150
+    }
 
     var body: some View {
         Rectangle()
