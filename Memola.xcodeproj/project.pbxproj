@@ -111,6 +111,7 @@
 		ECD12A912C1B04EA00B96E12 /* PhotoRenderPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A902C1B04EA00B96E12 /* PhotoRenderPass.swift */; };
 		ECD12A932C1B062000B96E12 /* Photo.metal in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A922C1B062000B96E12 /* Photo.metal */; };
 		ECD12A952C1B1FA200B96E12 /* PhotoVertex.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A942C1B1FA200B96E12 /* PhotoVertex.swift */; };
+		ECDAC07B2C318DBC0000ED77 /* ElementToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDAC07A2C318DBC0000ED77 /* ElementToolbar.swift */; };
 		ECE883BD2C00AA170045C53D /* EraserStroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE883BC2C00AA170045C53D /* EraserStroke.swift */; };
 		ECE883BF2C00AB440045C53D /* Stroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE883BE2C00AB440045C53D /* Stroke.swift */; };
 		ECE883C12C00C9CB0045C53D /* StrokeStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE883C02C00C9CB0045C53D /* StrokeStyle.swift */; };
@@ -230,6 +231,7 @@
 		ECD12A902C1B04EA00B96E12 /* PhotoRenderPass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoRenderPass.swift; sourceTree = "<group>"; };
 		ECD12A922C1B062000B96E12 /* Photo.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Photo.metal; sourceTree = "<group>"; };
 		ECD12A942C1B1FA200B96E12 /* PhotoVertex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoVertex.swift; sourceTree = "<group>"; };
+		ECDAC07A2C318DBC0000ED77 /* ElementToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementToolbar.swift; sourceTree = "<group>"; };
 		ECE883BC2C00AA170045C53D /* EraserStroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EraserStroke.swift; sourceTree = "<group>"; };
 		ECE883BE2C00AB440045C53D /* Stroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stroke.swift; sourceTree = "<group>"; };
 		ECE883C02C00C9CB0045C53D /* StrokeStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeStyle.swift; sourceTree = "<group>"; };
@@ -506,6 +508,7 @@
 		ECA7387B2BE5EF3500A4542E /* Memo */ = {
 			isa = PBXGroup;
 			children = (
+				ECDAC0792C318DAF0000ED77 /* ElementToolbar */,
 				ECBE52942C1D58F5006BDB3D /* PhotoPreview */,
 				EC1B783B2BFA0AAC005A34E2 /* Toolbar */,
 				EC5050082BF65D0500B4D86E /* Memo */,
@@ -834,6 +837,14 @@
 			path = Photo;
 			sourceTree = "<group>";
 		};
+		ECDAC0792C318DAF0000ED77 /* ElementToolbar */ = {
+			isa = PBXGroup;
+			children = (
+				ECDAC07A2C318DBC0000ED77 /* ElementToolbar.swift */,
+			);
+			path = ElementToolbar;
+			sourceTree = "<group>";
+		};
 		ECE883B82C009DC30045C53D /* Strokes */ = {
 			isa = PBXGroup;
 			children = (
@@ -1031,6 +1042,7 @@
 				ECA738C92BE60EF700A4542E /* GraphicContext.swift in Sources */,
 				ECA738F62BE612B700A4542E /* MTLDevice++.swift in Sources */,
 				EC0D14212BF79C73009BFE5F /* ToolObject.swift in Sources */,
+				ECDAC07B2C318DBC0000ED77 /* ElementToolbar.swift in Sources */,
 				EC50500D2BF6674400B4D86E /* OnDragViewModifier.swift in Sources */,
 				EC9AB09F2C1401A40076AF58 /* EraserObject.swift in Sources */,
 				ECBE529C2C1D94A4006BDB3D /* CameraView.swift in Sources */,

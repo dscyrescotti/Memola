@@ -9,6 +9,8 @@ import SwiftUI
 import CoreData
 
 struct MemoView: View {
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
     @StateObject var tool: Tool
     @StateObject var canvas: Canvas
     @StateObject var history: History
@@ -28,6 +30,36 @@ struct MemoView: View {
     }
 
     var body: some View {
+        Group {
+            if horizontalSizeClass == .regular {
+                canvasView
+            } else {
+                compactCanvasView
+            }
+        }
+        .overlay(alignment: .top) {
+            Toolbar(size: size, memo: memo, tool: tool, canvas: canvas, history: history)
+        }
+        .disabled(textFieldState || tool.isLoadingPhoto)
+        .disabled(canvas.state == .loading || canvas.state == .closing)
+        .overlay {
+            switch canvas.state {
+            case .loading:
+                loadingIndicator("Loading memo...")
+            case .closing:
+                loadingIndicator("Saving memo...")
+            default:
+                EmptyView()
+            }
+        }
+        .overlay {
+            if tool.isLoadingPhoto {
+                loadingIndicator("Loading photo...")
+            }
+        }
+    }
+
+    var canvasView: some View {
         CanvasView(tool: tool, canvas: canvas, history: history)
             .ignoresSafeArea()
             .overlay(alignment: .bottomTrailing) {
@@ -47,24 +79,29 @@ struct MemoView: View {
             .overlay(alignment: .bottomLeading) {
                 zoomControl
             }
-            .disabled(textFieldState || tool.isLoadingPhoto)
-            .overlay(alignment: .top) {
-                Toolbar(size: size, memo: memo, tool: tool, canvas: canvas, history: history)
-            }
-            .disabled(canvas.state == .loading || canvas.state == .closing)
-            .overlay {
-                switch canvas.state {
-                case .loading:
-                    loadingIndicator("Loading memo...")
-                case .closing:
-                    loadingIndicator("Saving memo...")
+    }
+
+    var compactCanvasView: some View {
+        CanvasView(tool: tool, canvas: canvas, history: history)
+            .ignoresSafeArea()
+            .overlay(alignment: .bottom) {
+                switch tool.selection {
+                case .pen:
+                    PenDock(tool: tool, canvas: canvas, size: size)
+                        .transition(.move(edge: .bottom))
+                case .photo:
+                    if let photoItem = tool.selectedPhotoItem {
+                        PhotoPreview(photoItem: photoItem, tool: tool)
+                            .transition(.move(edge: .trailing))
+                    }
                 default:
                     EmptyView()
                 }
             }
-            .overlay {
-                if tool.isLoadingPhoto {
-                    loadingIndicator("Loading photo...")
+            .overlay(alignment: .bottom) {
+                if tool.selection == .hand {
+                    ElementToolbar(size: size, tool: tool, canvas: canvas)
+                        .transition(.move(edge: .bottom))
                 }
             }
     }

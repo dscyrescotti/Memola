@@ -10,6 +10,7 @@ import Foundation
 
 protocol PenStyle {
     var icon: (base: String, tip: String?) { get }
+    var compactIcon: (base: String, tip: String?) { get }
     var textureName: String? { get }
     var thickness: (min: CGFloat, max: CGFloat) { get }
     var thicknessSteps: [CGFloat] { get }
