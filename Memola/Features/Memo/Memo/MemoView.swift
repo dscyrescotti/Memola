@@ -66,11 +66,11 @@ struct MemoView: View {
                 switch tool.selection {
                 case .pen:
                     PenDock(tool: tool, canvas: canvas, size: size)
-                        .transition(.move(edge: .trailing))
+                        .transition(.move(edge: .trailing).combined(with: .blurReplace))
                 case .photo:
                     if let photoItem = tool.selectedPhotoItem {
                         PhotoPreview(photoItem: photoItem, tool: tool)
-                            .transition(.move(edge: .trailing))
+                            .transition(.move(edge: .trailing).combined(with: .blurReplace))
                     }
                 default:
                     EmptyView()
@@ -88,7 +88,7 @@ struct MemoView: View {
                 switch tool.selection {
                 case .pen:
                     PenDock(tool: tool, canvas: canvas, size: size)
-                        .transition(.move(edge: .bottom))
+                        .transition(.move(edge: .bottom).combined(with: .blurReplace))
                 case .photo:
                     if let photoItem = tool.selectedPhotoItem {
                         PhotoPreview(photoItem: photoItem, tool: tool)
@@ -99,9 +99,27 @@ struct MemoView: View {
                 }
             }
             .overlay(alignment: .bottom) {
-                if tool.selection == .hand {
+                if tool.selection != .pen {
                     ElementToolbar(size: size, tool: tool, canvas: canvas)
-                        .transition(.move(edge: .bottom))
+                        .transition(.move(edge: .bottom).combined(with: .blurReplace))
+                }
+            }
+            .overlay(alignment: .bottom) {
+                if tool.selection != .hand {
+                    Button {
+                        withAnimation {
+                            tool.selectTool(.hand)
+                        }
+                    } label: {
+                        Image(systemName: "chevron.compact.down")
+                            .font(.headline)
+                            .frame(width: 80)
+                            .padding(5)
+                            .background(.regularMaterial)
+                            .clipShape(.capsule)
+                            .contentShape(.capsule)
+                    }
+                    .offset(y: 5)
                 }
             }
     }

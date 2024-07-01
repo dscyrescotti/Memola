@@ -26,18 +26,20 @@ struct ElementToolbar: View {
             if horizontalSizeClass == .regular {
                 regularToolbar
             } else {
-                ZStack(alignment: .bottomLeading) {
-                    compactToolbar
+                ZStack(alignment: .bottom) {
                     if tool.selection == .photo {
                         photoOption
                             .background {
                                 RoundedRectangle(cornerRadius: 8)
                                     .fill(.regularMaterial)
                             }
-                            .frame(maxWidth: .infinity)
+                            .padding(.bottom, 10)
                             .transition(.move(edge: .bottom).combined(with: .blurReplace))
+                    } else {
+                        compactToolbar
                     }
                 }
+                .padding(.bottom, 10)
             }
         }
         .fullScreenCover(isPresented: $opensCamera) {
@@ -193,8 +195,8 @@ struct ElementToolbar: View {
             RoundedRectangle(cornerRadius: 8)
                 .fill(.regularMaterial)
         }
-        .transition(.move(edge: .bottom).combined(with: .blurReplace))
         .padding(10)
+        .transition(.move(edge: .bottom).combined(with: .blurReplace))
     }
 
     var photoOption: some View {

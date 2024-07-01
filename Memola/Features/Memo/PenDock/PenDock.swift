@@ -61,32 +61,17 @@ struct PenDock: View {
                                 .fill(.regularMaterial)
                                 .frame(height: height * factor - 18)
                         }
-                        .padding([.horizontal, .bottom], 10)
+                        .padding(.horizontal, 10)
+                        .padding(.bottom, 20)
                         .frame(maxWidth: min(proxy.size.height, proxy.size.width), maxHeight: .infinity, alignment: .bottom)
                         .frame(maxWidth: .infinity)
-                    }
-                    .overlay(alignment: .bottom) {
-                        Button {
-                            withAnimation {
-                                tool.selectTool(.hand)
-                            }
-                        } label: {
-                            Image(systemName: "chevron.compact.down")
-                                .font(.headline)
-                                .frame(width: 80)
-                                .padding(10)
-                                .background(.regularMaterial)
-                                .clipShape(.capsule)
-                                .contentShape(.capsule)
-                        }
-                        .offset(y: 5)
                     }
                     .transition(.move(edge: .bottom).combined(with: .blurReplace))
                 }
                 lockButton
                     .frame(maxWidth: .infinity, alignment: .bottomTrailing)
                     .padding(10)
-                    .offset(y: canvas.locksCanvas ? 0 : -(height * factor - size + 20))
+                    .offset(y: canvas.locksCanvas ? 0 : -(height * factor - size + 30))
                     .transition(.move(edge: .trailing).combined(with: .blurReplace))
             }
         }
