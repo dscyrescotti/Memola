@@ -34,6 +34,7 @@ struct ElementToolbar: View {
                                     .fill(.regularMaterial)
                             }
                             .padding(.bottom, 10)
+                            .frame(maxWidth: .infinity)
                             .transition(.move(edge: .bottom).combined(with: .blurReplace))
                     } else {
                         compactToolbar
@@ -196,6 +197,7 @@ struct ElementToolbar: View {
                 .fill(.regularMaterial)
         }
         .padding(10)
+        .frame(maxWidth: .infinity)
         .transition(.move(edge: .bottom).combined(with: .blurReplace))
     }
 

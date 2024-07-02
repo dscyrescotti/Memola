@@ -92,6 +92,7 @@ struct MemoView: View {
                 case .photo:
                     if let photoItem = tool.selectedPhotoItem {
                         PhotoPreview(photoItem: photoItem, tool: tool)
+                            .frame(maxWidth: .infinity, alignment: .trailing)
                             .transition(.move(edge: .trailing))
                     }
                 default:
