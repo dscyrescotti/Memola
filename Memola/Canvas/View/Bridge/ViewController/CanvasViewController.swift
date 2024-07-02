@@ -259,7 +259,6 @@ extension CanvasViewController: UIScrollViewDelegate {
 
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
         canvas.setZoomScale(scrollView.zoomScale)
-//        renderer.resize(on: renderView, to: renderView.drawableSize)
         renderView.draw()
     }
 
@@ -274,7 +273,6 @@ extension CanvasViewController: UIScrollViewDelegate {
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        renderer.resize(on: renderView, to: renderView.drawableSize)
         renderView.draw()
     }
 

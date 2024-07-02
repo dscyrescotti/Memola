@@ -10,6 +10,8 @@ import Foundation
 struct MarkerPenStyle: PenStyle {
     var icon: (base: String, tip: String?) = ("marker-base", "marker-tip")
 
+    var compactIcon: (base: String, tip: String?) = ("marker-base-compact", "marker-tip-compact")
+
     var textureName: String? = "point-texture"
 
     var thickness: (min: CGFloat, max: CGFloat) = (0.5, 30)

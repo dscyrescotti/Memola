@@ -16,21 +16,25 @@ class Pen: NSObject, ObservableObject, Identifiable {
     @Published var style: any PenStyle {
         didSet {
             object?.style = strokeStyle.rawValue
+            object?.tool?.memo?.updatedAt = .now
         }
     }
     @Published var rgba: [CGFloat] {
         didSet {
             object?.color = rgba
+            object?.tool?.memo?.updatedAt = .now
         }
     }
     @Published var thickness: CGFloat {
         didSet {
             object?.thickness = thickness
+            object?.tool?.memo?.updatedAt = .now
         }
     }
     @Published var isSelected: Bool {
         didSet {
             object?.isSelected = isSelected
+            object?.tool?.memo?.updatedAt = .now
         }
     }
     var color: Color {

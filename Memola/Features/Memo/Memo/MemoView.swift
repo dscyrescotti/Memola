@@ -9,9 +9,11 @@ import SwiftUI
 import CoreData
 
 struct MemoView: View {
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
     @StateObject var tool: Tool
     @StateObject var canvas: Canvas
-    @StateObject var history = History()
+    @StateObject var history: History
 
     @State var memo: MemoObject
     @State var title: String
@@ -24,20 +26,51 @@ struct MemoView: View {
         self.title = memo.title
         self._tool = StateObject(wrappedValue: Tool(object: memo.tool))
         self._canvas = StateObject(wrappedValue: Canvas(size: memo.canvas.size, canvasID: memo.canvas.objectID, gridMode: memo.canvas.gridMode))
+        self._history = StateObject(wrappedValue: History(memo: memo))
     }
 
     var body: some View {
+        Group {
+            if horizontalSizeClass == .regular {
+                canvasView
+            } else {
+                compactCanvasView
+            }
+        }
+        .overlay(alignment: .top) {
+            Toolbar(size: size, memo: memo, tool: tool, canvas: canvas, history: history)
+        }
+        .disabled(textFieldState || tool.isLoadingPhoto)
+        .disabled(canvas.state == .loading || canvas.state == .closing)
+        .overlay {
+            switch canvas.state {
+            case .loading:
+                loadingIndicator("Loading memo...")
+            case .closing:
+                loadingIndicator("Saving memo...")
+            default:
+                EmptyView()
+            }
+        }
+        .overlay {
+            if tool.isLoadingPhoto {
+                loadingIndicator("Loading photo...")
+            }
+        }
+    }
+
+    var canvasView: some View {
         CanvasView(tool: tool, canvas: canvas, history: history)
             .ignoresSafeArea()
             .overlay(alignment: .bottomTrailing) {
                 switch tool.selection {
                 case .pen:
                     PenDock(tool: tool, canvas: canvas, size: size)
-                        .transition(.move(edge: .trailing))
+                        .transition(.move(edge: .trailing).combined(with: .blurReplace))
                 case .photo:
                     if let photoItem = tool.selectedPhotoItem {
                         PhotoPreview(photoItem: photoItem, tool: tool)
-                            .transition(.move(edge: .trailing))
+                            .transition(.move(edge: .trailing).combined(with: .blurReplace))
                     }
                 default:
                     EmptyView()
@@ -46,24 +79,48 @@ struct MemoView: View {
             .overlay(alignment: .bottomLeading) {
                 zoomControl
             }
-            .disabled(textFieldState || tool.isLoadingPhoto)
-            .overlay(alignment: .top) {
-                Toolbar(size: size, memo: memo, tool: tool, canvas: canvas, history: history)
-            }
-            .disabled(canvas.state == .loading || canvas.state == .closing)
-            .overlay {
-                switch canvas.state {
-                case .loading:
-                    loadingIndicator("Loading memo...")
-                case .closing:
-                    loadingIndicator("Saving memo...")
+    }
+
+    var compactCanvasView: some View {
+        CanvasView(tool: tool, canvas: canvas, history: history)
+            .ignoresSafeArea()
+            .overlay(alignment: .bottom) {
+                switch tool.selection {
+                case .pen:
+                    PenDock(tool: tool, canvas: canvas, size: size)
+                        .transition(.move(edge: .bottom).combined(with: .blurReplace))
+                case .photo:
+                    if let photoItem = tool.selectedPhotoItem {
+                        PhotoPreview(photoItem: photoItem, tool: tool)
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                            .transition(.move(edge: .trailing))
+                    }
                 default:
                     EmptyView()
                 }
             }
-            .overlay {
-                if tool.isLoadingPhoto {
-                    loadingIndicator("Loading photo...")
+            .overlay(alignment: .bottom) {
+                if tool.selection != .pen {
+                    ElementToolbar(size: size, tool: tool, canvas: canvas)
+                        .transition(.move(edge: .bottom).combined(with: .blurReplace))
+                }
+            }
+            .overlay(alignment: .bottom) {
+                if tool.selection != .hand {
+                    Button {
+                        withAnimation {
+                            tool.selectTool(.hand)
+                        }
+                    } label: {
+                        Image(systemName: "chevron.compact.down")
+                            .font(.headline)
+                            .frame(width: 80)
+                            .padding(5)
+                            .background(.regularMaterial)
+                            .clipShape(.capsule)
+                            .contentShape(.capsule)
+                    }
+                    .offset(y: 5)
                 }
             }
     }

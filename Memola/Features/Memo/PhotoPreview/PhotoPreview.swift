@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct PhotoPreview: View {
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
     let photoItem: PhotoItem
     @ObservedObject var tool: Tool
 
@@ -15,7 +17,7 @@ struct PhotoPreview: View {
         Image(uiImage: photoItem.previewImage)
             .resizable()
             .scaledToFit()
-            .frame(height: 100)
+            .frame(width: horizontalSizeClass == .compact ? 80 : nil, height: horizontalSizeClass == .compact ? nil : 100)
             .cornerRadius(5)
             .overlay {
                 RoundedRectangle(cornerRadius: 5)
