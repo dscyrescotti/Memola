@@ -19,9 +19,7 @@ struct PenDock: View {
     var height: CGFloat {
         horizontalSizeClass == .compact ? 90 : 30
     }
-    var factor: CGFloat {
-        horizontalSizeClass == .compact ? 0.9 : 0.9
-    }
+    var factor: CGFloat = 0.9
 
     @State var refreshScrollId: UUID = UUID()
     @State var opensColorPicker: Bool = false
@@ -156,7 +154,7 @@ struct PenDock: View {
                 .resizable()
         }
         .frame(width: width * factor, height: height * factor)
-        .padding(.horizontal, 5)
+        .padding(.vertical, 5)
         .contentShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10)))
         .onTapGesture {
             if tool.selectedPen !== pen {
