@@ -18,6 +18,8 @@ class DrawingView: UIView {
     var ratio: CGFloat { canvas.size.width / bounds.width }
 
     private var disablesUserInteraction: Bool = false
+    private var lastDrawTime: CFTimeInterval = 0
+    private let minDrawInterval: CFTimeInterval = 1.0 / 60.0
 
     required init(tool: Tool, canvas: Canvas, history: History) {
         self.tool = tool
@@ -46,7 +48,7 @@ class DrawingView: UIView {
             return
         }
         guard let touch = touches.first else { return }
-        let point = touch.location(in: self)
+        let point = touch.preciseLocation(in: self)
         touchBegan(at: point)
     }
 
@@ -57,21 +59,23 @@ class DrawingView: UIView {
             return
         }
         guard let touch = touches.first else { return }
-        let point = touch.location(in: self)
-        touchMoved(to: point)
+        if let _touch = event?.coalescedTouches(for: touch)?.last {
+            let point = _touch.preciseLocation(in: self)
+            touchMoved(to: point)
+        }
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
         guard let touch = touches.first else { return }
-        let point = touch.location(in: self)
+        let point = touch.preciseLocation(in: self)
         touchEnded(at: point)
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
         guard let touch = touches.first else { return }
-        let point = touch.location(in: self)
+        let point = touch.preciseLocation(in: self)
         touchEnded(at: point)
     }
 
@@ -87,6 +91,11 @@ class DrawingView: UIView {
         guard !disablesUserInteraction else { return }
         canvas.moveTouch(to: point.muliply(by: ratio))
         if canvas.hasValidStroke {
+            let currentTime = CACurrentMediaTime()
+            if currentTime - lastDrawTime < minDrawInterval {
+                return
+            }
+            lastDrawTime = currentTime
             draw()
         }
     }
