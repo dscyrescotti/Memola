@@ -152,7 +152,7 @@ struct MemosView: View {
                         .animation(.easeInOut, value: memoObject.isFavorite)
                         .frame(width: 20, height: 20)
                         .padding(5)
-                        .background(.gray)
+                        .background(.gray.tertiary)
                         .cornerRadius(5)
                         .contentShape(Rectangle())
                         .onTapGesture {

@@ -24,13 +24,14 @@ struct MemoPreview: View {
             if let preview, let previewImage = UIImage(data: preview) {
                 Image(uiImage: previewImage)
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
+                    .aspectRatio(contentMode: .fit)
             } else {
                 Rectangle()
                     .fill(.white)
             }
         }
         .frame(width: cellWidth, height: cellHeight)
+        .background(.white)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }

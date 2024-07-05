@@ -17,7 +17,7 @@ struct MemoGrid<Card: View>: View {
         if horizontalSizeClass == .compact {
             return 180
         }
-        return 250
+        return 200
     }
 
     var body: some View {
