@@ -62,8 +62,9 @@ final class PreviewRenderPass: RenderPass {
                     }
                 }
             }
-            let origin = CGPoint(x: bounds[0], y: bounds[1])
-            let size = CGSize(width: bounds[2] - bounds[0], height: bounds[3] - bounds[1])
+            let padding = calculatePadding(bounds)
+            let origin = CGPoint(x: bounds[0] - padding, y: bounds[1] - padding)
+            let size = CGSize(width: bounds[2] - origin.x + padding, height: bounds[3] - origin.y + padding)
             previewTexture = createPreviewTexture(for: size, with: renderer)
             descriptor?.colorAttachments[0].texture = previewTexture
             descriptor?.colorAttachments[0].clearColor = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 0)
@@ -81,6 +82,18 @@ final class PreviewRenderPass: RenderPass {
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
         return true
+    }
+
+    private func calculatePadding(_ bounds: [CGFloat]) -> CGFloat {
+        let maxDifference = max(bounds[2] - bounds[0], bounds[3] - bounds[1])
+
+        let minPadding: CGFloat = 10.0
+        let maxPadding: CGFloat = 50.0
+
+        let normalizedDifference = min(maxDifference, 1.0)
+        let inverseDifference = 1.0 / normalizedDifference
+        let paddingRange = maxPadding - minPadding
+        return minPadding + (inverseDifference * paddingRange)
     }
 
     private func createPreviewTexture(for size: CGSize, with renderer: Renderer) -> MTLTexture? {
