@@ -139,4 +139,27 @@ class Textures {
         texture.label = "Photo Background Texture"
         return texture
     }
+
+    static func createPreviewTexture(
+        from renderer: Renderer,
+        size: CGSize,
+        pixelFormat: MTLPixelFormat? = nil
+    ) -> MTLTexture? {
+        let width = Int(size.width)
+        let height = Int(size.height)
+        guard width > 0, height > 0 else { return nil }
+        let descriptor = MTLTextureDescriptor.texture2DDescriptor(
+            pixelFormat: pixelFormat ?? renderer.pixelFormat,
+            width: width,
+            height: height,
+            mipmapped: false
+        )
+        descriptor.storageMode = .shared
+        descriptor.usage = [.shaderRead, .renderTarget, .shaderWrite]
+        guard let texture = renderer.device.makeTexture(descriptor: descriptor) else {
+            return nil
+        }
+        texture.label = "Preview Texture"
+        return texture
+    }
 }

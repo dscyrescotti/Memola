@@ -41,6 +41,15 @@ enum Element: Equatable, Comparable {
         }
     }
 
+    var box: Box {
+        switch self {
+        case .stroke(let anyStroke):
+            anyStroke.value.strokeBox
+        case .photo(let photo):
+            photo.photoBox
+        }
+    }
+
     var elementGroupType: ElementGroup.ElementGroupType {
         switch self {
         case .stroke(let anyStroke):

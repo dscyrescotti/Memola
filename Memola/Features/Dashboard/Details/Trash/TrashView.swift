@@ -42,9 +42,9 @@ struct TrashView: View {
         } set: { _ in
             deletedMemo = nil
         }
-        MemoGrid(memoObjects: memoObjects, placeholder: placeholder) { memoObject in
-                memoCard(memoObject)
-            }
+        MemoGrid(memoObjects: memoObjects, placeholder: placeholder) { memoObject, cellWidth in
+            memoCard(memoObject, cellWidth)
+        }
         .navigationTitle(horizontalSizeClass == .compact ? "Trash" : "")
         .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $query, placement: .toolbar, prompt: Text("Search"))
@@ -87,8 +87,8 @@ struct TrashView: View {
         }
     }
 
-    func memoCard(_ memoObject: MemoObject) -> some View {
-        MemoCard(memoObject: memoObject) { card in
+    func memoCard(_ memoObject: MemoObject, _ cellWidth: CGFloat) -> some View {
+        MemoCard(memoObject: memoObject, cellWidth: cellWidth) { card in
             card
                 .contextMenu {
                     Button {

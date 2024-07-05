@@ -112,6 +112,8 @@
 		ECD12A932C1B062000B96E12 /* Photo.metal in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A922C1B062000B96E12 /* Photo.metal */; };
 		ECD12A952C1B1FA200B96E12 /* PhotoVertex.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD12A942C1B1FA200B96E12 /* PhotoVertex.swift */; };
 		ECDAC07B2C318DBC0000ED77 /* ElementToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDAC07A2C318DBC0000ED77 /* ElementToolbar.swift */; };
+		ECDDD40D2C366B3B00DF9D5E /* PreviewRenderPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDDD40C2C366B3B00DF9D5E /* PreviewRenderPass.swift */; };
+		ECDDD40F2C368B2700DF9D5E /* MTLTexture++.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDDD40E2C368B2700DF9D5E /* MTLTexture++.swift */; };
 		ECE883BD2C00AA170045C53D /* EraserStroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE883BC2C00AA170045C53D /* EraserStroke.swift */; };
 		ECE883BF2C00AB440045C53D /* Stroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE883BE2C00AB440045C53D /* Stroke.swift */; };
 		ECE883C12C00C9CB0045C53D /* StrokeStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE883C02C00C9CB0045C53D /* StrokeStyle.swift */; };
@@ -232,6 +234,8 @@
 		ECD12A922C1B062000B96E12 /* Photo.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Photo.metal; sourceTree = "<group>"; };
 		ECD12A942C1B1FA200B96E12 /* PhotoVertex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoVertex.swift; sourceTree = "<group>"; };
 		ECDAC07A2C318DBC0000ED77 /* ElementToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementToolbar.swift; sourceTree = "<group>"; };
+		ECDDD40C2C366B3B00DF9D5E /* PreviewRenderPass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewRenderPass.swift; sourceTree = "<group>"; };
+		ECDDD40E2C368B2700DF9D5E /* MTLTexture++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MTLTexture++.swift"; sourceTree = "<group>"; };
 		ECE883BC2C00AA170045C53D /* EraserStroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EraserStroke.swift; sourceTree = "<group>"; };
 		ECE883BE2C00AB440045C53D /* Stroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stroke.swift; sourceTree = "<group>"; };
 		ECE883C02C00C9CB0045C53D /* StrokeStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeStyle.swift; sourceTree = "<group>"; };
@@ -629,6 +633,7 @@
 				ECBE529D2C1DAB21006BDB3D /* UIImage++.swift */,
 				ECC995A42C1EB4CC00B2699A /* Data++.swift */,
 				EC18150E2C2DB13200541369 /* Date++.swift */,
+				ECDDD40E2C368B2700DF9D5E /* MTLTexture++.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -738,6 +743,7 @@
 				ECA738E12BE610D000A4542E /* GraphicRenderPass.swift */,
 				ECD12A902C1B04EA00B96E12 /* PhotoRenderPass.swift */,
 				EC5D40802C21CE270067F090 /* PhotoBackgroundRenderPass.swift */,
+				ECDDD40C2C366B3B00DF9D5E /* PreviewRenderPass.swift */,
 			);
 			path = RenderPasses;
 			sourceTree = "<group>";
@@ -991,6 +997,7 @@
 				ECA738AA2BE6026D00A4542E /* Uniforms.swift in Sources */,
 				EC1815082C2D980B00541369 /* Sort.swift in Sources */,
 				ECA7387D2BE5EF4B00A4542E /* MemoView.swift in Sources */,
+				ECDDD40D2C366B3B00DF9D5E /* PreviewRenderPass.swift in Sources */,
 				ECA738DA2BE60FF100A4542E /* CacheRenderPass.swift in Sources */,
 				ECA738CD2BE60F2F00A4542E /* PointGridContext.swift in Sources */,
 				ECFA15202BEF21EF00455818 /* MemoObject.swift in Sources */,
@@ -1067,6 +1074,7 @@
 				EC8F54AC2C2ACDA8001C7C74 /* GridMode.swift in Sources */,
 				EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */,
 				EC2BEBF82C0F601A005DB0AF /* Node.swift in Sources */,
+				ECDDD40F2C368B2700DF9D5E /* MTLTexture++.swift in Sources */,
 				ECC995A52C1EB4CC00B2699A /* Data++.swift in Sources */,
 				ECA738A02BE601E400A4542E /* ViewPortVertex.swift in Sources */,
 				ECD12A8A2C19EFB000B96E12 /* Element.swift in Sources */,

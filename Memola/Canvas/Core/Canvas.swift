@@ -25,6 +25,7 @@ final class Canvas: ObservableObject, Identifiable, @unchecked Sendable {
     let defaultZoomScale: CGFloat = 20
 
     var transform: simd_float4x4 = .init()
+    var previewTransform: simd_float4x4 = .init()
     var clipBounds: CGRect = .zero
     var bounds: CGRect = .zero
     var uniformsBuffer: MTLBuffer?
@@ -36,6 +37,8 @@ final class Canvas: ObservableObject, Identifiable, @unchecked Sendable {
     @Published var gridMode: GridMode = .point
 
     let zoomPublisher = PassthroughSubject<CGFloat, Never>()
+
+    weak var renderer: Renderer?
 
     init(size: CGSize, canvasID: NSManagedObjectID, gridMode: Int16) {
         self.size = size
@@ -78,6 +81,23 @@ extension Canvas {
             context.refreshAllObjects()
         }
     }
+
+    func save(for memoObject: MemoObject, completion: @escaping () -> Void) {
+        state = .closing
+        let previewImage = renderer?.drawPreview(on: self)
+        memoObject.preview = previewImage?.jpegData(compressionQuality: 0.8)
+        withPersistenceSync(\.viewContext) { context in
+            try context.saveIfNeeded()
+        }
+        withPersistence(\.backgroundContext) { [weak self] context in
+            try context.saveIfNeeded()
+            context.refreshAllObjects()
+            DispatchQueue.main.async { [weak self] in
+                self?.state = .closed
+                completion()
+            }
+        }
+    }
 }
 
 // MARK: - Dimension
@@ -90,6 +110,29 @@ extension Canvas {
         let transform2 = renderView.bounds.transform(to: CGRect(x: -1.0, y: -1.0, width: 2.0, height: 2.0))
         let transform3 = CGAffineTransform.identity.translatedBy(x: 0, y: 1).scaledBy(x: 1, y: -1).translatedBy(x: 0, y: 1)
         self.transform = simd_float4x4(transform1 * transform2 * transform3)
+    }
+
+    func updatePreviewTransform(to targetRect: CGRect) {
+        let bounds = CGRect(origin: .zero, size: size)
+        let translationTransform = CGAffineTransform(translationX: -targetRect.origin.x, y: -targetRect.origin.y)
+
+        let scaleX = bounds.width / targetRect.width
+        let scaleY = bounds.height / targetRect.height
+        let scalingTransform = CGAffineTransform(scaleX: scaleX, y: scaleY)
+
+        let combinedTransform = translationTransform.concatenating(scalingTransform)
+
+        let normalizeX = CGAffineTransform(scaleX: 1.0 / bounds.width, y: 1.0)
+        let normalizeY = CGAffineTransform(scaleX: 1.0, y: 1.0 / bounds.height)
+        let normalizeTransform = normalizeX.concatenating(normalizeY)
+
+        let normalizedTransform = combinedTransform.concatenating(normalizeTransform)
+
+        let renderScale = CGAffineTransform(scaleX: 2.0, y: 2.0)
+        let renderTranslation = CGAffineTransform(translationX: -1.0, y: -1.0)
+        let transform = normalizedTransform.concatenating(renderScale).concatenating(renderTranslation)
+
+        self.previewTransform = simd_float4x4(transform)
     }
 
     func updateClipBounds(_ scrollView: UIScrollView, on drawingView: DrawingView) {
@@ -194,6 +237,12 @@ extension Canvas {
 
     func setUniformsBuffer(device: MTLDevice, renderEncoder: MTLRenderCommandEncoder) {
         var uniforms = Uniforms(transform: transform)
+        uniformsBuffer = device.makeBuffer(bytes: &uniforms, length: MemoryLayout<Uniforms>.size)
+        renderEncoder.setVertexBuffer(uniformsBuffer, offset: 0, index: 11)
+    }
+
+    func setPreviewUniformsBuffer(device: MTLDevice, renderEncoder: MTLRenderCommandEncoder) {
+        var uniforms = Uniforms(transform: previewTransform)
         uniformsBuffer = device.makeBuffer(bytes: &uniforms, length: MemoryLayout<Uniforms>.size)
         renderEncoder.setVertexBuffer(uniformsBuffer, offset: 0, index: 11)
     }

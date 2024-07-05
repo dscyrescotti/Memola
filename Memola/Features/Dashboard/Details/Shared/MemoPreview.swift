@@ -10,6 +10,8 @@ import SwiftUI
 struct MemoPreview: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
+    let preview: Data?
+    let cellWidth: CGFloat
     var cellHeight: CGFloat {
         if horizontalSizeClass == .compact {
             return 120
@@ -18,8 +20,17 @@ struct MemoPreview: View {
     }
 
     var body: some View {
-        Rectangle()
-            .frame(height: cellHeight)
-            .clipShape(RoundedRectangle(cornerRadius: 10))
+        Group {
+            if let preview, let previewImage = UIImage(data: preview) {
+                Image(uiImage: previewImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+            } else {
+                Rectangle()
+                    .fill(.white)
+            }
+        }
+        .frame(width: cellWidth, height: cellHeight)
+        .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }

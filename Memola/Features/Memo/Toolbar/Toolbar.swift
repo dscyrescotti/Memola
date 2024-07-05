@@ -148,21 +148,8 @@ struct Toolbar: View {
     }
 
     func closeMemo() {
-        withAnimation {
-            canvas.state = .closing
-        }
-        withPersistenceSync(\.viewContext) { context in
-            try context.saveIfNeeded()
-        }
-        withPersistence(\.backgroundContext) { context in
-            try context.saveIfNeeded()
-            context.refreshAllObjects()
-            DispatchQueue.main.async {
-                withAnimation {
-                    canvas.state = .closed
-                }
-                dismiss()
-            }
+        canvas.save(for: memo) {
+            dismiss()
         }
     }
 }
