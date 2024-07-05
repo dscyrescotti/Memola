@@ -33,6 +33,7 @@ class CanvasViewController: UIViewController {
         self.drawingView = DrawingView(tool: tool, canvas: canvas, history: history)
         self.renderer = Renderer(canvasView: drawingView.renderView)
         super.init(nibName: nil, bundle: nil)
+        self.canvas.renderer = renderer
     }
 
     required init?(coder: NSCoder) {

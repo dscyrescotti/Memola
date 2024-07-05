@@ -69,7 +69,7 @@ class GraphicRenderPass: RenderPass {
                 draw(for: elementGroup, into: commandBuffer, on: canvas, with: renderer)
             }
             let end = Date.now.timeIntervalSince1970 * 1000
-            NSLog("[Memola] - duration: \(end - start)")
+            NSLog("[Memola] - graphic duration: \(end - start)")
             renderer.redrawsGraphicRender = false
         }
         if let element = graphicContext.previousElement {

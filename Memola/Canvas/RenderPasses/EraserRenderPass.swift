@@ -28,6 +28,15 @@ class EraserRenderPass: RenderPass {
 
     @discardableResult
     func draw(into commandBuffer: any MTLCommandBuffer, on canvas: Canvas, with renderer: Renderer) -> Bool {
+        draw(into: commandBuffer, on: canvas, with: renderer, isPreview: false)
+    }
+
+    @discardableResult
+    func drawPreview(into commandBuffer: any MTLCommandBuffer, on canvas: Canvas, with renderer: Renderer) -> Bool {
+        draw(into: commandBuffer, on: canvas, with: renderer, isPreview: true)
+    }
+
+    private func draw(into commandBuffer: any MTLCommandBuffer, on canvas: Canvas, with renderer: Renderer, isPreview: Bool) -> Bool {
         guard let elementGroup else { return false }
         guard let descriptor else { return false }
 
@@ -65,7 +74,11 @@ class EraserRenderPass: RenderPass {
         guard let eraserPipelineState else { return false }
         renderEncoder.setRenderPipelineState(eraserPipelineState)
 
-        canvas.setUniformsBuffer(device: renderer.device, renderEncoder: renderEncoder)
+        if isPreview {
+            canvas.setPreviewUniformsBuffer(device: renderer.device, renderEncoder: renderEncoder)
+        } else {
+            canvas.setUniformsBuffer(device: renderer.device, renderEncoder: renderEncoder)
+        }
 
         if let indexBuffer {
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)

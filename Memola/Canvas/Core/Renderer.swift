@@ -40,6 +40,9 @@ final class Renderer {
     lazy var photoBackgroundRenderPass: PhotoBackgroundRenderPass = {
         PhotoBackgroundRenderPass(renderer: self)
     }()
+    lazy var previewRenderPass: PreviewRenderPass = {
+        PreviewRenderPass(renderer: self)
+    }()
 
     init(canvasView: MTKView) {
         guard let device = MTLCreateSystemDefaultDevice() else {
@@ -105,5 +108,22 @@ final class Renderer {
         viewPortRenderPass.photoBackgroundTexture = photoBackgroundRenderPass.photoBackgroundTexture
         viewPortRenderPass.cacheTexture = cacheRenderPass.cacheTexture
         viewPortRenderPass.draw(into: commandBuffer, on: canvas, with: self)
+    }
+
+    func drawPreview(on canvas: Canvas) -> UIImage? {
+        guard let commandBuffer = commandQueue.makeCommandBuffer() else {
+            NSLog("[Memola] - Unable to create command buffer")
+            return nil
+        }
+        strokeRenderPass.eraserRenderPass = eraserRenderPass
+        previewRenderPass.photoRenderPass = photoRenderPass
+        previewRenderPass.strokeRenderPass = strokeRenderPass
+        previewRenderPass.eraserRenderPass = eraserRenderPass
+        previewRenderPass.draw(into: commandBuffer, on: canvas, with: self)
+
+        guard let cgImage = previewRenderPass.previewTexture?.getImage() else {
+            return nil
+        }
+        return UIImage(cgImage: cgImage, scale: 1.0, orientation: .downMirrored)
     }
 }

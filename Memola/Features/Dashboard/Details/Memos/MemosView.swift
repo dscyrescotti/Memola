@@ -42,8 +42,8 @@ struct MemosView: View {
     }
 
     var body: some View {
-        MemoGrid(memoObjects: memoObjects, placeholder: placeholder) { memoObject in
-            memoCard(memoObject)
+        MemoGrid(memoObjects: memoObjects, placeholder: placeholder) { memoObject, cellWidth in
+            memoCard(memoObject, cellWidth)
         }
         .navigationTitle(horizontalSizeClass == .compact ? "Memos" : "")
         .navigationBarTitleDisplayMode(.inline)
@@ -130,8 +130,8 @@ struct MemosView: View {
         }
     }
 
-    func memoCard(_ memoObject: MemoObject) -> some View {
-        MemoCard(memoObject: memoObject) { card in
+    func memoCard(_ memoObject: MemoObject, _ cellWidth: CGFloat) -> some View {
+        MemoCard(memoObject: memoObject, cellWidth: cellWidth) { card in
             card
                 .contextMenu {
                     Button {
@@ -152,7 +152,7 @@ struct MemosView: View {
                         .animation(.easeInOut, value: memoObject.isFavorite)
                         .frame(width: 20, height: 20)
                         .padding(5)
-                        .background(.gray)
+                        .background(.gray.tertiary)
                         .cornerRadius(5)
                         .contentShape(Rectangle())
                         .onTapGesture {

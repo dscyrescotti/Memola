@@ -17,6 +17,7 @@ final class MemoObject: NSManagedObject, Identifiable {
     @NSManaged var deletedAt: Date?
     @NSManaged var isFavorite: Bool
     @NSManaged var isTrash: Bool
+    @NSManaged var preview: Data?
     @NSManaged var tool: ToolObject
     @NSManaged var canvas: CanvasObject
 }
