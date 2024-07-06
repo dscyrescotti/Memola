@@ -52,7 +52,11 @@ struct TrashView: View {
         .searchable(text: $query, placement: .toolbar, prompt: Text("Search"))
         .toolbar {
             #if os(macOS)
-            #warning("TODO: implement for macos")
+            ToolbarItem(placement: .navigation) {
+                Text("Memola")
+                    .font(.title3)
+                    .fontWeight(.bold)
+            }
             #else
             if horizontalSizeClass == .regular {
                 ToolbarItem(placement: .topBarLeading) {
@@ -101,11 +105,13 @@ struct TrashView: View {
                         restoreMemo(for: memoObject)
                     } label: {
                         Label("Restore", systemImage: "square.and.arrow.down")
+                            .labelStyle(.titleAndIcon)
                     }
                     Button(role: .destructive) {
                         deletedMemo = memoObject
                     } label: {
                         Label("Delete Permanently", systemImage: "trash")
+                            .labelStyle(.titleAndIcon)
                     }
                 }
         } details: {

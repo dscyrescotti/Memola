@@ -201,10 +201,9 @@ struct PenDock: View {
         } preview: {
             penPreview(pen)
                 .drawingGroup()
-                #if os(macOS)
-                #warning("TODO: implement for macos")
-                #else
+                #if os(iOS)
                 .contentShape(.contextMenuPreview, .rect(cornerRadius: 10))
+                #else
                 #endif
         }
         .onDrag(if: pen.strokeStyle != .eraser) {
@@ -278,10 +277,9 @@ struct PenDock: View {
         } preview: {
             penPreview(pen)
                 .drawingGroup()
-                #if os(macOS)
-                #warning("TODO: implement for macos")
-                #else
+                #if os(iOS)
                 .contentShape(.contextMenuPreview, .rect(cornerRadius: 10))
+                #else
                 #endif
         }
         .onDrag(if: pen.strokeStyle != .eraser) {

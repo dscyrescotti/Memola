@@ -31,8 +31,8 @@ struct MemosView: View {
         let standard = UserDefaults.standard
         var descriptors: [SortDescriptor<MemoObject>] = []
         var predicates: [NSPredicate] = [NSPredicate(format: "isTrash = NO")]
-        let sort = Sort(rawValue: standard.value(forKey: "memola.memo-objects.sort") as? String ?? "") ?? .recent
-        let filter = Filter(rawValue: standard.value(forKey: "memola.memo-objects.filter") as? String ?? "") ?? .none
+        let sort = Sort(rawValue: standard.value(forKey: "memola.memo-objects.memos.sort") as? String ?? "") ?? .recent
+        let filter = Filter(rawValue: standard.value(forKey: "memola.memo-objects.memos.filter") as? String ?? "") ?? .none
         if filter == .favorites {
             predicates.append(NSPredicate(format: "isFavorite = YES"))
         }
@@ -52,7 +52,32 @@ struct MemosView: View {
         .searchable(text: $query, placement: .toolbar, prompt: Text("Search"))
         .toolbar {
             #if os(macOS)
-            #warning("TODO: implement for macos")
+            ToolbarItem(placement: .navigation) {
+                Text("Memola")
+                    .font(.title3)
+                    .fontWeight(.bold)
+            }
+            ToolbarItemGroup(placement: .primaryAction) {
+                HStack(spacing: 5) {
+                    Button {
+                        createMemo(title: "Untitled")
+                    } label: {
+                        Image(systemName: "square.and.pencil")
+                    }
+                    Picker("", selection: $sort) {
+                        ForEach(Sort.all) { sort in
+                            Text(sort.name)
+                                .tag(sort)
+                        }
+                    }
+                    Picker("", selection: $filter) {
+                        ForEach(Filter.all) { filter in
+                            Text(filter.name)
+                                .tag(filter)
+                        }
+                    }
+                }
+            }
             #else
             if horizontalSizeClass == .regular {
                 ToolbarItem(placement: .topBarLeading) {
@@ -78,14 +103,12 @@ struct MemosView: View {
                                             .tag(sort)
                                     }
                                 }
-                                .pickerStyle(.automatic)
                                 Picker("", selection: $filter) {
                                     ForEach(Filter.all) { filter in
                                         Text(filter.name)
                                             .tag(filter)
                                     }
                                 }
-                                .pickerStyle(.automatic)
                             }
                         } label: {
                             Image(systemName: "ellipsis.circle")
@@ -109,10 +132,10 @@ struct MemosView: View {
                                         .tag(filter)
                                 }
                             }
-                            .pickerStyle(.automatic)
                         } label: {
                             Image(systemName: "line.3.horizontal.decrease.circle")
                         }
+                        .hoverEffect(.lift)
                     }
                 }
             }
@@ -130,10 +153,6 @@ struct MemosView: View {
         .onReceive(timer) { date in
             currentDate = date
         }
-        .onAppear {
-            memoObjects.sortDescriptors = sort.memoSortDescriptors
-            updatePredicate()
-        }
     }
 
     func memoCard(_ memoObject: MemoObject, _ cellWidth: CGFloat) -> some View {
@@ -144,11 +163,13 @@ struct MemosView: View {
                         openMemo(for: memoObject)
                     } label: {
                         Label("Open", systemImage: "doc.text")
+                            .labelStyle(.titleAndIcon)
                     }
                     Button(role: .destructive) {
                         markAsTrash(for: memoObject)
                     } label: {
                         Label("Delete", systemImage: "trash")
+                            .labelStyle(.titleAndIcon)
                     }
                 }
                 .overlay(alignment: .topTrailing) {
@@ -158,7 +179,11 @@ struct MemosView: View {
                         .animation(.easeInOut, value: memoObject.isFavorite)
                         .frame(width: 20, height: 20)
                         .padding(5)
+                        #if os(macOS)
+                        .background(.gray)
+                        #else
                         .background(.gray.tertiary)
+                        #endif
                         .cornerRadius(5)
                         .contentShape(Rectangle())
                         .onTapGesture {

@@ -21,6 +21,14 @@ struct MemolaApp: App {
                         try context.saveIfNeeded()
                     }
                 }
+                #if os(macOS)
+                .frame(minWidth: 1000, minHeight: 600)
+                #endif
         }
+        #if os(macOS)
+        .defaultPosition(.center)
+        .windowResizability(.contentSize)
+        .defaultSize(width: 1200, height: 800)
+        #endif
     }
 }
