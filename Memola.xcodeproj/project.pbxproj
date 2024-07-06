@@ -119,6 +119,7 @@
 		ECF7B2E02C39169C004D2C57 /* Image++.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF7B2CD2C39169C004D2C57 /* Image++.swift */; };
 		ECF7B2E12C39169C004D2C57 /* View++.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF7B2CE2C39169C004D2C57 /* View++.swift */; };
 		ECF7B2E42C39174D004D2C57 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF7B2E32C39174D004D2C57 /* Platform.swift */; };
+		ECF7B2E72C39544E004D2C57 /* CenterClipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF7B2E62C39544E004D2C57 /* CenterClipView.swift */; };
 		ECFA15202BEF21EF00455818 /* MemoObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA151F2BEF21EF00455818 /* MemoObject.swift */; };
 		ECFA15222BEF21F500455818 /* CanvasObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA15212BEF21F500455818 /* CanvasObject.swift */; };
 		ECFA15242BEF223300455818 /* GraphicContextObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA15232BEF223300455818 /* GraphicContextObject.swift */; };
@@ -242,6 +243,8 @@
 		ECF7B2CD2C39169C004D2C57 /* Image++.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Image++.swift"; sourceTree = "<group>"; };
 		ECF7B2CE2C39169C004D2C57 /* View++.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "View++.swift"; sourceTree = "<group>"; };
 		ECF7B2E32C39174D004D2C57 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
+		ECF7B2E62C39544E004D2C57 /* CenterClipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterClipView.swift; sourceTree = "<group>"; };
+		ECF7B2E82C395A8E004D2C57 /* Memola.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Memola.entitlements; sourceTree = "<group>"; };
 		ECFA151F2BEF21EF00455818 /* MemoObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoObject.swift; sourceTree = "<group>"; };
 		ECFA15212BEF21F500455818 /* CanvasObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasObject.swift; sourceTree = "<group>"; };
 		ECFA15232BEF223300455818 /* GraphicContextObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphicContextObject.swift; sourceTree = "<group>"; };
@@ -320,6 +323,7 @@
 			isa = PBXGroup;
 			children = (
 				ECA738AC2BE60CC600A4542E /* DrawingView.swift */,
+				ECF7B2E62C39544E004D2C57 /* CenterClipView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -455,6 +459,7 @@
 		EC7F6BEA2BE5E6E300A34A7B /* Memola */ = {
 			isa = PBXGroup;
 			children = (
+				ECF7B2E82C395A8E004D2C57 /* Memola.entitlements */,
 				ECA738762BE5EE4E00A4542E /* App */,
 				ECA7387E2BE5FE4200A4542E /* Canvas */,
 				EC50500A2BF6672000B4D86E /* Components */,
@@ -1053,6 +1058,7 @@
 				ECA738E22BE610D000A4542E /* GraphicRenderPass.swift in Sources */,
 				ECE883BF2C00AB440045C53D /* Stroke.swift in Sources */,
 				ECA738DC2BE6108D00A4542E /* StrokeRenderPass.swift in Sources */,
+				ECF7B2E72C39544E004D2C57 /* CenterClipView.swift in Sources */,
 				ECF7B2D22C39169C004D2C57 /* CGFloat++.swift in Sources */,
 				EC4538892BEBCAE000A86FEC /* Quad.swift in Sources */,
 				ECE883BD2C00AA170045C53D /* EraserStroke.swift in Sources */,
@@ -1235,6 +1241,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Memola/Memola.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Memola/Preview Content\"";
@@ -1271,6 +1278,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Memola/Memola.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Memola/Preview Content\"";

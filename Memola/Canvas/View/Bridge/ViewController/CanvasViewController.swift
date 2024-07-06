@@ -48,10 +48,14 @@ class CanvasViewController: Platform.ViewController {
     }
 
     #if os(macOS)
-    override func viewWillAppear() {
-        super.viewWillAppear()
+    override func viewWillLayout() {
+        super.viewWillLayout()
         resizeDocumentView()
         updateDocumentBounds()
+    }
+    
+    override func viewWillAppear() {
+        super.viewWillAppear()
         loadMemo()
     }
 
@@ -95,9 +99,11 @@ class CanvasViewController: Platform.ViewController {
 extension CanvasViewController {
     func configureViews() {
         #if os(macOS)
-        #warning("TODO: implement for macos")
+        view.wantsLayer = true
+        view.layer?.backgroundColor = NSColor.white.cgColor
         #else
         view.backgroundColor = .white
+        #endif
 
         renderView.autoResizeDrawable = false
         renderView.enableSetNeedsDisplay = true
@@ -111,6 +117,15 @@ extension CanvasViewController {
             renderView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
 
+        #if os(macOS)
+        scrollView.maxMagnification = canvas.maximumZoomScale
+        scrollView.minMagnification = canvas.minimumZoomScale
+        scrollView.hasVerticalScroller = true
+        scrollView.hasHorizontalScroller = true
+        scrollView.allowsMagnification = true
+        scrollView.drawsBackground = false
+        scrollView.scrollerKnobStyle = .dark
+        #else
         scrollView.maximumZoomScale = canvas.maximumZoomScale
         scrollView.minimumZoomScale = canvas.minimumZoomScale
         scrollView.contentInsetAdjustmentBehavior = .never
@@ -119,6 +134,7 @@ extension CanvasViewController {
         scrollView.showsHorizontalScrollIndicator = true
         scrollView.delegate = self
         scrollView.backgroundColor = .clear
+        #endif
 
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
@@ -129,6 +145,11 @@ extension CanvasViewController {
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
 
+        #if os(macOS)
+        scrollView.contentView = CenterClipView()
+        scrollView.contentView.drawsBackground = false
+        scrollView.documentView = drawingView
+        #else
         scrollView.addSubview(drawingView)
         drawingView.backgroundColor = .clear
         drawingView.isUserInteractionEnabled = false
@@ -137,10 +158,10 @@ extension CanvasViewController {
 
     func resizeDocumentView(to newSize: CGSize? = nil) {
         #if os(macOS)
-        #warning("TODO: implement for macos")
+        scrollView.layoutSubtreeIfNeeded()
         #else
         scrollView.layoutIfNeeded()
-
+        #endif
         let size = canvas.size
         let widthScale = (newSize?.width ?? view.frame.width) / size.width
         let heightScale = (newSize?.height ?? view.frame.height) / size.height
@@ -151,36 +172,42 @@ extension CanvasViewController {
         let newFrame = CGRect(x: 0, y: 0, width: width, height: height)
         drawingView.frame = newFrame
 
+        #if os(macOS)
+        let rect = scrollView.documentVisibleRect
+        let center = NSPoint(x: rect.midX, y: rect.midY)
+        scrollView.setMagnification(canvas.defaultZoomScale, centeredAt: center)
+        #else
         scrollView.setZoomScale(canvas.defaultZoomScale, animated: true)
         centerDocumentView(to: newSize)
+        #endif
 
+        #if os(iOS)
         let offsetX = (newFrame.width * canvas.defaultZoomScale - view.frame.width) / 2
         let offsetY = (newFrame.height * canvas.defaultZoomScale - view.frame.height) / 2
 
         let point = CGPoint(x: offsetX, y: offsetY)
         scrollView.setContentOffset(point, animated: true)
-
-        drawingView.updateDrawableSize(with: view.frame.size)
         #endif
+        drawingView.updateDrawableSize(with: view.frame.size)
+        NSLog("[Memola] - drawingView: \(drawingView.frame.size.multiply(by: scrollView.magnification)), scrollView: \(scrollView.frame), renderView: \(renderView.frame)")
     }
 
+    #if os(iOS)
     func centerDocumentView(to newSize: CGSize? = nil) {
-        #if os(macOS)
-        #warning("TODO: implement for macos")
-        #else
         let documentViewSize = drawingView.frame.size
         let scrollViewSize = newSize ?? view.frame.size
         let verticalPadding = documentViewSize.height < scrollViewSize.height ? (scrollViewSize.height - documentViewSize.height) / 2 : 0
         let horizontalPadding = documentViewSize.width < scrollViewSize.width ? (scrollViewSize.width - documentViewSize.width) / 2 : 0
         self.scrollView.contentInset = UIEdgeInsets(top: verticalPadding, left: horizontalPadding, bottom: verticalPadding, right: horizontalPadding)
-        #endif
     }
+    #endif
 
     func updateDocumentBounds() {
         #if os(macOS)
-        #warning("TODO: implement for macos")
+        var bounds = scrollView.bounds.muliply(by: drawingView.ratio / scrollView.magnification)
         #else
         var bounds = scrollView.bounds.muliply(by: drawingView.ratio / scrollView.zoomScale)
+        #endif
         let xDelta = bounds.minX * 0.0
         let yDelta = bounds.minY * 0.0
         bounds.origin.x -= xDelta
@@ -191,12 +218,33 @@ extension CanvasViewController {
         if canvas.state == .loaded {
             canvas.loadStrokes(bounds)
         }
-        #endif
     }
 }
 
 extension CanvasViewController {
     func configureListeners() {
+        #if os(macOS)
+        NotificationCenter.default.publisher(for: NSScrollView.didEndLiveMagnifyNotification, object: scrollView)
+            .sink { [weak self] _ in
+                self?.magnificationEnded()
+            }
+            .store(in: &cancellables)
+        NotificationCenter.default.publisher(for: NSScrollView.willStartLiveMagnifyNotification, object: scrollView)
+            .sink { [weak self] _ in
+                self?.magnificationStarted()
+            }
+            .store(in: &cancellables)
+        NotificationCenter.default.publisher(for: NSScrollView.willStartLiveScrollNotification, object: scrollView)
+            .sink { [weak self] _ in
+                self?.draggingStarted()
+            }
+            .store(in: &cancellables)
+        NotificationCenter.default.publisher(for: NSScrollView.didEndLiveScrollNotification, object: scrollView)
+            .sink { [weak self] _ in
+                self?.draggingEnded()
+            }
+            .store(in: &cancellables)
+        #endif
         canvas.$state
             .sink { [weak self] state in
                 self?.canvasStateChanged(state)
@@ -344,6 +392,9 @@ extension CanvasViewController: UIScrollViewDelegate {
 
 extension CanvasViewController {
     func magnificationStarted() {
+        #if os(macOS)
+        canvas.setZoomScale(scrollView.magnification)
+        #endif
         guard !renderer.updatesViewPort else { return }
         drawingView.touchCancelled()
         canvas.updateClipBounds(scrollView, on: drawingView)
@@ -352,6 +403,9 @@ extension CanvasViewController {
     }
 
     func magnificationEnded() {
+        #if os(macOS)
+        canvas.setZoomScale(scrollView.magnification)
+        #endif
         renderer.setUpdatesViewPort(false)
         renderer.setRedrawsGraphicRender()
         renderView.draw()
@@ -359,6 +413,9 @@ extension CanvasViewController {
     }
 
     func draggingStarted() {
+        #if os(macOS)
+        canvas.setZoomScale(scrollView.magnification)
+        #endif
         guard !renderer.updatesViewPort else { return }
         canvas.updateClipBounds(scrollView, on: drawingView)
         drawingView.disableUserInteraction()
@@ -366,6 +423,9 @@ extension CanvasViewController {
     }
 
     func draggingEnded() {
+        #if os(macOS)
+        canvas.setZoomScale(scrollView.magnification)
+        #endif
         renderer.setUpdatesViewPort(false)
         renderer.setRedrawsGraphicRender()
         renderView.draw()
@@ -413,7 +473,8 @@ extension CanvasViewController {
 extension CanvasViewController {
     func zoomChanged(_ zoomScale: CGFloat) {
         #if os(macOS)
-        #warning("TODO: implement for macos")
+        let rect = scrollView.documentVisibleRect
+        scrollView.setMagnification(zoomScale, centeredAt: CGPoint(x: rect.midX, y: rect.midY))
         #else
         scrollView.setZoomScale(zoomScale, animated: true)
         #endif

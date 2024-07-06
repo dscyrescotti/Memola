@@ -10,7 +10,11 @@ import Foundation
 
 struct PointGridVertex {
     var position: vector_float4
+    #if os(macOS)
+    var pointSize: Float = 256
+    #else
     var pointSize: Float = 10
+    #endif
 }
 
 extension PointGridVertex {

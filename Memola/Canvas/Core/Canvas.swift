@@ -86,7 +86,7 @@ extension Canvas {
         state = .closing
         let previewImage = renderer?.drawPreview(on: self)
         #if os(macOS)
-        #warning("TODO: implement for macos")
+        memoObject.preview = previewImage?.tiffRepresentation
         #else
         memoObject.preview = previewImage?.jpegData(compressionQuality: 0.8)
         #endif
@@ -109,7 +109,12 @@ extension Canvas {
     func updateTransform(on drawingView: DrawingView) {
         let bounds = CGRect(origin: .zero, size: size)
         let renderView = drawingView.renderView
+        #if os(macOS)
+        let drawingViewBounds = CGRect(origin: .zero, size: drawingView.bounds.size.multiply(by: zoomScale))
+        let targetRect = drawingView.convert(drawingViewBounds, to: renderView)
+        #else
         let targetRect = drawingView.convert(drawingView.bounds, to: renderView)
+        #endif
         let transform1 = bounds.transform(to: targetRect)
         let transform2 = renderView.bounds.transform(to: CGRect(x: -1.0, y: -1.0, width: 2.0, height: 2.0))
         let transform3 = CGAffineTransform.identity.translatedBy(x: 0, y: 1).scaledBy(x: 1, y: -1).translatedBy(x: 0, y: 1)

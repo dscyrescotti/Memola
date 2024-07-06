@@ -125,8 +125,7 @@ final class Renderer {
             return nil
         }
         #if os(macOS)
-        #warning("TODO: implement here")
-        return nil
+        return NSImage(cgImage: cgImage, size: .init(width: CGFloat(cgImage.width), height: CGFloat(cgImage.height))).flipped(flipVertically: true)
         #else
         return UIImage(cgImage: cgImage, scale: 1.0, orientation: .downMirrored)
         #endif

@@ -148,7 +148,12 @@ public class Tool: NSObject, ObservableObject {
         let rect = CGRect(origin: .zero, size: targetSize)
 
         #if os(macOS)
-        return (image, dimension)
+        let newImage = NSImage(size: rect.size, flipped: false) { destRect in
+            NSGraphicsContext.current?.imageInterpolation = .high
+            image.draw(in: destRect, from: NSZeroRect, operation: .copy, fraction: 1)
+            return true
+        }
+        return (newImage, dimension)
         #else
         UIGraphicsBeginImageContextWithOptions(targetSize, true, 1.0)
         image.draw(in: rect)
@@ -163,8 +168,7 @@ public class Tool: NSObject, ObservableObject {
 
     private func bookmarkPhoto(of image: Platform.Image, and previewImage: Platform.Image, in dimension: CGSize, with canvasID: NSManagedObjectID) -> PhotoItem? {
         #if os(macOS)
-        #warning("TODO: implement for macos")
-        let data = Data()
+        guard let data = image.tiffRepresentation else { return nil }
         #else
         guard let data = image.jpegData(compressionQuality: 1) else { return nil }
         #endif
