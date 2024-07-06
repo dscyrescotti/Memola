@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct MemosView: View {
+    #if os(macOS)
+    @Environment(\.openWindow) var openWindow
+    #endif
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     @FetchRequest var memoObjects: FetchedResults<MemoObject>
@@ -15,7 +18,9 @@ struct MemosView: View {
     @State var query: String = ""
     @State var currentDate: Date = .now
 
+    #if os(iOS)
     @Binding var memo: MemoObject?
+    #endif
 
     @AppStorage("memola.memo-objects.memos.sort") var sort: Sort = .recent
     @AppStorage("memola.memo-objects.memos.filter") var filter: Filter = .none
@@ -26,6 +31,21 @@ struct MemosView: View {
         query.isEmpty ? .memoEmpty : .memoNotFound
     }
 
+    #if os(macOS)
+    init() {
+        let standard = UserDefaults.standard
+        var descriptors: [SortDescriptor<MemoObject>] = []
+        var predicates: [NSPredicate] = [NSPredicate(format: "isTrash = NO")]
+        let sort = Sort(rawValue: standard.value(forKey: "memola.memo-objects.memos.sort") as? String ?? "") ?? .recent
+        let filter = Filter(rawValue: standard.value(forKey: "memola.memo-objects.memos.filter") as? String ?? "") ?? .none
+        if filter == .favorites {
+            predicates.append(NSPredicate(format: "isFavorite = YES"))
+        }
+        descriptors = sort.memoSortDescriptors
+        let predicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
+        _memoObjects = FetchRequest(sortDescriptors: descriptors, predicate: predicate)
+    }
+    #else
     init(memo: Binding<MemoObject?>) {
         _memo = memo
         let standard = UserDefaults.standard
@@ -40,6 +60,7 @@ struct MemosView: View {
         let predicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
         _memoObjects = FetchRequest(sortDescriptors: descriptors, predicate: predicate)
     }
+    #endif
 
     var body: some View {
         MemoGrid(memoObjects: memoObjects, placeholder: placeholder) { memoObject, cellWidth in
@@ -252,7 +273,11 @@ struct MemosView: View {
     }
 
     func openMemo(for memo: MemoObject) {
+        #if os(macOS)
+        openWindow(id: "memo-view", value: memo.objectID.uriRepresentation())
+        #else
         self.memo = memo
+        #endif
     }
 
     func updatePredicate() {

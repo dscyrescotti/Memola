@@ -30,5 +30,18 @@ struct MemolaApp: App {
         .windowResizability(.contentSize)
         .defaultSize(width: 1200, height: 800)
         #endif
+        WindowGroup(id: "memo-view", for: URL.self) { url in
+            if let url = url.wrappedValue, let memo = Persistence.loadMemo(of: url) {
+                MemoView(memo: memo)
+                    #if os(macOS)
+                    .frame(minWidth: 1000, minHeight: 600)
+                    #endif
+            }
+        }
+        #if os(macOS)
+        .defaultPosition(.center)
+        .windowResizability(.contentSize)
+        .defaultSize(width: 1200, height: 800)
+        #endif
     }
 }
