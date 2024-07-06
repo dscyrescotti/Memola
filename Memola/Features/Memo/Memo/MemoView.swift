@@ -158,7 +158,9 @@ struct MemoView: View {
                     .clipShape(.rect(cornerRadius: 8))
                     .padding(10)
             }
+            #if os(iOS)
             .hoverEffect(.lift)
+            #endif
             .transition(.move(edge: .bottom).combined(with: .blurReplace))
         }
     }

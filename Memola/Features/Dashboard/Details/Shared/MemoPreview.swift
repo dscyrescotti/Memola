@@ -21,8 +21,8 @@ struct MemoPreview: View {
 
     var body: some View {
         Group {
-            if let preview, let previewImage = UIImage(data: preview) {
-                Image(uiImage: previewImage)
+            if let preview, let previewImage = Platform.Image(data: preview) {
+                Image(image: previewImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
             } else {

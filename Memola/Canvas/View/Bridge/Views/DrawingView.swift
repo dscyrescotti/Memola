@@ -5,11 +5,11 @@
 //  Created by Dscyre Scotti on 5/4/24.
 //
 
-import UIKit
+import SwiftUI
 import MetalKit
 import Foundation
 
-class DrawingView: UIView {
+class DrawingView: Platform.View {
     let tool: Tool
     let canvas: Canvas
     let history: History
@@ -36,7 +36,10 @@ class DrawingView: UIView {
     func updateDrawableSize(with size: CGSize) {
         renderView.drawableSize = size.multiply(by: 2)
     }
-
+    
+    #if os(macOS)
+    #warning("TODO: to implement touch events")
+    #else
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         !canvas.hasValidStroke
     }
@@ -78,6 +81,7 @@ class DrawingView: UIView {
         let point = touch.preciseLocation(in: self)
         touchEnded(at: point)
     }
+    #endif
 
     func touchBegan(at point: CGPoint) {
         guard !disablesUserInteraction else { return }

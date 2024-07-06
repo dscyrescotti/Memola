@@ -10,14 +10,14 @@ import SwiftUI
 import MetalKit
 import Foundation
 
-class CanvasViewController: UIViewController {
+class CanvasViewController: Platform.ViewController {
     let drawingView: DrawingView
-    let scrollView: UIScrollView = UIScrollView()
+    let scrollView: Platform.ScrollView = Platform.ScrollView()
     var renderView: MTKView {
         drawingView.renderView
     }
 
-    var photoInsertGesture: UITapGestureRecognizer?
+    var photoInsertGesture: Platform.TapGestureRecognizer?
 
     let tool: Tool
     let canvas: Canvas
@@ -47,6 +47,28 @@ class CanvasViewController: UIViewController {
         configureListeners()
     }
 
+    #if os(macOS)
+    override func viewWillAppear() {
+        super.viewWillAppear()
+        resizeDocumentView()
+        updateDocumentBounds()
+        loadMemo()
+    }
+
+    override func viewDidLayout() {
+        super.viewDidLayout()
+        drawingView.disableUserInteraction()
+        drawingView.updateDrawableSize(with: view.frame.size)
+        renderer.resize(on: renderView, to: renderView.drawableSize)
+        renderView.draw()
+        drawingView.enableUserInteraction()
+    }
+
+    override func viewDidDisappear() {
+        super.viewDidDisappear()
+        history.resetRedo()
+    }
+    #else
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         resizeDocumentView()
@@ -67,11 +89,16 @@ class CanvasViewController: UIViewController {
         super.viewDidDisappear(animated)
         history.resetRedo()
     }
+    #endif
 }
 
 extension CanvasViewController {
     func configureViews() {
+        #if os(macOS)
+        #warning("TODO: implement for macos")
+        #else
         view.backgroundColor = .white
+
         renderView.autoResizeDrawable = false
         renderView.enableSetNeedsDisplay = true
         renderView.translatesAutoresizingMaskIntoConstraints = false
@@ -105,9 +132,13 @@ extension CanvasViewController {
         scrollView.addSubview(drawingView)
         drawingView.backgroundColor = .clear
         drawingView.isUserInteractionEnabled = false
+        #endif
     }
 
     func resizeDocumentView(to newSize: CGSize? = nil) {
+        #if os(macOS)
+        #warning("TODO: implement for macos")
+        #else
         scrollView.layoutIfNeeded()
 
         let size = canvas.size
@@ -130,17 +161,25 @@ extension CanvasViewController {
         scrollView.setContentOffset(point, animated: true)
 
         drawingView.updateDrawableSize(with: view.frame.size)
+        #endif
     }
 
     func centerDocumentView(to newSize: CGSize? = nil) {
+        #if os(macOS)
+        #warning("TODO: implement for macos")
+        #else
         let documentViewSize = drawingView.frame.size
         let scrollViewSize = newSize ?? view.frame.size
         let verticalPadding = documentViewSize.height < scrollViewSize.height ? (scrollViewSize.height - documentViewSize.height) / 2 : 0
         let horizontalPadding = documentViewSize.width < scrollViewSize.width ? (scrollViewSize.width - documentViewSize.width) / 2 : 0
         self.scrollView.contentInset = UIEdgeInsets(top: verticalPadding, left: horizontalPadding, bottom: verticalPadding, right: horizontalPadding)
+        #endif
     }
 
     func updateDocumentBounds() {
+        #if os(macOS)
+        #warning("TODO: implement for macos")
+        #else
         var bounds = scrollView.bounds.muliply(by: drawingView.ratio / scrollView.zoomScale)
         let xDelta = bounds.minX * 0.0
         let yDelta = bounds.minY * 0.0
@@ -152,6 +191,7 @@ extension CanvasViewController {
         if canvas.state == .loaded {
             canvas.loadStrokes(bounds)
         }
+        #endif
     }
 }
 
@@ -231,13 +271,17 @@ extension CanvasViewController: MTKViewDelegate {
 
 extension CanvasViewController {
     func configureGestures() {
-        let photoInsertGesture = UITapGestureRecognizer(target: self, action: #selector(recognizeTapGesture))
+        let photoInsertGesture = Platform.TapGestureRecognizer(target: self, action: #selector(recognizeTapGesture))
+        #if os(macOS)
+        photoInsertGesture.numberOfClicksRequired = 1
+        #else
         photoInsertGesture.numberOfTapsRequired = 1
+        #endif
         self.photoInsertGesture = photoInsertGesture
         scrollView.addGestureRecognizer(photoInsertGesture)
     }
 
-    @objc func recognizeTapGesture(_ gesture: UITapGestureRecognizer) {
+    @objc func recognizeTapGesture(_ gesture: Platform.TapGestureRecognizer) {
         guard let photoItem = tool.selectedPhotoItem else { return }
         withAnimation {
             tool.selectedPhotoItem = nil
@@ -249,6 +293,8 @@ extension CanvasViewController {
     }
 }
 
+#if os(macOS)
+#else
 extension CanvasViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         drawingView
@@ -294,6 +340,7 @@ extension CanvasViewController: UIScrollViewDelegate {
         draggingEnded()
     }
 }
+#endif
 
 extension CanvasViewController {
     func magnificationStarted() {
@@ -352,20 +399,32 @@ extension CanvasViewController {
             enablesDrawing = false
             enablesPhotoInsertion = true
         }
+        #if os(macOS)
+        #warning("TODO: implement for macos")
+        #else
         scrollView.isScrollEnabled = enablesScrolling
         drawingView.isUserInteractionEnabled = enablesDrawing
         photoInsertGesture?.isEnabled = enablesPhotoInsertion
         enablesDrawing ? drawingView.enableUserInteraction() : drawingView.disableUserInteraction()
+        #endif
     }
 }
 
 extension CanvasViewController {
     func zoomChanged(_ zoomScale: CGFloat) {
+        #if os(macOS)
+        #warning("TODO: implement for macos")
+        #else
         scrollView.setZoomScale(zoomScale, animated: true)
+        #endif
     }
 
     func lockModeChanged(_ state: Bool) {
+        #if os(macOS)
+        #warning("TODO: implement for macos")
+        #else
         scrollView.pinchGestureRecognizer?.isEnabled = !state
+        #endif
     }
 
     func gridModeChanged(_ mode: GridMode) {

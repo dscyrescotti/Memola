@@ -46,9 +46,14 @@ struct TrashView: View {
             memoCard(memoObject, cellWidth)
         }
         .navigationTitle(horizontalSizeClass == .compact ? "Trash" : "")
+        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
         .searchable(text: $query, placement: .toolbar, prompt: Text("Search"))
         .toolbar {
+            #if os(macOS)
+            #warning("TODO: implement for macos")
+            #else
             if horizontalSizeClass == .regular {
                 ToolbarItem(placement: .topBarLeading) {
                     Text("Memola")
@@ -56,6 +61,7 @@ struct TrashView: View {
                         .fontWeight(.bold)
                 }
             }
+            #endif
         }
         .onChange(of: query) { oldValue, newValue in
             updatePredicate()

@@ -110,7 +110,7 @@ final class Renderer {
         viewPortRenderPass.draw(into: commandBuffer, on: canvas, with: self)
     }
 
-    func drawPreview(on canvas: Canvas) -> UIImage? {
+    func drawPreview(on canvas: Canvas) -> Platform.Image? {
         guard let commandBuffer = commandQueue.makeCommandBuffer() else {
             NSLog("[Memola] - Unable to create command buffer")
             return nil
@@ -124,6 +124,11 @@ final class Renderer {
         guard let cgImage = previewRenderPass.previewTexture?.getImage() else {
             return nil
         }
+        #if os(macOS)
+        #warning("TODO: implement here")
+        return nil
+        #else
         return UIImage(cgImage: cgImage, scale: 1.0, orientation: .downMirrored)
+        #endif
     }
 }

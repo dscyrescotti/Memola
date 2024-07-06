@@ -13,7 +13,7 @@ struct MemolaApp: App {
         WindowGroup {
             DashboardView()
                 .persistence(\.viewContext)
-                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willTerminateNotification)) { _ in
+                .onReceive(NotificationCenter.default.publisher(for: Platform.Application.willTerminateNotification)) { _ in
                     withPersistenceSync(\.viewContext) { context in
                         try context.saveIfNeeded()
                     }

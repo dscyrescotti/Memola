@@ -26,6 +26,9 @@ struct DashboardView: View {
                 MemosView(memo: $memo)
             }
         }
+        #if os(macOS)
+        #warning("TODO: implement for macOS")
+        #else
         .fullScreenCover(item: $memo) { memo in
             MemoView(memo: memo)
                 .onDisappear {
@@ -35,5 +38,6 @@ struct DashboardView: View {
                     }
                 }
         }
+        #endif
     }
 }

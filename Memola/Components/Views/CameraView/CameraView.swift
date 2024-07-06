@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+#if os(iOS)
 struct CameraView: UIViewControllerRepresentable {
     @Binding var image: UIImage?
 
@@ -44,3 +45,4 @@ struct CameraView: UIViewControllerRepresentable {
         }
     }
 }
+#endif

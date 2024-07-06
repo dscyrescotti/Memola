@@ -66,7 +66,9 @@ struct Toolbar: View {
                 .background(.regularMaterial)
                 .clipShape(.rect(cornerRadius: 8))
         }
+        #if os(iOS)
         .hoverEffect(.lift)
+        #endif
         .disabled(textFieldState)
         .transition(.move(edge: .top).combined(with: .blurReplace))
     }
@@ -103,7 +105,9 @@ struct Toolbar: View {
                 Image(systemName: "arrow.uturn.backward.circle")
                     .contentShape(.circle)
             }
+            #if os(iOS)
             .hoverEffect(.lift)
+            #endif
             .disabled(history.undoDisabled)
             Button {
                 history.historyPublisher.send(.redo)
@@ -111,7 +115,9 @@ struct Toolbar: View {
                 Image(systemName: "arrow.uturn.forward.circle")
                     .contentShape(.circle)
             }
+            #if os(iOS)
             .hoverEffect(.lift)
+            #endif
             .disabled(history.redoDisabled)
         }
         .frame(width: size * 2, height: size)
@@ -142,7 +148,9 @@ struct Toolbar: View {
                 .background(.regularMaterial)
                 .clipShape(.rect(cornerRadius: 8))
         }
+        #if os(iOS)
         .hoverEffect(.lift)
+        #endif
         .contentTransition(.symbolEffect(.replace))
         .transition(.move(edge: .top).combined(with: .blurReplace))
     }

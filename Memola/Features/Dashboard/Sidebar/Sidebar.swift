@@ -38,9 +38,15 @@ struct Sidebar: View {
         .listStyle(.sidebar)
         .navigationTitle(horizontalSizeClass == .compact ? "Memola" : "")
         .scrollContentBackground(.hidden)
-        .background(Color(uiColor: .secondarySystemBackground))
+        #if os(macOS)
+        .background(Color(color: .windowBackgroundColor))
+        #else
+        .background(Color(color: .secondarySystemBackground))
+        #endif
         .navigationSplitViewColumnWidth(min: 250, ideal: 250, max: 250)
+        #if os(iOS)
         .navigationBarTitleDisplayMode(horizontalSizeClass == .compact ? .automatic : .inline)
+        #endif
     }
 }
 

@@ -201,7 +201,11 @@ struct PenDock: View {
         } preview: {
             penPreview(pen)
                 .drawingGroup()
+                #if os(macOS)
+                #warning("TODO: implement for macos")
+                #else
                 .contentShape(.contextMenuPreview, .rect(cornerRadius: 10))
+                #endif
         }
         .onDrag(if: pen.strokeStyle != .eraser) {
             tool.draggedPen = pen
@@ -274,7 +278,11 @@ struct PenDock: View {
         } preview: {
             penPreview(pen)
                 .drawingGroup()
+                #if os(macOS)
+                #warning("TODO: implement for macos")
+                #else
                 .contentShape(.contextMenuPreview, .rect(cornerRadius: 10))
+                #endif
         }
         .onDrag(if: pen.strokeStyle != .eraser) {
             tool.draggedPen = pen
@@ -356,7 +364,9 @@ struct PenDock: View {
             .drawingGroup()
         }
         .buttonStyle(.plain)
+        #if os(iOS)
         .hoverEffect(.lift)
+        #endif
         .popover(isPresented: $opensColorPicker) {
             let color = Binding(
                 get: { pen.color },
@@ -397,8 +407,10 @@ struct PenDock: View {
                     .frame(width: size + 2, height: size + 2)
             }
         }
+        #if os(iOS)
         .hoverEffect(.lift)
         .pickerStyle(.wheel)
+        #endif
         .frame(width: width * factor - 18, height: 35)
         .onChange(of: pen.thickness) { _, _ in
             withPersistence(\.viewContext) { context in
@@ -429,8 +441,10 @@ struct PenDock: View {
                     .frame(width: size + 2, height: size + 2)
             }
         }
+        #if os(iOS)
         .hoverEffect(.lift)
         .pickerStyle(.wheel)
+        #endif
         .frame(width: 50, height: 30)
         .onChange(of: pen.thickness) { _, _ in
             withPersistence(\.viewContext) { context in
@@ -453,7 +467,9 @@ struct PenDock: View {
                 }
         }
         .foregroundStyle(.green)
+        #if os(iOS)
         .hoverEffect(.lift)
+        #endif
     }
 
     func penPreview(_ pen: Pen) -> some View {
@@ -532,7 +548,9 @@ struct PenDock: View {
                 .background(.regularMaterial)
                 .clipShape(.rect(cornerRadius: 8))
         }
+        #if os(iOS)
         .hoverEffect(.lift)
+        #endif
         .contentTransition(.symbolEffect(.replace))
     }
 

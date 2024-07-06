@@ -127,7 +127,7 @@ public class Tool: NSObject, ObservableObject {
         }
     }
 
-    func selectPhoto(_ image: UIImage, for canvasID: NSManagedObjectID) {
+    func selectPhoto(_ image: Platform.Image, for canvasID: NSManagedObjectID) {
         guard let (resizedImage, dimension) = resizePhoto(of: image) else { return }
         let photoItem = bookmarkPhoto(of: resizedImage, and: image, in: dimension, with: canvasID)
         withAnimation {
@@ -136,7 +136,7 @@ public class Tool: NSObject, ObservableObject {
         }
     }
 
-    private func resizePhoto(of image: UIImage) -> (UIImage, CGSize)? {
+    private func resizePhoto(of image: Platform.Image) -> (Platform.Image, CGSize)? {
         let targetSize = CGSize(width: 512, height: 512)
         let size = image.size
         let widthRatio = targetSize.width / size.width
@@ -147,6 +147,9 @@ public class Tool: NSObject, ObservableObject {
         )
         let rect = CGRect(origin: .zero, size: targetSize)
 
+        #if os(macOS)
+        return (image, dimension)
+        #else
         UIGraphicsBeginImageContextWithOptions(targetSize, true, 1.0)
         image.draw(in: rect)
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
@@ -155,10 +158,16 @@ public class Tool: NSObject, ObservableObject {
         guard let newImage else { return nil }
 
         return (newImage, dimension)
+        #endif
     }
 
-    private func bookmarkPhoto(of image: UIImage, and previewImage: UIImage, in dimension: CGSize, with canvasID: NSManagedObjectID) -> PhotoItem? {
+    private func bookmarkPhoto(of image: Platform.Image, and previewImage: Platform.Image, in dimension: CGSize, with canvasID: NSManagedObjectID) -> PhotoItem? {
+        #if os(macOS)
+        #warning("TODO: implement for macos")
+        let data = Data()
+        #else
         guard let data = image.jpegData(compressionQuality: 1) else { return nil }
+        #endif
         let fileManager = FileManager.default
         guard let directory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
             return nil

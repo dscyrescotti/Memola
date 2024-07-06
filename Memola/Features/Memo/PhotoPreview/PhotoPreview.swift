@@ -14,7 +14,7 @@ struct PhotoPreview: View {
     @ObservedObject var tool: Tool
 
     var body: some View {
-        Image(uiImage: photoItem.previewImage)
+        Image(image: photoItem.previewImage)
             .resizable()
             .scaledToFit()
             .frame(width: horizontalSizeClass == .compact ? 80 : nil, height: horizontalSizeClass == .compact ? nil : 100)
@@ -40,7 +40,9 @@ struct PhotoPreview: View {
                         }
                 }
                 .foregroundStyle(.red)
+                #if os(iOS)
                 .hoverEffect(.lift)
+                #endif
                 .offset(x: -12, y: -12)
             }
             .padding(10)

@@ -46,9 +46,14 @@ struct MemosView: View {
             memoCard(memoObject, cellWidth)
         }
         .navigationTitle(horizontalSizeClass == .compact ? "Memos" : "")
+        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
         .searchable(text: $query, placement: .toolbar, prompt: Text("Search"))
         .toolbar {
+            #if os(macOS)
+            #warning("TODO: implement for macos")
+            #else
             if horizontalSizeClass == .regular {
                 ToolbarItem(placement: .topBarLeading) {
                     Text("Memola")
@@ -111,6 +116,7 @@ struct MemosView: View {
                     }
                 }
             }
+            #endif
         }
         .onChange(of: sort) { oldValue, newValue in
             memoObjects.sortDescriptors = newValue.memoSortDescriptors

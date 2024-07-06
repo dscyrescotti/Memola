@@ -85,7 +85,11 @@ extension Canvas {
     func save(for memoObject: MemoObject, completion: @escaping () -> Void) {
         state = .closing
         let previewImage = renderer?.drawPreview(on: self)
+        #if os(macOS)
+        #warning("TODO: implement for macos")
+        #else
         memoObject.preview = previewImage?.jpegData(compressionQuality: 0.8)
+        #endif
         withPersistenceSync(\.viewContext) { context in
             try context.saveIfNeeded()
         }
@@ -135,7 +139,7 @@ extension Canvas {
         self.previewTransform = simd_float4x4(transform)
     }
 
-    func updateClipBounds(_ scrollView: UIScrollView, on drawingView: DrawingView) {
+    func updateClipBounds(_ scrollView: Platform.ScrollView, on drawingView: DrawingView) {
         let ratio = drawingView.ratio
         let bounds = scrollView.convert(scrollView.bounds, to: drawingView)
         clipBounds = CGRect(origin: bounds.origin.muliply(by: ratio), size: bounds.size.multiply(by: ratio))

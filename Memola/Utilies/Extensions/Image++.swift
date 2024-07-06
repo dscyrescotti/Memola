@@ -1,13 +1,24 @@
 //
-//  UIImage++.swift
+//  Image++.swift
 //  Memola
 //
 //  Created by Dscyre Scotti on 6/15/24.
 //
 
-import UIKit
+import SwiftUI
 import Foundation
 
+extension Image {
+    init(image: Platform.Image) {
+        #if os(macOS)
+        self = Image(nsImage: image)
+        #else
+        self = Image(uiImage: image)
+        #endif
+    }
+}
+
+#if os(iOS)
 extension UIImage {
     func imageWithUpOrientation() -> UIImage? {
         switch imageOrientation {
@@ -22,3 +33,4 @@ extension UIImage {
         }
     }
 }
+#endif

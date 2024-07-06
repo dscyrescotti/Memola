@@ -43,6 +43,7 @@ struct ElementToolbar: View {
                 .padding(.bottom, 10)
             }
         }
+        #if os(iOS)
         .fullScreenCover(isPresented: $opensCamera) {
             let image: Binding<UIImage?> = Binding {
                 tool.selectedPhotoItem?.image
@@ -55,8 +56,8 @@ struct ElementToolbar: View {
         }
         .alert("Camera Access Denied", isPresented: $isCameraAccessDenied) {
             Button {
-                if let url = URL(string: UIApplication.openSettingsURLString + "&path=CAMERA/\(String(describing: Bundle.main.bundleIdentifier))") {
-                    UIApplication.shared.open(url)
+                if let url = URL(string: Platform.Application.openSettingsURLString + "&path=CAMERA/\(String(describing: Bundle.main.bundleIdentifier))") {
+                    Platform.Application.shared.open(url)
                 }
             } label: {
                 Text("Open Settings")
@@ -65,12 +66,13 @@ struct ElementToolbar: View {
         } message: {
             Text("Memola requires access to the camera to capture photos. Please open Settings and enable camera access.")
         }
+        #endif
         .onChange(of: photosPickerItem) { oldValue, newValue in
             if newValue != nil {
                 Task {
                     tool.isLoadingPhoto = true
                     let data = try? await newValue?.loadTransferable(type: Data.self)
-                    if let data, let image = UIImage(data: data) {
+                    if let data, let image = Platform.Image(data: data) {
                         tool.selectPhoto(image, for: canvas.canvasID)
                     }
                     photosPickerItem = nil
@@ -93,7 +95,9 @@ struct ElementToolbar: View {
                     .foregroundStyle(tool.selection == .hand ? Color.white : Color.accentColor)
                     .clipShape(.rect(cornerRadius: 8))
             }
+            #if os(iOS)
             .hoverEffect(.lift)
+            #endif
             .background {
                 if tool.selection == .hand {
                     Color.accentColor
@@ -113,7 +117,9 @@ struct ElementToolbar: View {
                     .foregroundStyle(tool.selection == .pen ? Color.white : Color.accentColor)
                     .clipShape(.rect(cornerRadius: 8))
             }
+            #if os(iOS)
             .hoverEffect(.lift)
+            #endif
             .background {
                 if tool.selection == .pen {
                     Color.accentColor
@@ -133,7 +139,9 @@ struct ElementToolbar: View {
                         .foregroundStyle(tool.selection == .photo ? Color.white : Color.accentColor)
                         .clipShape(.rect(cornerRadius: 8))
                 }
+                #if os(iOS)
                 .hoverEffect(.lift)
+                #endif
                 .background {
                     if tool.selection == .photo {
                         Color.accentColor
@@ -179,7 +187,9 @@ struct ElementToolbar: View {
                     .frame(width: size, height: size)
                     .clipShape(.rect(cornerRadius: 8))
             }
+            #if os(iOS)
             .hoverEffect(.lift)
+            #endif
             Button {
                 withAnimation {
                     tool.selectTool(.photo)
@@ -190,7 +200,9 @@ struct ElementToolbar: View {
                     .frame(width: size, height: size)
                     .clipShape(.rect(cornerRadius: 8))
             }
+            #if os(iOS)
             .hoverEffect(.lift)
+            #endif
         }
         .background {
             RoundedRectangle(cornerRadius: 8)
@@ -211,14 +223,18 @@ struct ElementToolbar: View {
                     .frame(width: size, height: size)
                     .clipShape(.rect(cornerRadius: 8))
             }
+            #if os(iOS)
             .hoverEffect(.lift)
+            #endif
             PhotosPicker(selection: $photosPickerItem, matching: .images, preferredItemEncoding: .compatible) {
                 Image(systemName: "photo.fill.on.rectangle.fill")
                     .contentShape(.circle)
                     .frame(width: size, height: size)
                     .clipShape(.rect(cornerRadius: 8))
             }
+            #if os(iOS)
             .hoverEffect(.lift)
+            #endif
         }
     }
 

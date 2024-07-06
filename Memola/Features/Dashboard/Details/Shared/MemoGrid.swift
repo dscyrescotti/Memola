@@ -42,6 +42,10 @@ struct MemoGrid<Card: View>: View {
                 }
             }
         }
-        .background(Color(uiColor: .secondarySystemBackground))
+        #if os(macOS)
+        .background(Color(color: .windowBackgroundColor))
+        #else
+        .background(Color(color: .secondarySystemBackground))
+        #endif
     }
 }
