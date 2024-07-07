@@ -41,9 +41,15 @@ struct Toolbar: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            #if os(macOS)
+            if !canvas.locksCanvas {
+                ElementToolbar(size: size, tool: tool, canvas: canvas)
+            }
+            #else
             if !canvas.locksCanvas, horizontalSizeClass == .regular {
                 ElementToolbar(size: size, tool: tool, canvas: canvas)
             }
+            #endif
             HStack(spacing: 5) {
                 if !canvas.locksCanvas {
                     gridModeControl
@@ -61,13 +67,15 @@ struct Toolbar: View {
             closeMemo()
         } label: {
             Image(systemName: "xmark")
-                .contentShape(.circle)
                 .frame(width: size, height: size)
                 .background(.regularMaterial)
                 .clipShape(.rect(cornerRadius: 8))
+                .contentShape(.rect(cornerRadius: 8))
         }
         #if os(iOS)
         .hoverEffect(.lift)
+        #else
+        .buttonStyle(.plain)
         #endif
         .disabled(textFieldState)
         .transition(.move(edge: .top).combined(with: .blurReplace))
@@ -98,29 +106,34 @@ struct Toolbar: View {
     }
 
     var historyControl: some View {
-        HStack {
+        HStack(spacing: 0) {
             Button {
                 history.historyPublisher.send(.undo)
             } label: {
                 Image(systemName: "arrow.uturn.backward.circle")
-                    .contentShape(.circle)
+                    .frame(width: size, height: size)
+                    .contentShape(.rect(cornerRadius: 8))
             }
             #if os(iOS)
             .hoverEffect(.lift)
+            #else
+            .buttonStyle(.plain)
             #endif
             .disabled(history.undoDisabled)
             Button {
                 history.historyPublisher.send(.redo)
             } label: {
                 Image(systemName: "arrow.uturn.forward.circle")
-                    .contentShape(.circle)
+                    .frame(width: size, height: size)
+                    .contentShape(.rect(cornerRadius: 8))
             }
             #if os(iOS)
             .hoverEffect(.lift)
+            #else
+            .buttonStyle(.plain)
             #endif
             .disabled(history.redoDisabled)
         }
-        .frame(width: size * 2, height: size)
         .background(.regularMaterial)
         .clipShape(.rect(cornerRadius: 8))
         .disabled(textFieldState)
@@ -128,6 +141,27 @@ struct Toolbar: View {
     }
 
     var gridModeControl: some View {
+        #if os(macOS)
+        Button {
+            switch canvas.gridMode {
+            case .none:
+                canvas.gridMode = .point
+            case .point:
+                canvas.gridMode = .line
+            case .line:
+                canvas.gridMode = .none
+            }
+        } label: {
+            Image(systemName: canvas.gridMode.icon)
+                .frame(width: size, height: size)
+                .background(.regularMaterial)
+                .clipShape(.rect(cornerRadius: 8))
+                .contentShape(.rect(cornerRadius: 8))
+        }
+        .buttonStyle(.plain)
+        .contentTransition(.symbolEffect(.replace))
+        .transition(.move(edge: .top).combined(with: .blurReplace))
+        #else
         Menu {
             ForEach(GridMode.all, id: \.self) { mode in
                 Button {
@@ -143,16 +177,15 @@ struct Toolbar: View {
             }
         } label: {
             Image(systemName: canvas.gridMode.icon)
-                .contentShape(.circle)
                 .frame(width: size, height: size)
                 .background(.regularMaterial)
                 .clipShape(.rect(cornerRadius: 8))
+                .contentShape(.rect(cornerRadius: 8))
         }
-        #if os(iOS)
         .hoverEffect(.lift)
-        #endif
         .contentTransition(.symbolEffect(.replace))
         .transition(.move(edge: .top).combined(with: .blurReplace))
+        #endif
     }
 
     func closeMemo() {

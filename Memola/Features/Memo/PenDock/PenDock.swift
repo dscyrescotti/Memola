@@ -23,8 +23,28 @@ struct PenDock: View {
 
     @State var refreshScrollId: UUID = UUID()
     @State var opensColorPicker: Bool = false
+    #if os(macOS)
+    @State var showsThinknessPicker: Bool = false
+    #endif
 
     var body: some View {
+        #if os(macOS)
+        ZStack(alignment: .bottomTrailing) {
+            if !canvas.locksCanvas {
+                VStack(alignment: .trailing) {
+                    penPropertyTool
+                    penItemList
+                }
+                .fixedSize()
+                .frame(maxHeight: .infinity)
+                .padding(10)
+                .transition(.move(edge: .trailing).combined(with: .blurReplace))
+            }
+            lockButton
+                .padding(10)
+                .transition(.move(edge: .trailing).combined(with: .blurReplace))
+        }
+        #else
         if horizontalSizeClass == .regular {
             ZStack(alignment: .bottomTrailing) {
                 if !canvas.locksCanvas {
@@ -73,6 +93,7 @@ struct PenDock: View {
                     .transition(.move(edge: .trailing).combined(with: .blurReplace))
             }
         }
+        #endif
     }
 
     @ViewBuilder
@@ -319,12 +340,12 @@ struct PenDock: View {
     var compactPenPropertyTool: some View {
         if let pen = tool.selectedPen {
             HStack(spacing: 10) {
-                compactPenThicknessPicker(pen)
-                    .frame(width: width)
+                penThicknessPicker(pen)
+                    .frame(width: size)
                     .rotationEffect(.degrees(-90))
                 if pen.strokeStyle == .marker {
                     penColorPicker(pen)
-                        .frame(width: width)
+                        .frame(width: size)
                         .transition(.move(edge: .trailing).combined(with: .opacity))
                 }
             }
@@ -353,7 +374,8 @@ struct PenDock: View {
             }
             .background(baseColor)
             .clipShape(.rect(cornerRadius: 8))
-            .frame(height: horizontalSizeClass == .compact ? 30 : 25)
+            .contentShape(.rect(cornerRadius: 8))
+            .frame(height: size)
             .overlay {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(Color.gray, lineWidth: 0.4)
@@ -389,64 +411,50 @@ struct PenDock: View {
         let maximum: CGFloat = pen.style.thickness.max
         let start: CGFloat = 4
         let end: CGFloat = 10
-        let selection = Binding(
-            get: { pen.thickness },
-            set: { 
-                pen.thickness = $0
-                tool.objectWillChange.send()
-            }
-        )
-        Picker("", selection: selection) {
-            ForEach(pen.style.thicknessSteps, id: \.self) { step in
-                let size = ((step - minimum) * (end - start) / (maximum - minimum)) + start - (0.5 / step)
-                Circle()
-                    .fill(.black)
-                    .frame(width: size, height: size)
-                    .frame(width: size + 2, height: size + 2)
-            }
-        }
-        #if os(iOS)
-        .hoverEffect(.lift)
-        .pickerStyle(.wheel)
-        #endif
-        .frame(width: width * factor - 18, height: 35)
-        .onChange(of: pen.thickness) { _, _ in
-            withPersistence(\.viewContext) { context in
-                try context.saveIfNeeded()
-            }
-        }
-    }
-
-    @ViewBuilder
-    func compactPenThicknessPicker(_ pen: Pen) -> some View {
-        let minimum: CGFloat = pen.style.thickness.min
-        let maximum: CGFloat = pen.style.thickness.max
-        let start: CGFloat = 4
-        let end: CGFloat = 7
-        let selection = Binding(
+        let selection = Binding<CGFloat?>(
             get: { pen.thickness },
             set: {
-                pen.thickness = $0
+                pen.thickness = $0 ?? .zero
                 tool.objectWillChange.send()
             }
         )
-        Picker("", selection: selection) {
-            ForEach(pen.style.thicknessSteps, id: \.self) { step in
-                let size = ((step - minimum) * (end - start) / (maximum - minimum)) + start - (0.5 / step)
-                Circle()
-                    .fill(.black)
-                    .frame(width: size, height: size)
-                    .frame(width: size + 2, height: size + 2)
-            }
-        }
-        #if os(iOS)
-        .hoverEffect(.lift)
-        .pickerStyle(.wheel)
+        #if os(macOS)
+        let _width = width * factor - 38
+        #else
+        let _width = horizontalSizeClass == .compact ? self.size : width * factor - 38
         #endif
-        .frame(width: 50, height: 30)
-        .onChange(of: pen.thickness) { _, _ in
-            withPersistence(\.viewContext) { context in
-                try context.saveIfNeeded()
+        ScrollViewReader { proxy in
+            ScrollView(showsIndicators: false) {
+                LazyVStack(spacing: 0) {
+                    ForEach(pen.style.thicknessSteps, id: \.self) { step in
+                        let size = ((step - minimum) * (end - start) / (maximum - minimum)) + start - (0.5 / step)
+                        Circle()
+                            .foregroundStyle(.primary)
+                            .frame(width: size, height: size)
+                            .frame(width: _width, height: self.size)
+                            .contentShape(.rect)
+                            .id(step)
+                    }
+                }
+            }
+            #if os(macOS)
+            .frame(height: size)
+            #else
+            .frame(width: _width, height: size)
+            #endif
+            .background(.gray.quaternary)
+            .clipShape(.rect(cornerRadius: 8))
+            .scrollPosition(id: selection, anchor: .center)
+            .scrollTargetLayout()
+            .scrollTargetBehavior(.viewAligned)
+            .scrollIndicators(.hidden)
+            .onAppear {
+                proxy.scrollTo(selection.wrappedValue)
+            }
+            .onChange(of: pen.thickness) { _, _ in
+                withPersistence(\.viewContext) { context in
+                    try context.saveIfNeeded()
+                }
             }
         }
     }
@@ -467,6 +475,8 @@ struct PenDock: View {
         .foregroundStyle(.green)
         #if os(iOS)
         .hoverEffect(.lift)
+        #else
+        .buttonStyle(.plain)
         #endif
     }
 
@@ -541,13 +551,15 @@ struct PenDock: View {
             }
         } label: {
             Image(systemName: canvas.locksCanvas ? "lock.fill" : "lock.open.fill")
-                .contentShape(.circle)
                 .frame(width: size, height: size)
                 .background(.regularMaterial)
                 .clipShape(.rect(cornerRadius: 8))
+                .contentShape(.rect(cornerRadius: 8))
         }
         #if os(iOS)
         .hoverEffect(.lift)
+        #else
+        .buttonStyle(.plain)
         #endif
         .contentTransition(.symbolEffect(.replace))
     }

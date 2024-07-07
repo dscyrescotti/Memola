@@ -31,11 +31,15 @@ struct MemoView: View {
 
     var body: some View {
         Group {
+            #if os(macOS)
+            canvasView
+            #else
             if horizontalSizeClass == .regular {
                 canvasView
             } else {
                 compactCanvasView
             }
+            #endif
         }
         .overlay(alignment: .top) {
             Toolbar(size: size, memo: memo, tool: tool, canvas: canvas, history: history)
@@ -66,7 +70,6 @@ struct MemoView: View {
                 switch tool.selection {
                 case .pen:
                     PenDock(tool: tool, canvas: canvas, size: size)
-                        .transition(.move(edge: .trailing).combined(with: .blurReplace))
                 case .photo:
                     if let photoItem = tool.selectedPhotoItem {
                         PhotoPreview(photoItem: photoItem, tool: tool)
@@ -106,7 +109,7 @@ struct MemoView: View {
                 }
             }
             .overlay(alignment: .bottom) {
-                if tool.selection != .hand {
+                if tool.selection != .hand && !canvas.locksCanvas {
                     Button {
                         withAnimation {
                             tool.selectTool(.hand)
@@ -121,6 +124,7 @@ struct MemoView: View {
                             .contentShape(.capsule)
                     }
                     .offset(y: 5)
+                    .transition(.move(edge: .bottom).combined(with: .blurReplace))
                 }
             }
     }
@@ -132,6 +136,40 @@ struct MemoView: View {
         let zoomScale: CGFloat = (((canvas.zoomScale - canvas.minimumZoomScale) * (upperBound - lowerBound) / (canvas.maximumZoomScale - canvas.minimumZoomScale)) + lowerBound).rounded()
         let zoomScales: [Int] = [400, 200, 100, 75, 50, 25, 10]
         if !canvas.locksCanvas {
+            #if os(macOS)
+            Menu {
+                ForEach(zoomScales, id: \.self) { scale in
+                    Button {
+                        let zoomScale = ((CGFloat(scale) - lowerBound) * (canvas.maximumZoomScale - canvas.minimumZoomScale) / (upperBound - lowerBound)) + canvas.minimumZoomScale
+                        canvas.zoomPublisher.send(zoomScale)
+                    } label: {
+                        Label {
+                            Text(scale, format: .percent)
+                        } icon: {
+                            if CGFloat(scale) == zoomScale {
+                                Image(systemName: "checkmark")
+                            }
+                        }
+                        .font(.headline)
+                    }
+                }
+            } label: {
+                Text(zoomScale / 100, format: .percent)
+                    .font(.subheadline)
+                    .frame(height: size)
+                    .clipShape(.rect(cornerRadius: 8))
+                    .contentShape(.rect(cornerRadius: 8))
+            }
+            .menuIndicator(.hidden)
+            .frame(width: 50, height: size)
+            .padding(.leading, 12)
+            .background(.regularMaterial)
+            .clipShape(.rect(cornerRadius: 8))
+            .contentShape(.rect(cornerRadius: 8))
+            .menuStyle(.borderlessButton)
+            .transition(.move(edge: .bottom).combined(with: .blurReplace))
+            .padding(10)
+            #else
             Menu {
                 ForEach(zoomScales, id: \.self) { scale in
                     Button {
@@ -156,12 +194,12 @@ struct MemoView: View {
                     .frame(height: size)
                     .background(.regularMaterial)
                     .clipShape(.rect(cornerRadius: 8))
+                    .contentShape(.rect(cornerRadius: 8))
                     .padding(10)
             }
-            #if os(iOS)
             .hoverEffect(.lift)
-            #endif
             .transition(.move(edge: .bottom).combined(with: .blurReplace))
+            #endif
         }
     }
 

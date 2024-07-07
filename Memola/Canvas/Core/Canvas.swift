@@ -162,7 +162,13 @@ extension Canvas {
 // MARK: - Zoom Scale
 extension Canvas {
     func setZoomScale(_ zoomScale: CGFloat) {
+        #if os(macOS)
         self.zoomScale = min(max(zoomScale, minimumZoomScale), maximumZoomScale)
+        #else
+        DispatchQueue.main.async { [unowned self] in
+            self.zoomScale = min(max(zoomScale, minimumZoomScale), maximumZoomScale)
+        }
+        #endif
     }
 }
 

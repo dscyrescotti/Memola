@@ -168,16 +168,16 @@ extension CanvasViewController {
         let height = size.height * scale
         let newFrame = CGRect(x: 0, y: 0, width: width, height: height)
         drawingView.frame = newFrame
-        
+
+        #if os(macOS)
         DispatchQueue.main.async { [unowned canvas] in
             canvas.setZoomScale(canvas.defaultZoomScale)
         }
-
-        #if os(macOS)
         scrollView.contentView.setBoundsSize(newFrame.size)
         let center = NSPoint(x: newFrame.midX, y: newFrame.midY)
         scrollView.setMagnification(canvas.defaultZoomScale, centeredAt: center)
         #else
+        canvas.setZoomScale(canvas.defaultZoomScale)
         scrollView.setZoomScale(canvas.defaultZoomScale, animated: true)
         centerDocumentView(to: newSize)
         #endif
@@ -427,9 +427,6 @@ extension CanvasViewController {
     }
 
     func draggingStarted() {
-        #if os(macOS)
-        canvas.setZoomScale(scrollView.magnification)
-        #endif
         guard !renderer.updatesViewPort else { return }
         canvas.updateClipBounds(scrollView, on: drawingView)
         drawingView.disableUserInteraction()
@@ -437,9 +434,6 @@ extension CanvasViewController {
     }
 
     func draggingEnded() {
-        #if os(macOS)
-        canvas.setZoomScale(scrollView.magnification)
-        #endif
         renderer.setUpdatesViewPort(false)
         renderer.setRedrawsGraphicRender()
         renderView.draw()

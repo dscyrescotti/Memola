@@ -23,6 +23,9 @@ struct ElementToolbar: View {
 
     var body: some View {
         Group {
+            #if os(macOS)
+            regularToolbar
+            #else
             if horizontalSizeClass == .regular {
                 regularToolbar
             } else {
@@ -42,6 +45,7 @@ struct ElementToolbar: View {
                 }
                 .padding(.bottom, 10)
             }
+            #endif
         }
         #if os(iOS)
         .fullScreenCover(isPresented: $opensCamera) {
@@ -94,9 +98,12 @@ struct ElementToolbar: View {
                     .frame(width: size, height: size)
                     .foregroundStyle(tool.selection == .hand ? Color.white : Color.accentColor)
                     .clipShape(.rect(cornerRadius: 8))
+                    .contentShape(.rect(cornerRadius: 8))
             }
             #if os(iOS)
             .hoverEffect(.lift)
+            #else
+            .buttonStyle(.plain)
             #endif
             .background {
                 if tool.selection == .hand {
@@ -116,9 +123,12 @@ struct ElementToolbar: View {
                     .frame(width: size, height: size)
                     .foregroundStyle(tool.selection == .pen ? Color.white : Color.accentColor)
                     .clipShape(.rect(cornerRadius: 8))
+                    .contentShape(.rect(cornerRadius: 8))
             }
             #if os(iOS)
             .hoverEffect(.lift)
+            #else
+            .buttonStyle(.plain)
             #endif
             .background {
                 if tool.selection == .pen {
@@ -138,9 +148,12 @@ struct ElementToolbar: View {
                         .frame(width: size, height: size)
                         .foregroundStyle(tool.selection == .photo ? Color.white : Color.accentColor)
                         .clipShape(.rect(cornerRadius: 8))
+                        .contentShape(.rect(cornerRadius: 8))
                 }
                 #if os(iOS)
                 .hoverEffect(.lift)
+                #else
+                .buttonStyle(.plain)
                 #endif
                 .background {
                     if tool.selection == .photo {
@@ -159,13 +172,13 @@ struct ElementToolbar: View {
                         .transition(.blurReplace.animation(.easeIn(duration: 0.1)))
                 }
             }
-            .background {
-                if tool.selection == .photo {
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color.white.tertiary)
-                        .transition(.move(edge: .leading).combined(with: .opacity).animation(.easeIn(duration: 0.1)))
-                }
-            }
+//            .background {
+//                if tool.selection == .photo {
+//                    RoundedRectangle(cornerRadius: 8)
+//                        .fill(Color.white.tertiary)
+//                        .transition(.move(edge: .leading).combined(with: .opacity).animation(.easeIn(duration: 0.1)))
+//                }
+//            }
         }
         .background {
             RoundedRectangle(cornerRadius: 8)
@@ -222,18 +235,24 @@ struct ElementToolbar: View {
                     .contentShape(.circle)
                     .frame(width: size, height: size)
                     .clipShape(.rect(cornerRadius: 8))
+                    .contentShape(.rect(cornerRadius: 8))
             }
             #if os(iOS)
             .hoverEffect(.lift)
+            #else
+            .buttonStyle(.plain)
             #endif
             PhotosPicker(selection: $photosPickerItem, matching: .images, preferredItemEncoding: .compatible) {
                 Image(systemName: "photo.fill.on.rectangle.fill")
                     .contentShape(.circle)
                     .frame(width: size, height: size)
                     .clipShape(.rect(cornerRadius: 8))
+                    .contentShape(.rect(cornerRadius: 8))
             }
             #if os(iOS)
             .hoverEffect(.lift)
+            #else
+            .buttonStyle(.plain)
             #endif
         }
     }
