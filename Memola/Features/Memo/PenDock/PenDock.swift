@@ -62,35 +62,37 @@ struct PenDock: View {
                     .transition(.move(edge: .trailing).combined(with: .blurReplace))
             }
         } else {
-            ZStack(alignment: .bottomTrailing) {
-                if !canvas.locksCanvas {
-                    GeometryReader { proxy in
-                        HStack(alignment: .bottom, spacing: 10) {
-                            newPenButton
-                                .frame(height: height * factor - 18)
-                            compactPenItemList
-                                .fixedSize(horizontal: false, vertical: true)
-                            compactPenPropertyTool
+            GeometryReader { proxy in
+                ZStack(alignment: .bottomTrailing) {
+                    if !canvas.locksCanvas {
+                        GeometryReader { proxy in
+                            HStack(alignment: .bottom, spacing: 10) {
+                                newPenButton
+                                    .frame(height: height * factor - 18)
+                                compactPenItemList
+                                    .fixedSize(horizontal: false, vertical: true)
+                                compactPenPropertyTool
+                            }
+                            .padding(.horizontal, 10)
+                            .clipped()
+                            .background(alignment: .bottom) {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(.regularMaterial)
+                                    .frame(height: height * factor - 18)
+                            }
+                            .padding(.horizontal, 10)
+                            .padding(.bottom, 20)
+                            .frame(maxWidth: min(proxy.size.height, proxy.size.width), maxHeight: .infinity, alignment: .bottom)
+                            .frame(maxWidth: .infinity)
                         }
-                        .padding(.horizontal, 10)
-                        .clipped()
-                        .background(alignment: .bottom) {
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(.regularMaterial)
-                                .frame(height: height * factor - 18)
-                        }
-                        .padding(.horizontal, 10)
-                        .padding(.bottom, 20)
-                        .frame(maxWidth: min(proxy.size.height, proxy.size.width), maxHeight: .infinity, alignment: .bottom)
-                        .frame(maxWidth: .infinity)
+                        .transition(.move(edge: .bottom).combined(with: .blurReplace))
                     }
-                    .transition(.move(edge: .bottom).combined(with: .blurReplace))
+                    lockButton
+                        .frame(maxWidth: .infinity, alignment: .bottomTrailing)
+                        .padding(10)
+                        .offset(y: canvas.locksCanvas || proxy.size.width > proxy.size.height ? 0 : -(height * factor - size + 30))
+                        .transition(.move(edge: .trailing).combined(with: .blurReplace))
                 }
-                lockButton
-                    .frame(maxWidth: .infinity, alignment: .bottomTrailing)
-                    .padding(10)
-                    .offset(y: canvas.locksCanvas ? 0 : -(height * factor - size + 30))
-                    .transition(.move(edge: .trailing).combined(with: .blurReplace))
             }
         }
         #endif

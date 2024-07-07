@@ -156,11 +156,13 @@ struct ElementToolbar: View {
                 .buttonStyle(.plain)
                 #endif
                 .background {
+                    #if os(iOS)
                     if tool.selection == .photo {
                         Color.accentColor
                             .clipShape(.rect(cornerRadius: 8))
                             .matchedGeometryEffect(id: "element.toolbar.bg", in: namespace)
                     }
+                    #endif
                     if tool.selection != .photo {
                         Color.clear
                             .matchedGeometryEffect(id: "element.toolbar.photo.options", in: namespace)
@@ -172,13 +174,6 @@ struct ElementToolbar: View {
                         .transition(.blurReplace.animation(.easeIn(duration: 0.1)))
                 }
             }
-//            .background {
-//                if tool.selection == .photo {
-//                    RoundedRectangle(cornerRadius: 8)
-//                        .fill(Color.white.tertiary)
-//                        .transition(.move(edge: .leading).combined(with: .opacity).animation(.easeIn(duration: 0.1)))
-//                }
-//            }
         }
         .background {
             RoundedRectangle(cornerRadius: 8)
@@ -228,6 +223,7 @@ struct ElementToolbar: View {
 
     var photoOption: some View {
         HStack(spacing: 0) {
+            #if os(iOS)
             Button {
                 openCamera()
             } label: {
@@ -237,9 +233,7 @@ struct ElementToolbar: View {
                     .clipShape(.rect(cornerRadius: 8))
                     .contentShape(.rect(cornerRadius: 8))
             }
-            #if os(iOS)
             .hoverEffect(.lift)
-            #else
             .buttonStyle(.plain)
             #endif
             PhotosPicker(selection: $photosPickerItem, matching: .images, preferredItemEncoding: .compatible) {

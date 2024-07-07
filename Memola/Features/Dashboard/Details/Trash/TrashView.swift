@@ -8,9 +8,6 @@
 import SwiftUI
 
 struct TrashView: View {
-    #if os(macOS)
-    @Environment(\.openWindow) var openWindow
-    #endif
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     @FetchRequest var memoObjects: FetchedResults<MemoObject>
@@ -19,31 +16,18 @@ struct TrashView: View {
     @State var restoredMemo: MemoObject?
     @State var deletedMemo: MemoObject?
 
-    #if os(iOS)
-    @Binding var memo: MemoObject?
-    #endif
     @Binding var sidebarItem: SidebarItem?
 
     var placeholder: Placeholder.Info {
         query.isEmpty ? .trashEmpty : .trashNotFound
     }
 
-    #if os(macOS)
     init(sidebarItem: Binding<SidebarItem?>) {
         _sidebarItem = sidebarItem
         let descriptors = [SortDescriptor(\MemoObject.deletedAt, order: .reverse)]
         let predicate = NSPredicate(format: "isTrash = YES")
         _memoObjects = FetchRequest(sortDescriptors: descriptors, predicate: predicate)
     }
-    #else
-    init(memo: Binding<MemoObject?>, sidebarItem: Binding<SidebarItem?>) {
-        _memo = memo
-        _sidebarItem = sidebarItem
-        let descriptors = [SortDescriptor(\MemoObject.deletedAt, order: .reverse)]
-        let predicate = NSPredicate(format: "isTrash = YES")
-        _memoObjects = FetchRequest(sortDescriptors: descriptors, predicate: predicate)
-    }
-    #endif
 
     var body: some View {
         let restoresMemo = Binding<Bool> {
@@ -161,11 +145,7 @@ struct TrashView: View {
         restoreMemo(for: memo)
         self.sidebarItem = .memos
         if let memo {
-            #if os(macOS)
-            openWindow(id: "memo-view", value: memo.objectID.uriRepresentation())
-            #else
-            self.memo = memo
-            #endif
+            MemoManager.shared.openMemo(memo)
         }
     }
 

@@ -17,11 +17,11 @@ struct Toolbar: View {
     @ObservedObject var history: History
 
     @State var title: String
-    @State var memo: MemoObject
 
     @FocusState var textFieldState: Bool
 
     let size: CGFloat
+    let memo: MemoObject
 
     init(size: CGFloat, memo: MemoObject, tool: Tool, canvas: Canvas, history: History) {
         self.size = size
@@ -190,7 +190,11 @@ struct Toolbar: View {
 
     func closeMemo() {
         canvas.save(for: memo) {
+            #if os(macOS)
+            MemoManager.shared.closeMemo()
+            #else
             dismiss()
+            #endif
         }
     }
 }

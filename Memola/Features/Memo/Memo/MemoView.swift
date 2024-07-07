@@ -15,10 +15,10 @@ struct MemoView: View {
     @StateObject var canvas: Canvas
     @StateObject var history: History
 
-    @State var memo: MemoObject
     @State var title: String
     @FocusState var textFieldState: Bool
 
+    let memo: MemoObject
     let size: CGFloat = 32
 
     init(memo: MemoObject) {
