@@ -38,7 +38,26 @@ class DrawingView: Platform.View {
     }
     
     #if os(macOS)
-    #warning("TODO: to implement touch events")
+    override func mouseDown(with event: NSEvent) {
+        super.mouseDown(with: event)
+        let pointInLeftBottomOrigin = convert(event.locationInWindow, from: nil)
+        let point = CGPoint(x: pointInLeftBottomOrigin.x, y: bounds.height - pointInLeftBottomOrigin.y)
+        touchBegan(at: point)
+    }
+
+    override func mouseDragged(with event: NSEvent) {
+        super.mouseDragged(with: event)
+        let pointInLeftBottomOrigin = convert(event.locationInWindow, from: nil)
+        let point = CGPoint(x: pointInLeftBottomOrigin.x, y: bounds.height - pointInLeftBottomOrigin.y)
+        touchMoved(to: point)
+    }
+
+    override func mouseUp(with event: NSEvent) {
+        super.mouseUp(with: event)
+        let pointInLeftBottomOrigin = convert(event.locationInWindow, from: nil)
+        let point = CGPoint(x: pointInLeftBottomOrigin.x, y: bounds.height - pointInLeftBottomOrigin.y)
+        touchEnded(at: point)
+    }
     #else
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         !canvas.hasValidStroke
