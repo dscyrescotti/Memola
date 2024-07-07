@@ -12,7 +12,7 @@ enum Platform {
     typealias View = NSView
     typealias Color = NSColor
     typealias Image = NSImage
-    typealias ScrollView = NSScrollView
+    typealias ScrollView = NSSyncScrollView
     typealias Application = NSApplication
     typealias ViewController = NSViewController
     typealias TapGestureRecognizer = NSClickGestureRecognizer

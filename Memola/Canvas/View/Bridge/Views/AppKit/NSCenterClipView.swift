@@ -1,5 +1,5 @@
 //
-//  CenterClipView.swift
+//  NSCenterClipView.swift
 //  Memola
 //
 //  Created by Dscyre Scotti on 7/6/24.
@@ -8,7 +8,7 @@
 #if canImport(AppKit)
 import AppKit
 
-class CenterClipView: NSClipView {
+class NSCenterClipView: NSClipView {
     override func constrainBoundsRect(_ proposedBounds: NSRect) -> NSRect {
         var rect = super.constrainBoundsRect(proposedBounds)
         if let containerView = self.documentView {

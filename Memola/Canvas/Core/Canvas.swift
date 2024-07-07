@@ -110,8 +110,9 @@ extension Canvas {
         let bounds = CGRect(origin: .zero, size: size)
         let renderView = drawingView.renderView
         #if os(macOS)
-        let drawingViewBounds = CGRect(origin: .zero, size: drawingView.bounds.size.multiply(by: zoomScale))
-        let targetRect = drawingView.convert(drawingViewBounds, to: renderView)
+        let drawingViewBounds = drawingView.bounds
+        var targetRect = drawingView.convert(drawingViewBounds, to: renderView)
+        targetRect.origin.y = renderView.bounds.height - targetRect.maxY
         #else
         let targetRect = drawingView.convert(drawingView.bounds, to: renderView)
         #endif
@@ -145,19 +146,23 @@ extension Canvas {
     }
 
     func updateClipBounds(_ scrollView: Platform.ScrollView, on drawingView: DrawingView) {
+        #if os(macOS)
+        let ratio = drawingView.ratio
+        var bounds = scrollView.convert(scrollView.bounds, to: drawingView)
+        bounds.origin.y = drawingView.bounds.height - (bounds.origin.y + bounds.height)
+        clipBounds = CGRect(origin: bounds.origin.muliply(by: ratio), size: bounds.size.multiply(by: ratio))
+        #else
         let ratio = drawingView.ratio
         let bounds = scrollView.convert(scrollView.bounds, to: drawingView)
         clipBounds = CGRect(origin: bounds.origin.muliply(by: ratio), size: bounds.size.multiply(by: ratio))
+        #endif
     }
 }
 
 // MARK: - Zoom Scale
 extension Canvas {
     func setZoomScale(_ zoomScale: CGFloat) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            self.zoomScale = min(max(zoomScale, minimumZoomScale), maximumZoomScale)
-        }
+        self.zoomScale = min(max(zoomScale, minimumZoomScale), maximumZoomScale)
     }
 }
 

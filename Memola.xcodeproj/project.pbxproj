@@ -37,6 +37,7 @@
 		EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */; };
 		EC7F6BF02BE5E6E400A34A7B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */; };
 		EC7F6BF32BE5E6E400A34A7B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BF22BE5E6E400A34A7B /* Preview Assets.xcassets */; };
+		EC8C9DCE2C39882500A8F3C4 /* NSSyncScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8C9DCD2C39882500A8F3C4 /* NSSyncScrollView.swift */; };
 		EC8F54AC2C2ACDA8001C7C74 /* GridMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8F54AB2C2ACDA8001C7C74 /* GridMode.swift */; };
 		EC8F54AE2C2AF5A4001C7C74 /* LineGridVertex.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8F54AD2C2AF5A4001C7C74 /* LineGridVertex.swift */; };
 		EC8F54B02C2AF5E9001C7C74 /* LineGridContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8F54AF2C2AF5E9001C7C74 /* LineGridContext.swift */; };
@@ -119,7 +120,7 @@
 		ECF7B2E02C39169C004D2C57 /* Image++.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF7B2CD2C39169C004D2C57 /* Image++.swift */; };
 		ECF7B2E12C39169C004D2C57 /* View++.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF7B2CE2C39169C004D2C57 /* View++.swift */; };
 		ECF7B2E42C39174D004D2C57 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF7B2E32C39174D004D2C57 /* Platform.swift */; };
-		ECF7B2E72C39544E004D2C57 /* CenterClipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF7B2E62C39544E004D2C57 /* CenterClipView.swift */; };
+		ECF7B2E72C39544E004D2C57 /* NSCenterClipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF7B2E62C39544E004D2C57 /* NSCenterClipView.swift */; };
 		ECFA15202BEF21EF00455818 /* MemoObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA151F2BEF21EF00455818 /* MemoObject.swift */; };
 		ECFA15222BEF21F500455818 /* CanvasObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA15212BEF21F500455818 /* CanvasObject.swift */; };
 		ECFA15242BEF223300455818 /* GraphicContextObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFA15232BEF223300455818 /* GraphicContextObject.swift */; };
@@ -161,6 +162,7 @@
 		EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemolaApp.swift; sourceTree = "<group>"; };
 		EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EC7F6BF22BE5E6E400A34A7B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		EC8C9DCD2C39882500A8F3C4 /* NSSyncScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSSyncScrollView.swift; sourceTree = "<group>"; };
 		EC8F54AB2C2ACDA8001C7C74 /* GridMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridMode.swift; sourceTree = "<group>"; };
 		EC8F54AD2C2AF5A4001C7C74 /* LineGridVertex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineGridVertex.swift; sourceTree = "<group>"; };
 		EC8F54AF2C2AF5E9001C7C74 /* LineGridContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineGridContext.swift; sourceTree = "<group>"; };
@@ -243,7 +245,7 @@
 		ECF7B2CD2C39169C004D2C57 /* Image++.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Image++.swift"; sourceTree = "<group>"; };
 		ECF7B2CE2C39169C004D2C57 /* View++.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "View++.swift"; sourceTree = "<group>"; };
 		ECF7B2E32C39174D004D2C57 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
-		ECF7B2E62C39544E004D2C57 /* CenterClipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterClipView.swift; sourceTree = "<group>"; };
+		ECF7B2E62C39544E004D2C57 /* NSCenterClipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCenterClipView.swift; sourceTree = "<group>"; };
 		ECF7B2E82C395A8E004D2C57 /* Memola.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Memola.entitlements; sourceTree = "<group>"; };
 		ECFA151F2BEF21EF00455818 /* MemoObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoObject.swift; sourceTree = "<group>"; };
 		ECFA15212BEF21F500455818 /* CanvasObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasObject.swift; sourceTree = "<group>"; };
@@ -322,8 +324,8 @@
 		EC1437B42BE748E60022C903 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				EC8C9DCC2C3987FD00A8F3C4 /* AppKit */,
 				ECA738AC2BE60CC600A4542E /* DrawingView.swift */,
-				ECF7B2E62C39544E004D2C57 /* CenterClipView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -479,6 +481,15 @@
 				EC7F6BF22BE5E6E400A34A7B /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		EC8C9DCC2C3987FD00A8F3C4 /* AppKit */ = {
+			isa = PBXGroup;
+			children = (
+				ECF7B2E62C39544E004D2C57 /* NSCenterClipView.swift */,
+				EC8C9DCD2C39882500A8F3C4 /* NSSyncScrollView.swift */,
+			);
+			path = AppKit;
 			sourceTree = "<group>";
 		};
 		EC8F54AA2C2ACD9D001C7C74 /* Grid */ = {
@@ -1038,6 +1049,7 @@
 				ECA738862BE5FF2500A4542E /* Canvas.swift in Sources */,
 				ECF7B2DE2C39169C004D2C57 /* NSManagedObjectContext++.swift in Sources */,
 				ECA738882BE5FF4400A4542E /* Renderer.swift in Sources */,
+				EC8C9DCE2C39882500A8F3C4 /* NSSyncScrollView.swift in Sources */,
 				ECF7B2D72C39169C004D2C57 /* Color++.swift in Sources */,
 				EC01512C2C306BEF008A115E /* MemoCard.swift in Sources */,
 				ECA738D42BE60F9100A4542E /* StrokeGenerator.swift in Sources */,
@@ -1058,7 +1070,7 @@
 				ECA738E22BE610D000A4542E /* GraphicRenderPass.swift in Sources */,
 				ECE883BF2C00AB440045C53D /* Stroke.swift in Sources */,
 				ECA738DC2BE6108D00A4542E /* StrokeRenderPass.swift in Sources */,
-				ECF7B2E72C39544E004D2C57 /* CenterClipView.swift in Sources */,
+				ECF7B2E72C39544E004D2C57 /* NSCenterClipView.swift in Sources */,
 				ECF7B2D22C39169C004D2C57 /* CGFloat++.swift in Sources */,
 				EC4538892BEBCAE000A86FEC /* Quad.swift in Sources */,
 				ECE883BD2C00AA170045C53D /* EraserStroke.swift in Sources */,

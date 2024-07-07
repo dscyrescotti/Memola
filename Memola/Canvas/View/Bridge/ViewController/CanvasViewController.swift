@@ -48,14 +48,11 @@ class CanvasViewController: Platform.ViewController {
     }
 
     #if os(macOS)
-    override func viewWillLayout() {
-        super.viewWillLayout()
-        resizeDocumentView()
-        updateDocumentBounds()
-    }
     
     override func viewWillAppear() {
         super.viewWillAppear()
+        resizeDocumentView()
+        updateDocumentBounds()
         loadMemo()
     }
 
@@ -132,9 +129,9 @@ extension CanvasViewController {
         scrollView.isScrollEnabled = true
         scrollView.showsVerticalScrollIndicator = true
         scrollView.showsHorizontalScrollIndicator = true
-        scrollView.delegate = self
         scrollView.backgroundColor = .clear
         #endif
+        scrollView.delegate = self
 
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
@@ -146,7 +143,7 @@ extension CanvasViewController {
         ])
 
         #if os(macOS)
-        scrollView.contentView = CenterClipView()
+        scrollView.contentView = NSCenterClipView()
         scrollView.contentView.drawsBackground = false
         scrollView.documentView = drawingView
         #else
@@ -171,10 +168,14 @@ extension CanvasViewController {
         let height = size.height * scale
         let newFrame = CGRect(x: 0, y: 0, width: width, height: height)
         drawingView.frame = newFrame
+        
+        DispatchQueue.main.async { [unowned canvas] in
+            canvas.setZoomScale(canvas.defaultZoomScale)
+        }
 
         #if os(macOS)
-        let rect = scrollView.documentVisibleRect
-        let center = NSPoint(x: rect.midX, y: rect.midY)
+        scrollView.contentView.setBoundsSize(newFrame.size)
+        let center = NSPoint(x: newFrame.midX, y: newFrame.midY)
         scrollView.setMagnification(canvas.defaultZoomScale, centeredAt: center)
         #else
         scrollView.setZoomScale(canvas.defaultZoomScale, animated: true)
@@ -189,7 +190,6 @@ extension CanvasViewController {
         scrollView.setContentOffset(point, animated: true)
         #endif
         drawingView.updateDrawableSize(with: view.frame.size)
-        NSLog("[Memola] - drawingView: \(drawingView.frame.size.multiply(by: scrollView.magnification)), scrollView: \(scrollView.frame), renderView: \(renderView.frame)")
     }
 
     #if os(iOS)
@@ -204,7 +204,10 @@ extension CanvasViewController {
 
     func updateDocumentBounds() {
         #if os(macOS)
-        var bounds = scrollView.bounds.muliply(by: drawingView.ratio / scrollView.magnification)
+        let ratio = drawingView.ratio
+        var bounds = scrollView.convert(scrollView.bounds, to: drawingView)
+        bounds.origin.y = drawingView.bounds.height - (bounds.origin.y + bounds.height)
+        bounds = CGRect(origin: bounds.origin.muliply(by: ratio), size: bounds.size.multiply(by: ratio))
         #else
         var bounds = scrollView.bounds.muliply(by: drawingView.ratio / scrollView.zoomScale)
         #endif
@@ -226,6 +229,7 @@ extension CanvasViewController {
         #if os(macOS)
         NotificationCenter.default.publisher(for: NSScrollView.didEndLiveMagnifyNotification, object: scrollView)
             .sink { [weak self] _ in
+                self?.updateDocumentBounds()
                 self?.magnificationEnded()
             }
             .store(in: &cancellables)
@@ -241,6 +245,7 @@ extension CanvasViewController {
             .store(in: &cancellables)
         NotificationCenter.default.publisher(for: NSScrollView.didEndLiveScrollNotification, object: scrollView)
             .sink { [weak self] _ in
+                self?.updateDocumentBounds()
                 self?.draggingEnded()
             }
             .store(in: &cancellables)
@@ -334,7 +339,12 @@ extension CanvasViewController {
         withAnimation {
             tool.selectedPhotoItem = nil
         }
+        #if os(macOS)
+        let pointInLeftBottomOrigin = gesture.location(in: drawingView)
+        let point = CGPoint(x: pointInLeftBottomOrigin.x, y: drawingView.bounds.height - pointInLeftBottomOrigin.y)
+        #else
         let point = gesture.location(in: drawingView)
+        #endif
         let photo = canvas.insertPhoto(at: point.muliply(by: drawingView.ratio), photoItem: photoItem)
         history.addUndo(.photo(photo))
         drawingView.draw()
@@ -342,6 +352,16 @@ extension CanvasViewController {
 }
 
 #if os(macOS)
+extension CanvasViewController: NSSyncScrollViewDelegate {
+    func scrollViewDidZoom(_ scrollView: NSSyncScrollView) {
+        canvas.setZoomScale(scrollView.magnification)
+        renderView.draw()
+    }
+
+    func scrollViewDidScroll(_ scrollView: NSSyncScrollView) {
+        renderView.draw()
+    }
+}
 #else
 extension CanvasViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
@@ -392,9 +412,6 @@ extension CanvasViewController: UIScrollViewDelegate {
 
 extension CanvasViewController {
     func magnificationStarted() {
-        #if os(macOS)
-        canvas.setZoomScale(scrollView.magnification)
-        #endif
         guard !renderer.updatesViewPort else { return }
         drawingView.touchCancelled()
         canvas.updateClipBounds(scrollView, on: drawingView)
@@ -403,9 +420,6 @@ extension CanvasViewController {
     }
 
     func magnificationEnded() {
-        #if os(macOS)
-        canvas.setZoomScale(scrollView.magnification)
-        #endif
         renderer.setUpdatesViewPort(false)
         renderer.setRedrawsGraphicRender()
         renderView.draw()

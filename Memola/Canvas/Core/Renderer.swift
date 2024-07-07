@@ -112,7 +112,7 @@ final class Renderer {
 
     func drawPreview(on canvas: Canvas) -> Platform.Image? {
         guard let commandBuffer = commandQueue.makeCommandBuffer() else {
-            NSLog("[Memola] - Unable to create command buffer")
+            NSLog("[Memola] - Unable to create command buffer for preview")
             return nil
         }
         strokeRenderPass.eraserRenderPass = eraserRenderPass
