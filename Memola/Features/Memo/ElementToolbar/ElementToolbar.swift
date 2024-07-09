@@ -234,7 +234,6 @@ struct ElementToolbar: View {
                     .contentShape(.rect(cornerRadius: 8))
             }
             .hoverEffect(.lift)
-            .buttonStyle(.plain)
             #endif
             PhotosPicker(selection: $photosPickerItem, matching: .images, preferredItemEncoding: .compatible) {
                 Image(systemName: "photo.fill.on.rectangle.fill")

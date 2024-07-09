@@ -35,26 +35,20 @@ struct Toolbar: View {
     var body: some View {
         HStack(spacing: 5) {
             HStack(spacing: 5) {
-                if !canvas.locksCanvas {
-                    closeButton
-                    titleField
-                }
+                closeButton
+                titleField
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             #if os(macOS)
-            if !canvas.locksCanvas {
-                ElementToolbar(size: size, tool: tool, canvas: canvas)
-            }
+            ElementToolbar(size: size, tool: tool, canvas: canvas)
             #else
-            if !canvas.locksCanvas, horizontalSizeClass == .regular {
+            if horizontalSizeClass == .regular {
                 ElementToolbar(size: size, tool: tool, canvas: canvas)
             }
             #endif
             HStack(spacing: 5) {
-                if !canvas.locksCanvas {
-                    gridModeControl
-                    historyControl
-                }
+                gridModeControl
+                historyControl
             }
             .frame(maxWidth: .infinity, alignment: .trailing)
         }

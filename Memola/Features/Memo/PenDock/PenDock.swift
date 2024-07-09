@@ -29,71 +29,46 @@ struct PenDock: View {
 
     var body: some View {
         #if os(macOS)
-        ZStack(alignment: .bottomTrailing) {
-            if !canvas.locksCanvas {
-                VStack(alignment: .trailing) {
-                    penPropertyTool
-                    penItemList
-                }
-                .fixedSize()
-                .frame(maxHeight: .infinity)
-                .padding(10)
-                .transition(.move(edge: .trailing).combined(with: .blurReplace))
-            }
-            lockButton
-                .padding(10)
-                .transition(.move(edge: .trailing).combined(with: .blurReplace))
+        VStack(alignment: .trailing) {
+            penPropertyTool
+            penItemList
         }
+        .fixedSize()
+        .frame(maxHeight: .infinity)
+        .padding(10)
+        .transition(.move(edge: .trailing).combined(with: .blurReplace))
         #else
         if horizontalSizeClass == .regular {
-            ZStack(alignment: .bottomTrailing) {
-                if !canvas.locksCanvas {
-                    VStack(alignment: .trailing) {
-                        penPropertyTool
-                        penItemList
-                    }
-                    .fixedSize()
-                    .frame(maxHeight: .infinity)
-                    .padding(10)
-                    .transition(.move(edge: .trailing).combined(with: .blurReplace))
-                }
-                lockButton
-                    .padding(10)
-                    .transition(.move(edge: .trailing).combined(with: .blurReplace))
+            VStack(alignment: .trailing) {
+                penPropertyTool
+                penItemList
             }
+            .fixedSize()
+            .frame(maxHeight: .infinity)
+            .padding(10)
+            .transition(.move(edge: .trailing).combined(with: .blurReplace))
         } else {
             GeometryReader { proxy in
-                ZStack(alignment: .bottomTrailing) {
-                    if !canvas.locksCanvas {
-                        GeometryReader { proxy in
-                            HStack(alignment: .bottom, spacing: 10) {
-                                newPenButton
-                                    .frame(height: height * factor - 18)
-                                compactPenItemList
-                                    .fixedSize(horizontal: false, vertical: true)
-                                compactPenPropertyTool
-                            }
-                            .padding(.horizontal, 10)
-                            .clipped()
-                            .background(alignment: .bottom) {
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(.regularMaterial)
-                                    .frame(height: height * factor - 18)
-                            }
-                            .padding(.horizontal, 10)
-                            .padding(.bottom, 20)
-                            .frame(maxWidth: min(proxy.size.height, proxy.size.width), maxHeight: .infinity, alignment: .bottom)
-                            .frame(maxWidth: .infinity)
-                        }
-                        .transition(.move(edge: .bottom).combined(with: .blurReplace))
-                    }
-                    lockButton
-                        .frame(maxWidth: .infinity, alignment: .bottomTrailing)
-                        .padding(10)
-                        .offset(y: canvas.locksCanvas || proxy.size.width > proxy.size.height ? 0 : -(height * factor - size + 30))
-                        .transition(.move(edge: .trailing).combined(with: .blurReplace))
+                HStack(alignment: .bottom, spacing: 10) {
+                    newPenButton
+                        .frame(height: height * factor - 18)
+                    compactPenItemList
+                        .fixedSize(horizontal: false, vertical: true)
+                    compactPenPropertyTool
                 }
+                .padding(.horizontal, 10)
+                .clipped()
+                .background(alignment: .bottom) {
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(.regularMaterial)
+                        .frame(height: height * factor - 18)
+                }
+                .padding(.horizontal, 10)
+                .padding(.bottom, 20)
+                .frame(maxWidth: min(proxy.size.height, proxy.size.width), maxHeight: .infinity, alignment: .bottom)
+                .frame(maxWidth: .infinity)
             }
+            .transition(.move(edge: .bottom).combined(with: .blurReplace))
         }
         #endif
     }
@@ -331,7 +306,6 @@ struct PenDock: View {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(.regularMaterial)
             }
-            .transition(.move(edge: .trailing).combined(with: .blurReplace))
         } else {
             Color.clear
                 .frame(width: width * factor - 18, height: 50)
@@ -544,26 +518,6 @@ struct PenDock: View {
                     .blur(radius: 0.5)
             }
         }
-    }
-
-    var lockButton: some View {
-        Button {
-            withAnimation {
-                canvas.locksCanvas.toggle()
-            }
-        } label: {
-            Image(systemName: canvas.locksCanvas ? "lock.fill" : "lock.open.fill")
-                .frame(width: size, height: size)
-                .background(.regularMaterial)
-                .clipShape(.rect(cornerRadius: 8))
-                .contentShape(.rect(cornerRadius: 8))
-        }
-        #if os(iOS)
-        .hoverEffect(.lift)
-        #else
-        .buttonStyle(.plain)
-        #endif
-        .contentTransition(.symbolEffect(.replace))
     }
 
     func createNewPen() {

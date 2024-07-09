@@ -260,11 +260,6 @@ extension CanvasViewController {
                 self?.zoomChanged(zoomScale)
             }
             .store(in: &cancellables)
-        canvas.$locksCanvas
-            .sink { [weak self] state in
-                self?.lockModeChanged(state)
-            }
-            .store(in: &cancellables)
         canvas.$gridMode
             .delay(for: .milliseconds(100), scheduler: DispatchQueue.main)
             .sink { [weak self] mode in

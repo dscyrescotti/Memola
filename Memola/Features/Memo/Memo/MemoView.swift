@@ -109,7 +109,7 @@ struct MemoView: View {
                 }
             }
             .overlay(alignment: .bottom) {
-                if tool.selection != .hand && !canvas.locksCanvas {
+                if tool.selection != .hand {
                     Button {
                         withAnimation {
                             tool.selectTool(.hand)
@@ -135,72 +135,70 @@ struct MemoView: View {
         let lowerBound: CGFloat = 10
         let zoomScale: CGFloat = (((canvas.zoomScale - canvas.minimumZoomScale) * (upperBound - lowerBound) / (canvas.maximumZoomScale - canvas.minimumZoomScale)) + lowerBound).rounded()
         let zoomScales: [Int] = [400, 200, 100, 75, 50, 25, 10]
-        if !canvas.locksCanvas {
-            #if os(macOS)
-            Menu {
-                ForEach(zoomScales, id: \.self) { scale in
-                    Button {
-                        let zoomScale = ((CGFloat(scale) - lowerBound) * (canvas.maximumZoomScale - canvas.minimumZoomScale) / (upperBound - lowerBound)) + canvas.minimumZoomScale
-                        canvas.zoomPublisher.send(zoomScale)
-                    } label: {
-                        Label {
-                            Text(scale, format: .percent)
-                        } icon: {
-                            if CGFloat(scale) == zoomScale {
-                                Image(systemName: "checkmark")
-                            }
+        #if os(macOS)
+        Menu {
+            ForEach(zoomScales, id: \.self) { scale in
+                Button {
+                    let zoomScale = ((CGFloat(scale) - lowerBound) * (canvas.maximumZoomScale - canvas.minimumZoomScale) / (upperBound - lowerBound)) + canvas.minimumZoomScale
+                    canvas.zoomPublisher.send(zoomScale)
+                } label: {
+                    Label {
+                        Text(scale, format: .percent)
+                    } icon: {
+                        if CGFloat(scale) == zoomScale {
+                            Image(systemName: "checkmark")
                         }
-                        .font(.headline)
                     }
+                    .font(.headline)
                 }
-            } label: {
-                Text(zoomScale / 100, format: .percent)
-                    .font(.subheadline)
-                    .frame(height: size)
-                    .clipShape(.rect(cornerRadius: 8))
-                    .contentShape(.rect(cornerRadius: 8))
             }
-            .menuIndicator(.hidden)
-            .frame(width: 50, height: size)
-            .padding(.leading, 12)
-            .background(.regularMaterial)
-            .clipShape(.rect(cornerRadius: 8))
-            .contentShape(.rect(cornerRadius: 8))
-            .menuStyle(.borderlessButton)
-            .transition(.move(edge: .bottom).combined(with: .blurReplace))
-            .padding(10)
-            #else
-            Menu {
-                ForEach(zoomScales, id: \.self) { scale in
-                    Button {
-                        let zoomScale = ((CGFloat(scale) - lowerBound) * (canvas.maximumZoomScale - canvas.minimumZoomScale) / (upperBound - lowerBound)) + canvas.minimumZoomScale
-                        canvas.zoomPublisher.send(zoomScale)
-                    } label: {
-                        Label {
-                            Text(scale, format: .percent)
-                        } icon: {
-                            if CGFloat(scale) == zoomScale {
-                                Image(systemName: "checkmark")
-                            }
-                        }
-                        .font(.headline)
-                    }
-                }
-            } label: {
-                Text(zoomScale / 100, format: .percent)
-                    .frame(width: 45)
-                    .font(.subheadline)
-                    .padding(.horizontal, size / 2.5)
-                    .frame(height: size)
-                    .background(.regularMaterial)
-                    .clipShape(.rect(cornerRadius: 8))
-                    .contentShape(.rect(cornerRadius: 8))
-                    .padding(10)
-            }
-            .hoverEffect(.lift)
-            .transition(.move(edge: .bottom).combined(with: .blurReplace))
-            #endif
+        } label: {
+            Text(zoomScale / 100, format: .percent)
+                .font(.subheadline)
+                .frame(height: size)
+                .clipShape(.rect(cornerRadius: 8))
+                .contentShape(.rect(cornerRadius: 8))
         }
+        .menuIndicator(.hidden)
+        .frame(width: 50, height: size)
+        .padding(.leading, 12)
+        .background(.regularMaterial)
+        .clipShape(.rect(cornerRadius: 8))
+        .contentShape(.rect(cornerRadius: 8))
+        .menuStyle(.borderlessButton)
+        .transition(.move(edge: .bottom).combined(with: .blurReplace))
+        .padding(10)
+        #else
+        Menu {
+            ForEach(zoomScales, id: \.self) { scale in
+                Button {
+                    let zoomScale = ((CGFloat(scale) - lowerBound) * (canvas.maximumZoomScale - canvas.minimumZoomScale) / (upperBound - lowerBound)) + canvas.minimumZoomScale
+                    canvas.zoomPublisher.send(zoomScale)
+                } label: {
+                    Label {
+                        Text(scale, format: .percent)
+                    } icon: {
+                        if CGFloat(scale) == zoomScale {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                    .font(.headline)
+                }
+            }
+        } label: {
+            Text(zoomScale / 100, format: .percent)
+                .frame(width: 45)
+                .font(.subheadline)
+                .padding(.horizontal, size / 2.5)
+                .frame(height: size)
+                .background(.regularMaterial)
+                .clipShape(.rect(cornerRadius: 8))
+                .contentShape(.rect(cornerRadius: 8))
+                .padding(10)
+        }
+        .hoverEffect(.lift)
+        .transition(.move(edge: .bottom).combined(with: .blurReplace))
+        #endif
     }
 
     func loadingIndicator(_ title: String) -> some View {

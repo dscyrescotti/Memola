@@ -57,7 +57,7 @@ struct DashboardView: View {
                 MemosView()
             }
         }
-        .fullScreenCover(item: $memoManager.memo) { memo in
+        .fullScreenCover(item: $memoManager.memoObject) { memo in
             MemoView(memo: memo)
                 .onDisappear {
                     withPersistence(\.viewContext) { context in

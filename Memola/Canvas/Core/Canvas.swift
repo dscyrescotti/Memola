@@ -32,7 +32,6 @@ final class Canvas: ObservableObject, Identifiable, @unchecked Sendable {
 
     @Published var state: State = .initial
     @Published var zoomScale: CGFloat = .zero
-    @Published var locksCanvas: Bool = false
 
     @Published var gridMode: GridMode = .point
 
