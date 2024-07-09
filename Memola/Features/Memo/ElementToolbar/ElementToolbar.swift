@@ -32,18 +32,10 @@ struct ElementToolbar: View {
                 ZStack(alignment: .bottom) {
                     if tool.selection == .photo {
                         photoOption
-                            .background {
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(.regularMaterial)
-                            }
-                            .padding(.bottom, 10)
-                            .frame(maxWidth: .infinity)
-                            .transition(.move(edge: .bottom).combined(with: .blurReplace))
                     } else {
                         compactToolbar
                     }
                 }
-                .padding(.bottom, 10)
             }
             #endif
         }
@@ -228,7 +220,6 @@ struct ElementToolbar: View {
                 openCamera()
             } label: {
                 Image(systemName: "camera.fill")
-                    .contentShape(.circle)
                     .frame(width: size, height: size)
                     .clipShape(.rect(cornerRadius: 8))
                     .contentShape(.rect(cornerRadius: 8))
@@ -237,7 +228,6 @@ struct ElementToolbar: View {
             #endif
             PhotosPicker(selection: $photosPickerItem, matching: .images, preferredItemEncoding: .compatible) {
                 Image(systemName: "photo.fill.on.rectangle.fill")
-                    .contentShape(.circle)
                     .frame(width: size, height: size)
                     .clipShape(.rect(cornerRadius: 8))
                     .contentShape(.rect(cornerRadius: 8))
@@ -247,7 +237,35 @@ struct ElementToolbar: View {
             #else
             .buttonStyle(.plain)
             #endif
+            if horizontalSizeClass == .compact {
+                Divider()
+                    .padding(.vertical, 4)
+                    .frame(height: size)
+                    .foregroundStyle(Color.accentColor)
+                Button {
+                    withAnimation {
+                        tool.selectTool(.hand)
+                    }
+                } label: {
+                    Image(systemName: "xmark")
+                        .frame(width: size, height: size)
+                        .clipShape(.rect(cornerRadius: 8))
+                        .contentShape(.rect(cornerRadius: 8))
+                }
+                #if os(iOS)
+                .hoverEffect(.lift)
+                #else
+                .buttonStyle(.plain)
+                #endif
+            }
         }
+        .background {
+            RoundedRectangle(cornerRadius: 8)
+                .fill(.regularMaterial)
+        }
+        .padding(.bottom, 10)
+        .frame(maxWidth: .infinity)
+        .transition(.move(edge: .bottom).combined(with: .blurReplace))
     }
 
     func openCamera() {

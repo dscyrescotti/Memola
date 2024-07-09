@@ -108,25 +108,25 @@ struct MemoView: View {
                         .transition(.move(edge: .bottom).combined(with: .blurReplace))
                 }
             }
-            .overlay(alignment: .bottom) {
-                if tool.selection != .hand {
-                    Button {
-                        withAnimation {
-                            tool.selectTool(.hand)
-                        }
-                    } label: {
-                        Image(systemName: "chevron.compact.down")
-                            .font(.headline)
-                            .frame(width: 80)
-                            .padding(5)
-                            .background(.regularMaterial)
-                            .clipShape(.capsule)
-                            .contentShape(.capsule)
-                    }
-                    .offset(y: 5)
-                    .transition(.move(edge: .bottom).combined(with: .blurReplace))
-                }
-            }
+//            .overlay(alignment: .bottom) {
+//                if tool.selection != .hand {
+//                    Button {
+//                        withAnimation {
+//                            tool.selectTool(.hand)
+//                        }
+//                    } label: {
+//                        Image(systemName: "chevron.compact.down")
+//                            .font(.headline)
+//                            .frame(width: 80)
+//                            .padding(5)
+//                            .background(.regularMaterial)
+//                            .clipShape(.capsule)
+//                            .contentShape(.capsule)
+//                    }
+//                    .offset(y: 5)
+//                    .transition(.move(edge: .bottom).combined(with: .blurReplace))
+//                }
+//            }
     }
 
     @ViewBuilder

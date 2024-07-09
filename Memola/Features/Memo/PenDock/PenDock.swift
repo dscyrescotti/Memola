@@ -14,10 +14,10 @@ struct PenDock: View {
 
     let size: CGFloat
     var width: CGFloat {
-        horizontalSizeClass == .compact ? 30 : 90
+        horizontalSizeClass == .compact ? 25 : 90
     }
     var height: CGFloat {
-        horizontalSizeClass == .compact ? 90 : 30
+        horizontalSizeClass == .compact ? 75 : 30
     }
     var factor: CGFloat = 0.9
 
@@ -55,6 +55,29 @@ struct PenDock: View {
                     compactPenItemList
                         .fixedSize(horizontal: false, vertical: true)
                     compactPenPropertyTool
+                    HStack(spacing: 5) {
+                        Divider()
+                            .padding(.vertical, 4)
+                            .frame(height: size)
+                            .foregroundStyle(Color.accentColor)
+                            .frame(height: height * factor - 18)
+                        Button {
+                            withAnimation {
+                                tool.selectTool(.hand)
+                            }
+                        } label: {
+                            Image(systemName: "xmark")
+                                .frame(width: size, height: size)
+                                .clipShape(.rect(cornerRadius: 8))
+                                .contentShape(.rect(cornerRadius: 8))
+                        }
+                        #if os(iOS)
+                        .hoverEffect(.lift)
+                        #else
+                        .buttonStyle(.plain)
+                        #endif
+                        .frame(height: height * factor - 18)
+                    }
                 }
                 .padding(.horizontal, 10)
                 .clipped()
@@ -63,8 +86,7 @@ struct PenDock: View {
                         .fill(.regularMaterial)
                         .frame(height: height * factor - 18)
                 }
-                .padding(.horizontal, 10)
-                .padding(.bottom, 20)
+                .padding([.horizontal, .bottom], 10)
                 .frame(maxWidth: min(proxy.size.height, proxy.size.width), maxHeight: .infinity, alignment: .bottom)
                 .frame(maxWidth: .infinity)
             }
@@ -75,30 +97,35 @@ struct PenDock: View {
 
     @ViewBuilder
     var penItemList: some View {
-        ScrollViewReader { proxy in
-            ScrollView(.vertical, showsIndicators: false) {
-                LazyVStack(spacing: 0) {
-                    ForEach(tool.pens) { pen in
-                        penItem(pen)
-                            .id(pen.id)
-                            .scrollTransition { content, phase in
-                                content
-                                    .scaleEffect(phase.isIdentity ? 1 : 0.04, anchor: .trailing)
-                            }
+        VStack(alignment: .trailing, spacing: 0) {
+            ScrollViewReader { proxy in
+                ScrollView(.vertical, showsIndicators: false) {
+                    LazyVStack(spacing: 0) {
+                        ForEach(tool.pens) { pen in
+                            penItem(pen)
+                                .id(pen.id)
+                                .scrollTransition { content, phase in
+                                    content
+                                        .scaleEffect(phase.isIdentity ? 1 : 0.04, anchor: .trailing)
+                                }
+                        }
+                    }
+                    .padding(.vertical, 10)
+                    .id(refreshScrollId)
+                }
+                .onReceive(tool.scrollPublisher) { id in
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        withAnimation {
+                            proxy.scrollTo(id)
+                        }
                     }
                 }
+            }
+            newPenButton
                 .padding(.vertical, 10)
-                .id(refreshScrollId)
-            }
-            .onReceive(tool.scrollPublisher) { id in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    withAnimation {
-                        proxy.scrollTo(id)
-                    }
-                }
-            }
+                .frame(width: width * factor - 18)
         }
-        .frame(maxHeight: ((height * factor + 10) * 6) + 20)
+        .frame(maxHeight: ((height * factor + 10) * 7) + 20)
         .fixedSize()
         .background(alignment: .trailing) {
             RoundedRectangle(cornerRadius: 8)
@@ -106,10 +133,6 @@ struct PenDock: View {
                 .frame(width: width * factor - 18)
         }
         .clipShape(.rect(cornerRadii: .init(bottomTrailing: 8, topTrailing: 8)))
-        .overlay(alignment: .bottomLeading) {
-            newPenButton
-                .offset(x: 15, y: 10)
-        }
     }
 
     @ViewBuilder
@@ -126,7 +149,7 @@ struct PenDock: View {
                             }
                     }
                 }
-                .padding(.horizontal, 10)
+                .padding(.horizontal, 5)
                 .id(refreshScrollId)
             }
             .onReceive(tool.scrollPublisher) { id in
@@ -235,7 +258,7 @@ struct PenDock: View {
                 tool.selectPen(pen)
             }
         }
-        .padding(.horizontal, 10)
+        .padding(.horizontal, 5)
         .contextMenu(if: pen.strokeStyle != .eraser) {
             ControlGroup {
                 Button {
@@ -273,7 +296,7 @@ struct PenDock: View {
             }
             .controlGroupStyle(.menu)
         } preview: {
-            penPreview(pen)
+            compactPenPreview(pen)
                 .drawingGroup()
                 #if os(iOS)
                 .contentShape(.contextMenuPreview, .rect(cornerRadius: 10))
@@ -284,7 +307,7 @@ struct PenDock: View {
             tool.draggedPen = pen
             return NSItemProvider(contentsOf: URL(string: pen.id)) ?? NSItemProvider()
         } preview: {
-            penPreview(pen)
+            compactPenPreview(pen)
                 .contentShape(.dragPreview, .rect(cornerRadius: 10))
         }
         .onDrop(of: [.item], delegate: PenDropDelegate(id: pen.id, tool: tool, action: { refreshScrollId = UUID() }))
@@ -440,7 +463,7 @@ struct PenDock: View {
             createNewPen()
         } label: {
             Image(systemName: "plus.circle.fill")
-                .font(.title2)
+                .font(.headline)
                 .padding(1)
                 .contentShape(.circle)
                 .background {
@@ -470,6 +493,22 @@ struct PenDock: View {
         .frame(width: width * factor, height: height * factor)
         .padding(.vertical, 5)
         .padding(.leading, 10)
+    }
+
+    func compactPenPreview(_ pen: Pen) -> some View {
+        ZStack {
+            if let tip = pen.style.compactIcon.tip {
+                Image(tip)
+                    .resizable()
+                    .renderingMode(.template)
+                    .foregroundStyle(Color.rgba(from: pen.rgba))
+            }
+            Image(pen.style.compactIcon.base)
+                .resizable()
+        }
+        .frame(width: width * factor, height: height * factor)
+        .padding(.top, 5)
+        .padding(.horizontal, 5)
     }
 
     func penShadow(_ pen: Pen) -> some View {
