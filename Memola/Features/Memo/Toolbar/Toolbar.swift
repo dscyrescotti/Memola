@@ -20,11 +20,10 @@ struct Toolbar: View {
 
     @FocusState var textFieldState: Bool
 
-    let size: CGFloat
+    let size: CGFloat = 40
     let memo: MemoObject
 
-    init(size: CGFloat, memo: MemoObject, tool: Tool, canvas: Canvas, history: History) {
-        self.size = size
+    init(memo: MemoObject, tool: Tool, canvas: Canvas, history: History) {
         self.memo = memo
         self.tool = tool
         self.canvas = canvas
@@ -40,10 +39,10 @@ struct Toolbar: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             #if os(macOS)
-            ElementToolbar(size: size, tool: tool, canvas: canvas)
+            ElementToolbar(tool: tool, canvas: canvas)
             #else
             if horizontalSizeClass == .regular {
-                ElementToolbar(size: size, tool: tool, canvas: canvas)
+                ElementToolbar(tool: tool, canvas: canvas)
             }
             #endif
             HStack(spacing: 5) {

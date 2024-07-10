@@ -19,7 +19,7 @@ struct MemoView: View {
     @FocusState var textFieldState: Bool
 
     let memo: MemoObject
-    let size: CGFloat = 32
+    let size: CGFloat = 40
 
     init(memo: MemoObject) {
         self.memo = memo
@@ -42,7 +42,7 @@ struct MemoView: View {
             #endif
         }
         .overlay(alignment: .top) {
-            Toolbar(size: size, memo: memo, tool: tool, canvas: canvas, history: history)
+            Toolbar(memo: memo, tool: tool, canvas: canvas, history: history)
         }
         .disabled(textFieldState || tool.isLoadingPhoto)
         .disabled(canvas.state == .loading || canvas.state == .closing)
@@ -69,7 +69,7 @@ struct MemoView: View {
             .overlay(alignment: .bottomTrailing) {
                 switch tool.selection {
                 case .pen:
-                    PenDock(tool: tool, canvas: canvas, size: size)
+                    PenDock(tool: tool, canvas: canvas)
                 case .photo:
                     if let photoItem = tool.selectedPhotoItem {
                         PhotoPreview(photoItem: photoItem, tool: tool)
@@ -90,7 +90,7 @@ struct MemoView: View {
             .overlay(alignment: .bottom) {
                 switch tool.selection {
                 case .pen:
-                    PenDock(tool: tool, canvas: canvas, size: size)
+                    PenDock(tool: tool, canvas: canvas)
                         .transition(.move(edge: .bottom).combined(with: .blurReplace))
                 case .photo:
                     if let photoItem = tool.selectedPhotoItem {
@@ -104,7 +104,7 @@ struct MemoView: View {
             }
             .overlay(alignment: .bottom) {
                 if tool.selection != .pen {
-                    ElementToolbar(size: size, tool: tool, canvas: canvas)
+                    ElementToolbar(tool: tool, canvas: canvas)
                         .transition(.move(edge: .bottom).combined(with: .blurReplace))
                 }
             }

@@ -11,7 +11,7 @@ import AVFoundation
 
 struct ElementToolbar: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
-    let size: CGFloat
+    let size: CGFloat = 40
     @ObservedObject var tool: Tool
     @ObservedObject var canvas: Canvas
 
@@ -32,6 +32,9 @@ struct ElementToolbar: View {
                 ZStack(alignment: .bottom) {
                     if tool.selection == .photo {
                         photoOption
+                            .padding(.bottom, 10)
+                            .frame(maxWidth: .infinity)
+                            .transition(.move(edge: .bottom).combined(with: .blurReplace))
                     } else {
                         compactToolbar
                     }
@@ -263,9 +266,6 @@ struct ElementToolbar: View {
             RoundedRectangle(cornerRadius: 8)
                 .fill(.regularMaterial)
         }
-        .padding(.bottom, 10)
-        .frame(maxWidth: .infinity)
-        .transition(.move(edge: .bottom).combined(with: .blurReplace))
     }
 
     func openCamera() {
