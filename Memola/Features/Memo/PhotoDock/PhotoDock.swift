@@ -22,12 +22,17 @@ struct PhotoDock: View {
 
     var body: some View {
         Group {
+            #if os(macOS)
+            photoOption
+            #else
             if horizontalSizeClass == .regular {
                 photoOption
             } else {
                 compactPhotoOption
             }
+            #endif
         }
+        .foregroundStyle(Color.accentColor)
         #if os(iOS)
         .fullScreenCover(isPresented: $opensCamera) {
             let image: Binding<UIImage?> = Binding {

@@ -78,6 +78,7 @@ struct MemoView: View {
                                 .transition(.move(edge: .trailing).combined(with: .blurReplace))
                         }
                     }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 default:
                     EmptyView()
                 }
@@ -111,25 +112,6 @@ struct MemoView: View {
                         .transition(.move(edge: .bottom).combined(with: .blurReplace))
                 }
             }
-//            .overlay(alignment: .bottom) {
-//                if tool.selection != .hand {
-//                    Button {
-//                        withAnimation {
-//                            tool.selectTool(.hand)
-//                        }
-//                    } label: {
-//                        Image(systemName: "chevron.compact.down")
-//                            .font(.headline)
-//                            .frame(width: 80)
-//                            .padding(5)
-//                            .background(.regularMaterial)
-//                            .clipShape(.capsule)
-//                            .contentShape(.capsule)
-//                    }
-//                    .offset(y: 5)
-//                    .transition(.move(edge: .bottom).combined(with: .blurReplace))
-//                }
-//            }
     }
 
     @ViewBuilder
@@ -157,6 +139,7 @@ struct MemoView: View {
             }
         } label: {
             Text(zoomScale / 100, format: .percent)
+                .foregroundStyle(Color.accentColor)
                 .font(.subheadline)
                 .frame(height: size)
                 .clipShape(.rect(cornerRadius: 8))

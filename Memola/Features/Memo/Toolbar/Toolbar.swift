@@ -36,6 +36,7 @@ struct Toolbar: View {
             HStack(spacing: 5) {
                 closeButton
                 titleField
+                    .foregroundStyle(Color.primary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             #if os(macOS)
@@ -53,6 +54,7 @@ struct Toolbar: View {
         }
         .font(.subheadline)
         .padding(10)
+        .foregroundStyle(Color.accentColor)
     }
 
     var closeButton: some View {
