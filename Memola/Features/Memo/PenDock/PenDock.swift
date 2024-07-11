@@ -130,6 +130,7 @@ struct PenDock: View {
                 .padding(.vertical, 5)
                 .frame(width: width)
         }
+        .padding(.vertical, 3)
         .background(alignment: .trailing) {
             RoundedRectangle(cornerRadius: 8)
                 .fill(.regularMaterial)

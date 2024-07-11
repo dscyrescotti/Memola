@@ -38,6 +38,7 @@
 		EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */; };
 		EC7F6BF02BE5E6E400A34A7B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */; };
 		EC7F6BF32BE5E6E400A34A7B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BF22BE5E6E400A34A7B /* Preview Assets.xcassets */; };
+		EC86C5822C4010CC00C07D21 /* PhotoDock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC86C5812C4010CC00C07D21 /* PhotoDock.swift */; };
 		EC8C9DCE2C39882500A8F3C4 /* NSSyncScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8C9DCD2C39882500A8F3C4 /* NSSyncScrollView.swift */; };
 		EC8F54AC2C2ACDA8001C7C74 /* GridMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8F54AB2C2ACDA8001C7C74 /* GridMode.swift */; };
 		EC8F54AE2C2AF5A4001C7C74 /* LineGridVertex.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8F54AD2C2AF5A4001C7C74 /* LineGridVertex.swift */; };
@@ -164,6 +165,7 @@
 		EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemolaApp.swift; sourceTree = "<group>"; };
 		EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EC7F6BF22BE5E6E400A34A7B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		EC86C5812C4010CC00C07D21 /* PhotoDock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDock.swift; sourceTree = "<group>"; };
 		EC8C9DCD2C39882500A8F3C4 /* NSSyncScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSSyncScrollView.swift; sourceTree = "<group>"; };
 		EC8F54AB2C2ACDA8001C7C74 /* GridMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridMode.swift; sourceTree = "<group>"; };
 		EC8F54AD2C2AF5A4001C7C74 /* LineGridVertex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineGridVertex.swift; sourceTree = "<group>"; };
@@ -486,6 +488,14 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		EC86C5802C4010BE00C07D21 /* PhotoDock */ = {
+			isa = PBXGroup;
+			children = (
+				EC86C5812C4010CC00C07D21 /* PhotoDock.swift */,
+			);
+			path = PhotoDock;
+			sourceTree = "<group>";
+		};
 		EC8C9DCC2C3987FD00A8F3C4 /* AppKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -533,6 +543,7 @@
 		ECA7387B2BE5EF3500A4542E /* Memo */ = {
 			isa = PBXGroup;
 			children = (
+				EC86C5802C4010BE00C07D21 /* PhotoDock */,
 				ECDAC0792C318DAF0000ED77 /* ElementToolbar */,
 				ECBE52942C1D58F5006BDB3D /* PhotoPreview */,
 				EC1B783B2BFA0AAC005A34E2 /* Toolbar */,
@@ -1029,6 +1040,7 @@
 				ECFA15262BEF224900455818 /* StrokeObject.swift in Sources */,
 				ECA738FC2BE61C5200A4542E /* Persistence.swift in Sources */,
 				ECA7387A2BE5EF0400A4542E /* MemosView.swift in Sources */,
+				EC86C5822C4010CC00C07D21 /* PhotoDock.swift in Sources */,
 				ECA738BA2BE60DEF00A4542E /* HistoryAction.swift in Sources */,
 				ECFA15222BEF21F500455818 /* CanvasObject.swift in Sources */,
 				ECA738AA2BE6026D00A4542E /* Uniforms.swift in Sources */,

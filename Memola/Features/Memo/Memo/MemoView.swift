@@ -66,14 +66,17 @@ struct MemoView: View {
     var canvasView: some View {
         CanvasView(tool: tool, canvas: canvas, history: history)
             .ignoresSafeArea()
-            .overlay(alignment: .bottomTrailing) {
+            .overlay(alignment: .trailing) {
                 switch tool.selection {
                 case .pen:
                     PenDock(tool: tool, canvas: canvas)
                 case .photo:
-                    if let photoItem = tool.selectedPhotoItem {
-                        PhotoPreview(photoItem: photoItem, tool: tool)
-                            .transition(.move(edge: .trailing).combined(with: .blurReplace))
+                    ZStack(alignment: .bottomTrailing) {
+                        PhotoDock(tool: tool, canvas: canvas)
+                        if let photoItem = tool.selectedPhotoItem {
+                            PhotoPreview(photoItem: photoItem, tool: tool)
+                                .transition(.move(edge: .trailing).combined(with: .blurReplace))
+                        }
                     }
                 default:
                     EmptyView()
