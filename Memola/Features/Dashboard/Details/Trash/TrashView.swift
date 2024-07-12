@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TrashView: View {
+    @Environment(\.shortcut) var shortcut
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     @FetchRequest var memoObjects: FetchedResults<MemoObject>
@@ -43,6 +44,7 @@ struct TrashView: View {
         MemoGrid(memoObjects: memoObjects, placeholder: placeholder) { memoObject, cellWidth in
             memoCard(memoObject, cellWidth)
         }
+        .focusedSceneValue(\.activeSceneKey, .trash)
         .navigationTitle(horizontalSizeClass == .compact ? "Trash" : "")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)

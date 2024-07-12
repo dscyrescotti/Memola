@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MemosView: View {
+    @Environment(\.shortcut) var shortcut
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     @FetchRequest var memoObjects: FetchedResults<MemoObject>
@@ -42,6 +43,7 @@ struct MemosView: View {
         MemoGrid(memoObjects: memoObjects, placeholder: placeholder) { memoObject, cellWidth in
             memoCard(memoObject, cellWidth)
         }
+        .focusedSceneValue(\.activeSceneKey, .memos)
         .navigationTitle(horizontalSizeClass == .compact ? "Memos" : "")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
@@ -149,6 +151,9 @@ struct MemosView: View {
         }
         .onReceive(timer) { date in
             currentDate = date
+        }
+        .onReceive(shortcut.publisher()) { shortcut in
+            handleShortcut(for: shortcut)
         }
     }
 
@@ -275,6 +280,17 @@ struct MemosView: View {
         memo.deletedAt = .now
         withPersistence(\.viewContext) { context in
             try context.saveIfNeeded()
+        }
+    }
+
+    func handleShortcut(for shortcut: Shortcuts) {
+        switch shortcut {
+        case .newMemo:
+            if MemoManager.shared.memoObject == nil {
+                createMemo(title: "Untitled")
+            }
+        default:
+            break
         }
     }
 }

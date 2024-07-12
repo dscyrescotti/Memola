@@ -9,6 +9,10 @@ import SwiftUI
 
 @main
 struct MemolaApp: App {
+    #if os(macOS)
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    #endif
+    
     var body: some Scene {
         WindowGroup {
             DashboardView()
@@ -31,5 +35,11 @@ struct MemolaApp: App {
         .defaultSize(width: 1200, height: 800)
         .windowToolbarStyle(.unifiedCompact)
         #endif
+        .commands {
+            AppCommands()
+            FileCommands()
+            EditCommands()
+            ViewCommands()
+        }
     }
 }

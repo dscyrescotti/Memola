@@ -8,6 +8,7 @@
 import SwiftUI
 import Foundation
 
+#warning("TODO: use environmnet instead of singleton")
 class MemoManager: ObservableObject {
     static let shared: MemoManager = .init()
 

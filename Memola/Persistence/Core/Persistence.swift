@@ -109,3 +109,10 @@ func withPersistenceSync(_ keypath: KeyPath<Persistence, NSManagedObjectContext>
         }
     }
 }
+
+func withPersistenceSync<T>(_ keypath: KeyPath<Persistence, NSManagedObjectContext>, _ task: @escaping (NSManagedObjectContext) throws -> T) throws -> T {
+    let context = Persistence.shared[keyPath: keypath]
+    return try context.performAndWait {
+        return try task(context)
+    }
+}

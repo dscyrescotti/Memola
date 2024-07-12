@@ -22,6 +22,16 @@
 		EC18150A2C2DA09E00541369 /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1815092C2DA09E00541369 /* Filter.swift */; };
 		EC18150D2C2DAC3700541369 /* Placeholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC18150C2C2DAC3700541369 /* Placeholder.swift */; };
 		EC1B783D2BFA0AC9005A34E2 /* Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1B783C2BFA0AC9005A34E2 /* Toolbar.swift */; };
+		EC2002D52C416033002EBD5F /* FileCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002D42C416033002EBD5F /* FileCommands.swift */; };
+		EC2002D72C4160EF002EBD5F /* EditCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002D62C4160EF002EBD5F /* EditCommands.swift */; };
+		EC2002D92C4161ED002EBD5F /* ViewCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002D82C4161ED002EBD5F /* ViewCommands.swift */; };
+		EC2002DB2C4162E5002EBD5F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002DA2C4162E5002EBD5F /* AppDelegate.swift */; };
+		EC2002DD2C4163E8002EBD5F /* AppCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002DC2C4163E8002EBD5F /* AppCommands.swift */; };
+		EC2002E12C416470002EBD5F /* Shortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002E02C416470002EBD5F /* Shortcut.swift */; };
+		EC2002E52C416551002EBD5F /* Shortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002E42C416551002EBD5F /* Shortcuts.swift */; };
+		EC2002E92C4167C5002EBD5F /* ShortcutKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002E82C4167C5002EBD5F /* ShortcutKey.swift */; };
+		EC2002ED2C417B68002EBD5F /* AppScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002EC2C417B68002EBD5F /* AppScene.swift */; };
+		EC2002F02C417BF1002EBD5F /* ActiveSceneKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002EF2C417BF1002EBD5F /* ActiveSceneKey.swift */; };
 		EC2106AD2C10C2A700FBE27C /* AnyStroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2106AC2C10C2A700FBE27C /* AnyStroke.swift */; };
 		EC2BEBF42C0F5FF7005DB0AF /* RTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2BEBF32C0F5FF7005DB0AF /* RTree.swift */; };
 		EC2BEBF62C0F600D005DB0AF /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2BEBF52C0F600D005DB0AF /* Box.swift */; };
@@ -147,6 +157,16 @@
 		EC1815092C2DA09E00541369 /* Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
 		EC18150C2C2DAC3700541369 /* Placeholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Placeholder.swift; sourceTree = "<group>"; };
 		EC1B783C2BFA0AC9005A34E2 /* Toolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toolbar.swift; sourceTree = "<group>"; };
+		EC2002D42C416033002EBD5F /* FileCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCommands.swift; sourceTree = "<group>"; };
+		EC2002D62C4160EF002EBD5F /* EditCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCommands.swift; sourceTree = "<group>"; };
+		EC2002D82C4161ED002EBD5F /* ViewCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCommands.swift; sourceTree = "<group>"; };
+		EC2002DA2C4162E5002EBD5F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		EC2002DC2C4163E8002EBD5F /* AppCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCommands.swift; sourceTree = "<group>"; };
+		EC2002E02C416470002EBD5F /* Shortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shortcut.swift; sourceTree = "<group>"; };
+		EC2002E42C416551002EBD5F /* Shortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shortcuts.swift; sourceTree = "<group>"; };
+		EC2002E82C4167C5002EBD5F /* ShortcutKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutKey.swift; sourceTree = "<group>"; };
+		EC2002EC2C417B68002EBD5F /* AppScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppScene.swift; sourceTree = "<group>"; };
+		EC2002EF2C417BF1002EBD5F /* ActiveSceneKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSceneKey.swift; sourceTree = "<group>"; };
 		EC2106AC2C10C2A700FBE27C /* AnyStroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyStroke.swift; sourceTree = "<group>"; };
 		EC2BEBF32C0F5FF7005DB0AF /* RTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTree.swift; sourceTree = "<group>"; };
 		EC2BEBF52C0F600D005DB0AF /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
@@ -369,6 +389,53 @@
 			path = Toolbar;
 			sourceTree = "<group>";
 		};
+		EC2002D32C416002002EBD5F /* Commands */ = {
+			isa = PBXGroup;
+			children = (
+				EC2002DC2C4163E8002EBD5F /* AppCommands.swift */,
+				EC2002D62C4160EF002EBD5F /* EditCommands.swift */,
+				EC2002D42C416033002EBD5F /* FileCommands.swift */,
+				EC2002D82C4161ED002EBD5F /* ViewCommands.swift */,
+			);
+			path = Commands;
+			sourceTree = "<group>";
+		};
+		EC2002DE2C41645A002EBD5F /* Shortcut */ = {
+			isa = PBXGroup;
+			children = (
+				EC2002D32C416002002EBD5F /* Commands */,
+				EC2002DF2C416466002EBD5F /* Core */,
+				EC2002E72C4167B1002EBD5F /* EnvironmentKeys */,
+			);
+			path = Shortcut;
+			sourceTree = "<group>";
+		};
+		EC2002DF2C416466002EBD5F /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				EC2002E02C416470002EBD5F /* Shortcut.swift */,
+				EC2002E42C416551002EBD5F /* Shortcuts.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		EC2002E72C4167B1002EBD5F /* EnvironmentKeys */ = {
+			isa = PBXGroup;
+			children = (
+				EC2002E82C4167C5002EBD5F /* ShortcutKey.swift */,
+			);
+			path = EnvironmentKeys;
+			sourceTree = "<group>";
+		};
+		EC2002EE2C417BBF002EBD5F /* AppScene */ = {
+			isa = PBXGroup;
+			children = (
+				EC2002EC2C417B68002EBD5F /* AppScene.swift */,
+				EC2002EF2C417BF1002EBD5F /* ActiveSceneKey.swift */,
+			);
+			path = AppScene;
+			sourceTree = "<group>";
+		};
 		EC2BEBF22C0F5FE1005DB0AF /* RTree */ = {
 			isa = PBXGroup;
 			children = (
@@ -466,12 +533,13 @@
 		EC7F6BEA2BE5E6E300A34A7B /* Memola */ = {
 			isa = PBXGroup;
 			children = (
-				ECF7B2E82C395A8E004D2C57 /* Memola.entitlements */,
 				ECA738762BE5EE4E00A4542E /* App */,
+				EC2002DE2C41645A002EBD5F /* Shortcut */,
 				ECA7387E2BE5FE4200A4542E /* Canvas */,
 				EC50500A2BF6672000B4D86E /* Components */,
 				EC5050102BF670EE00B4D86E /* Config */,
 				ECA738772BE5EEE800A4542E /* Features */,
+				ECF7B2E82C395A8E004D2C57 /* Memola.entitlements */,
 				ECA738FA2BE61B1700A4542E /* Persistence */,
 				EC7F6BF12BE5E6E400A34A7B /* Preview Content */,
 				ECA738802BE5FE6000A4542E /* Resources */,
@@ -517,6 +585,7 @@
 			isa = PBXGroup;
 			children = (
 				EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */,
+				EC2002DA2C4162E5002EBD5F /* AppDelegate.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -914,6 +983,7 @@
 		ECF7B2E52C391DFA004D2C57 /* Utilies */ = {
 			isa = PBXGroup;
 			children = (
+				EC2002EE2C417BBF002EBD5F /* AppScene */,
 				ECF7B2CF2C39169C004D2C57 /* Extensions */,
 				ECF7B2E22C39172D004D2C57 /* Platform */,
 			);
@@ -1035,7 +1105,9 @@
 				ECA738A82BE6025900A4542E /* GraphicUniforms.swift in Sources */,
 				EC01511E2C305CA9008A115E /* DashboardView.swift in Sources */,
 				EC8F54AE2C2AF5A4001C7C74 /* LineGridVertex.swift in Sources */,
+				EC2002F02C417BF1002EBD5F /* ActiveSceneKey.swift in Sources */,
 				EC3D67CC2C3AAD5E00359400 /* MemoManager.swift in Sources */,
+				EC2002E12C416470002EBD5F /* Shortcut.swift in Sources */,
 				EC5E83902BFDB69C00261D9C /* MovingAverage.swift in Sources */,
 				ECFA15262BEF224900455818 /* StrokeObject.swift in Sources */,
 				ECA738FC2BE61C5200A4542E /* Persistence.swift in Sources */,
@@ -1045,6 +1117,8 @@
 				ECFA15222BEF21F500455818 /* CanvasObject.swift in Sources */,
 				ECA738AA2BE6026D00A4542E /* Uniforms.swift in Sources */,
 				ECF7B2D12C39169C004D2C57 /* CGAffineTransform++.swift in Sources */,
+				EC2002E52C416551002EBD5F /* Shortcuts.swift in Sources */,
+				EC2002DD2C4163E8002EBD5F /* AppCommands.swift in Sources */,
 				EC1815082C2D980B00541369 /* Sort.swift in Sources */,
 				ECA7387D2BE5EF4B00A4542E /* MemoView.swift in Sources */,
 				ECDDD40D2C366B3B00DF9D5E /* PreviewRenderPass.swift in Sources */,
@@ -1082,6 +1156,7 @@
 				ECD12A8C2C1AEAA900B96E12 /* PhotoObject.swift in Sources */,
 				ECD12A862C19EE3900B96E12 /* ElementObject.swift in Sources */,
 				EC0D14242BF79C98009BFE5F /* MemolaModel.xcdatamodeld in Sources */,
+				EC2002ED2C417B68002EBD5F /* AppScene.swift in Sources */,
 				ECFA15242BEF223300455818 /* GraphicContextObject.swift in Sources */,
 				ECA738E22BE610D000A4542E /* GraphicRenderPass.swift in Sources */,
 				ECE883BF2C00AB440045C53D /* Stroke.swift in Sources */,
@@ -1099,10 +1174,12 @@
 				ECA7388F2BE600DA00A4542E /* Grid.metal in Sources */,
 				EC2BEBF42C0F5FF7005DB0AF /* RTree.swift in Sources */,
 				ECA738C92BE60EF700A4542E /* GraphicContext.swift in Sources */,
+				EC2002E92C4167C5002EBD5F /* ShortcutKey.swift in Sources */,
 				EC0D14212BF79C73009BFE5F /* ToolObject.swift in Sources */,
 				ECDAC07B2C318DBC0000ED77 /* ElementToolbar.swift in Sources */,
 				EC50500D2BF6674400B4D86E /* OnDragViewModifier.swift in Sources */,
 				EC9AB09F2C1401A40076AF58 /* EraserObject.swift in Sources */,
+				EC2002DB2C4162E5002EBD5F /* AppDelegate.swift in Sources */,
 				ECBE529C2C1D94A4006BDB3D /* CameraView.swift in Sources */,
 				ECA7389E2BE601CB00A4542E /* QuadVertex.swift in Sources */,
 				ECA738B32BE60D9E00A4542E /* CanvasView.swift in Sources */,
@@ -1120,12 +1197,15 @@
 				EC5050072BF65CED00B4D86E /* PenDropDelegate.swift in Sources */,
 				ECF7B2E42C39174D004D2C57 /* Platform.swift in Sources */,
 				ECA738C12BE60E5300A4542E /* PenStyle.swift in Sources */,
+				EC2002D72C4160EF002EBD5F /* EditCommands.swift in Sources */,
 				ECF7B2DF2C39169C004D2C57 /* simd_float4x4++.swift in Sources */,
 				ECF7B2D02C39169C004D2C57 /* Array++.swift in Sources */,
 				ECBE52962C1D5900006BDB3D /* PhotoPreview.swift in Sources */,
 				ECA738DE2BE610A000A4542E /* ViewPortRenderPass.swift in Sources */,
 				EC8F54AC2C2ACDA8001C7C74 /* GridMode.swift in Sources */,
+				EC2002D92C4161ED002EBD5F /* ViewCommands.swift in Sources */,
 				EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */,
+				EC2002D52C416033002EBD5F /* FileCommands.swift in Sources */,
 				EC2BEBF82C0F601A005DB0AF /* Node.swift in Sources */,
 				ECA738A02BE601E400A4542E /* ViewPortVertex.swift in Sources */,
 				ECD12A8A2C19EFB000B96E12 /* Element.swift in Sources */,
