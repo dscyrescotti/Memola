@@ -8,21 +8,28 @@
 import SwiftUI
 
 struct EditCommands: Commands {
+    @FocusedValue(\.activeSceneKey) private var appScene
+
+    @FocusedObject var history: History?
+
     var body: some Commands {
         CommandGroup(replacing: .undoRedo) {
-            // memo view
-            Button {
-                
-            } label: {
-                Text("Undo")
+            if appScene == .memo, let history {
+                Button {
+                    history.historyPublisher.send(.undo)
+                } label: {
+                    Text("Undo")
+                }
+                .keyboardShortcut("z", modifiers: [.command])
+                .disabled(history.undoDisabled)
+                Button {
+                    history.historyPublisher.send(.redo)
+                } label: {
+                    Text("Redo")
+                }
+                .keyboardShortcut("z", modifiers: [.command, .shift])
+                .disabled(history.redoDisabled)
             }
-            .keyboardShortcut("z", modifiers: [.command])
-            Button {
-                
-            } label: {
-                Text("Redo")
-            }
-            .keyboardShortcut("z", modifiers: [.command, .shift])
         }
         CommandGroup(replacing: .pasteboard) { }
     }

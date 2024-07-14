@@ -15,15 +15,11 @@ final class Application: NSObject, ObservableObject {
 
 extension Application {
     func openMemo(_ memoObject: MemoObject?) {
-        withAnimation(.easeOut) {
-            self.memoObject = memoObject
-        }
+        self.memoObject = memoObject
     }
 
     func closeMemo() {
-        withAnimation(.easeOut) {
-            self.memoObject = nil
-        }
+        self.memoObject = nil
     }
 }
 
