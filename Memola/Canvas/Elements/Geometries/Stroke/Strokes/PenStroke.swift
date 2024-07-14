@@ -101,7 +101,7 @@ final class PenStroke: Stroke, @unchecked Sendable {
         fetchRequest.predicate = NSPredicate(format: "ANY strokes == %@", stroke)
 
         do {
-            let erasers = try withPersistenceSync(\.backgroundContext) { context in
+            let erasers = try withPersistenceContext(\.backgroundContext) { context in
                 try context.fetch(fetchRequest)
             }
             return erasers
