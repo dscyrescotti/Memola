@@ -9,7 +9,7 @@ import Combine
 import SwiftUI
 
 final class Application: NSObject, ObservableObject {
-    
+    @Published private(set) var sidebarVisibility: SidebarVisibility = .shown
 }
 
 extension Application {
@@ -22,6 +22,18 @@ extension Application {
         #else
         #warning("TODO: implement for ipad")
         #endif
+    }
+
+    func toggleSidebar() {
+        #if os(macOS)
+        NSApp.sendAction(#selector(NSSplitViewController.toggleSidebar(_:)), to: nil, from: nil)
+        #else
+        #warning("TODO: implement for ipad")
+        #endif
+    }
+
+    func changeSidebarVisibility(_ visibility: SidebarVisibility) {
+        self.sidebarVisibility = visibility
     }
 }
 

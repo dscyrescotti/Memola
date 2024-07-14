@@ -17,13 +17,26 @@ struct ViewCommands: Commands {
 
     var body: some Commands {
         CommandGroup(replacing: .toolbar) {
-            if appScene == .trash || appScene == .memos {
+            if appScene == .memos || appScene == .trash {
                 Button {
                     application.activateSearchBar()
                 } label: {
                     Text("Find Memo")
                 }
                 .keyboardShortcut("f", modifiers: [.command])
+            }
+            if appScene == .memos || appScene == .trash {
+                Button {
+                    application.toggleSidebar()
+                } label: {
+                    switch application.sidebarVisibility {
+                    case .shown:
+                        Text("Hide Sidebar")
+                    case .hidden:
+                        Text("Show Sidebar")
+                    }
+                }
+                .keyboardShortcut("o", modifiers: [.command])
             }
         }
     }

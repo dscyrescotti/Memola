@@ -47,6 +47,7 @@
 		EC6E3BD72C43C6A400DD20F3 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6E3BD62C43C6A400DD20F3 /* Application.swift */; };
 		EC6E3BD92C43C6C000DD20F3 /* OnDismissSearchViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6E3BD82C43C6C000DD20F3 /* OnDismissSearchViewModifier.swift */; };
 		EC6E3BDB2C43C78700DD20F3 /* NavigationSplitViewVisibility++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6E3BDA2C43C78700DD20F3 /* NavigationSplitViewVisibility++.swift */; };
+		EC6E3BDE2C43D5A500DD20F3 /* SidebarVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6E3BDC2C43D5A500DD20F3 /* SidebarVisibility.swift */; };
 		EC7F6BEC2BE5E6E300A34A7B /* MemolaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */; };
 		EC7F6BF02BE5E6E400A34A7B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */; };
 		EC7F6BF32BE5E6E400A34A7B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC7F6BF22BE5E6E400A34A7B /* Preview Assets.xcassets */; };
@@ -185,6 +186,7 @@
 		EC6E3BD62C43C6A400DD20F3 /* Application.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		EC6E3BD82C43C6C000DD20F3 /* OnDismissSearchViewModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnDismissSearchViewModifier.swift; sourceTree = "<group>"; };
 		EC6E3BDA2C43C78700DD20F3 /* NavigationSplitViewVisibility++.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NavigationSplitViewVisibility++.swift"; sourceTree = "<group>"; };
+		EC6E3BDC2C43D5A500DD20F3 /* SidebarVisibility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarVisibility.swift; sourceTree = "<group>"; };
 		EC7F6BE82BE5E6E300A34A7B /* Memola.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Memola.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC7F6BEB2BE5E6E300A34A7B /* MemolaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemolaApp.swift; sourceTree = "<group>"; };
 		EC7F6BEF2BE5E6E400A34A7B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -517,6 +519,14 @@
 				EC5E838F2BFDB69C00261D9C /* MovingAverage.swift */,
 			);
 			path = Algorithms;
+			sourceTree = "<group>";
+		};
+		EC6E3BDD2C43D5A500DD20F3 /* SidebarVisibility */ = {
+			isa = PBXGroup;
+			children = (
+				EC6E3BDC2C43D5A500DD20F3 /* SidebarVisibility.swift */,
+			);
+			path = SidebarVisibility;
 			sourceTree = "<group>";
 		};
 		EC7F6BDF2BE5E6E300A34A7B = {
@@ -989,6 +999,7 @@
 		ECF7B2E52C391DFA004D2C57 /* Utilies */ = {
 			isa = PBXGroup;
 			children = (
+				EC6E3BDD2C43D5A500DD20F3 /* SidebarVisibility */,
 				EC2002EE2C417BBF002EBD5F /* AppScene */,
 				ECF7B2CF2C39169C004D2C57 /* Extensions */,
 				ECF7B2E22C39172D004D2C57 /* Platform */,
@@ -1133,6 +1144,7 @@
 				ECA738DA2BE60FF100A4542E /* CacheRenderPass.swift in Sources */,
 				ECF7B2DA2C39169C004D2C57 /* Float++.swift in Sources */,
 				ECA738CD2BE60F2F00A4542E /* PointGridContext.swift in Sources */,
+				EC6E3BDE2C43D5A500DD20F3 /* SidebarVisibility.swift in Sources */,
 				ECFA15202BEF21EF00455818 /* MemoObject.swift in Sources */,
 				ECE883C12C00C9CB0045C53D /* StrokeStyle.swift in Sources */,
 				EC37FB122C1B2DD90008D976 /* ToolSelection.swift in Sources */,

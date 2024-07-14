@@ -11,6 +11,7 @@ struct DashboardView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @StateObject private var memoManager: MemoManager = .shared
+    @EnvironmentObject private var application: Application
 
     @State private var sidebarItem: SidebarItem? = .memos
     @AppStorage("memola.app.scene.side-bar.column-visibility") private var columnVisibility: NavigationSplitViewVisibility = .all
@@ -44,6 +45,9 @@ struct DashboardView: View {
                     }
                     .transition(.move(edge: .bottom))
             }
+        }
+        .onChange(of: columnVisibility) { oldValue, newValue in
+            application.changeSidebarVisibility(newValue == .all ? .shown : .hidden)
         }
         #else
         NavigationSplitView(columnVisibility: $columnVisibility) {

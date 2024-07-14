@@ -11,7 +11,7 @@ import CoreData
 import Foundation
 
 final class Tool: NSObject, ObservableObject {
-    private let object: ToolObject
+    let object: ToolObject
 
     @Published var pens: [Pen] = []
 
