@@ -10,9 +10,11 @@ import SwiftUI
 @main
 struct MemolaApp: App {
     #if os(macOS)
-    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @NSApplicationDelegateAdaptor(Application.self) var application
+    #else
+    @UIApplicationDelegateAdaptor(Application.self) var application
     #endif
-    
+
     var body: some Scene {
         WindowGroup {
             DashboardView()

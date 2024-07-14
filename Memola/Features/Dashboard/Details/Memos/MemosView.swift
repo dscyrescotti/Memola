@@ -15,6 +15,7 @@ struct MemosView: View {
 
     @State var query: String = ""
     @State var currentDate: Date = .now
+    @State var isActiveSearch: Bool = false
 
     @AppStorage("memola.memo-objects.memos.sort") var sort: Sort = .recent
     @AppStorage("memola.memo-objects.memos.filter") var filter: Filter = .none
@@ -43,12 +44,16 @@ struct MemosView: View {
         MemoGrid(memoObjects: memoObjects, placeholder: placeholder) { memoObject, cellWidth in
             memoCard(memoObject, cellWidth)
         }
+        .onDismissSearch(isActive: $isActiveSearch)
         .focusedSceneValue(\.activeSceneKey, .memos)
         .navigationTitle(horizontalSizeClass == .compact ? "Memos" : "")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
-        .searchable(text: $query, placement: .toolbar, prompt: Text("Search"))
+        .searchable(text: $query, isPresented: $isActiveSearch, placement: .toolbar, prompt: Text("Search"))
+        .onSubmit(of: .search) {
+            isActiveSearch = false
+        }
         .toolbar {
             #if os(macOS)
             ToolbarItem(placement: .navigation) {

@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-class Shortcut: ObservableObject {
+class Shortcut {
     static let shared: Shortcut = .init()
 
     private let shortcutPublisher = PassthroughSubject<Shortcuts, Never>()

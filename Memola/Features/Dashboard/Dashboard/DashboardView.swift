@@ -13,12 +13,13 @@ struct DashboardView: View {
     @StateObject var memoManager: MemoManager = .shared
 
     @State var sidebarItem: SidebarItem? = .memos
+    @AppStorage("memola.app.scene.side-bar.column-visibility") var columnVisibility: NavigationSplitViewVisibility = .all
 
     @Namespace var namespace
 
     var body: some View {
         #if os(macOS)
-        NavigationSplitView {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
             Sidebar(sidebarItem: $sidebarItem, horizontalSizeClass: horizontalSizeClass)
         } detail: {
             switch sidebarItem {
@@ -45,7 +46,7 @@ struct DashboardView: View {
             }
         }
         #else
-        NavigationSplitView {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
             Sidebar(sidebarItem: $sidebarItem, horizontalSizeClass: horizontalSizeClass)
         } detail: {
             switch sidebarItem {

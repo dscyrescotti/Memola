@@ -8,7 +8,7 @@
 import SwiftUI
 import Foundation
 
-struct OnDragViewModifier<Preview: View>: ViewModifier {
+private struct OnDragViewModifier<Preview: View>: ViewModifier {
     let condition: Bool
     let data: () -> NSItemProvider
     let preview: () -> Preview

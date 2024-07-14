@@ -8,7 +8,7 @@
 import SwiftUI
 import Foundation
 
-struct ContextMenuViewModifier<MenuContent: View, Preview: View>: ViewModifier {
+private struct ContextMenuViewModifier<MenuContent: View, Preview: View>: ViewModifier {
     let condition: Bool
     let menuItems: () -> MenuContent
     let preview: () -> Preview
