@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Node<T> where T: Equatable & Comparable {
+final class Node<T> where T: Equatable & Comparable {
     var box: Box
     var value: T?
     var isLeaf: Bool

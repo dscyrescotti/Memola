@@ -8,7 +8,7 @@
 import MetalKit
 import Foundation
 
-class CacheRenderPass: RenderPass {
+final class CacheRenderPass: RenderPass {
     var label: String = "Cache Render Pass"
 
     var descriptor: MTLRenderPassDescriptor?

@@ -9,17 +9,17 @@ import SwiftUI
 import CoreData
 
 struct MemoView: View {
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @StateObject var tool: Tool
-    @StateObject var canvas: Canvas
-    @StateObject var history: History
+    @StateObject private var tool: Tool
+    @StateObject private var canvas: Canvas
+    @StateObject private var history: History
 
-    @State var title: String
-    @FocusState var textFieldState: Bool
+    @State private var title: String
+    @FocusState private var textFieldState: Bool
 
-    let memo: MemoObject
-    let size: CGFloat = 40
+    private let memo: MemoObject
+    private let size: CGFloat = 40
 
     init(memo: MemoObject) {
         self.memo = memo
@@ -63,7 +63,7 @@ struct MemoView: View {
         }
     }
 
-    var canvasView: some View {
+    private var canvasView: some View {
         CanvasView(tool: tool, canvas: canvas, history: history)
             .ignoresSafeArea()
             .overlay(alignment: .trailing) {
@@ -88,7 +88,7 @@ struct MemoView: View {
             }
     }
 
-    var compactCanvasView: some View {
+    private var compactCanvasView: some View {
         CanvasView(tool: tool, canvas: canvas, history: history)
             .ignoresSafeArea()
             .overlay(alignment: .bottom) {
@@ -115,7 +115,7 @@ struct MemoView: View {
     }
 
     @ViewBuilder
-    var zoomControl: some View {
+    private var zoomControl: some View {
         let upperBound: CGFloat = 400
         let lowerBound: CGFloat = 10
         let zoomScale: CGFloat = (((canvas.zoomScale - canvas.minimumZoomScale) * (upperBound - lowerBound) / (canvas.maximumZoomScale - canvas.minimumZoomScale)) + lowerBound).rounded()
@@ -187,7 +187,7 @@ struct MemoView: View {
         #endif
     }
 
-    func loadingIndicator(_ title: String) -> some View {
+    private func loadingIndicator(_ title: String) -> some View {
         ProgressView {
             Text(title)
         }

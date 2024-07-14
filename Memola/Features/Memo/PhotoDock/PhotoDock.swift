@@ -9,16 +9,21 @@ import SwiftUI
 import PhotosUI
 
 struct PhotoDock: View {
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
-    
-    let size: CGFloat = 40
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @ObservedObject var tool: Tool
-    @ObservedObject var canvas: Canvas
+    private let size: CGFloat = 40
 
-    @State var opensCamera: Bool = false
-    @State var isCameraAccessDenied: Bool = false
-    @State var photosPickerItem: PhotosPickerItem?
+    @ObservedObject private var tool: Tool
+    @ObservedObject private var canvas: Canvas
+
+    @State private var opensCamera: Bool = false
+    @State private var isCameraAccessDenied: Bool = false
+    @State private var photosPickerItem: PhotosPickerItem?
+
+    init(tool: Tool, canvas: Canvas) {
+        self.tool = tool
+        self.canvas = canvas
+    }
 
     var body: some View {
         Group {
@@ -71,7 +76,7 @@ struct PhotoDock: View {
         }
     }
 
-    var photoOption: some View {
+    private var photoOption: some View {
         VStack(spacing: 0) {
             #if os(iOS)
             Button {
@@ -126,7 +131,7 @@ struct PhotoDock: View {
         .transition(.move(edge: .trailing).combined(with: .blurReplace))
     }
 
-    var compactPhotoOption: some View {
+    private var compactPhotoOption: some View {
         HStack(spacing: 0) {
             #if os(iOS)
             Button {
@@ -181,7 +186,7 @@ struct PhotoDock: View {
         .transition(.move(edge: .bottom).combined(with: .blurReplace))
     }
 
-    func openCamera() {
+    private func openCamera() {
         let status = AVCaptureDevice.authorizationStatus(for: .video)
         switch status {
         case .notDetermined:

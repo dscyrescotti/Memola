@@ -77,14 +77,6 @@ final class Persistence {
             fatalError("[Memola]: \(error.localizedDescription)")
         }
     }()
-
-    static func loadMemo(of url: URL) -> MemoObject? {
-        let viewContext = shared.viewContext
-        guard let objectID = viewContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: url) else {
-            return nil
-        }
-        return viewContext.object(with: objectID) as? MemoObject
-    }
 }
 
 // MARK: - Global Method

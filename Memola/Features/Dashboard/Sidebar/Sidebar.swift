@@ -8,10 +8,15 @@
 import SwiftUI
 
 struct Sidebar: View {
-    let sidebarItems: [SidebarItem] = [.memos, .trash]
-    @Binding var sidebarItem: SidebarItem?
+    private let sidebarItems: [SidebarItem] = [.memos, .trash]
+    @Binding private var sidebarItem: SidebarItem?
 
-    let horizontalSizeClass: UserInterfaceSizeClass?
+    private let horizontalSizeClass: UserInterfaceSizeClass?
+
+    init(sidebarItem: Binding<SidebarItem?>, horizontalSizeClass: UserInterfaceSizeClass?) {
+        self._sidebarItem = sidebarItem
+        self.horizontalSizeClass = horizontalSizeClass
+    }
 
     var body: some View {
         List(selection: $sidebarItem) {
@@ -51,7 +56,7 @@ struct Sidebar: View {
 }
 
 extension Sidebar {
-    struct SidebarItemButtonStyle: ButtonStyle {
+    fileprivate struct SidebarItemButtonStyle: ButtonStyle {
         let state: State
 
         func makeBody(configuration: Configuration) -> some View {

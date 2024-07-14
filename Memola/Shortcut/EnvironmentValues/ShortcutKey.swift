@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ShortcutKey: EnvironmentKey {
+private struct ShortcutKey: EnvironmentKey {
     static var defaultValue: Shortcut = .shared
 }
 

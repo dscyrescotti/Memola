@@ -9,9 +9,15 @@ import SwiftUI
 import Foundation
 
 private struct ContextMenuViewModifier<MenuContent: View, Preview: View>: ViewModifier {
-    let condition: Bool
-    let menuItems: () -> MenuContent
-    let preview: () -> Preview
+    private let condition: Bool
+    private let menuItems: () -> MenuContent
+    private let preview: () -> Preview
+
+    init(condition: Bool, @ViewBuilder menuItems: @escaping () -> MenuContent, @ViewBuilder preview: @escaping () -> Preview) {
+        self.condition = condition
+        self.menuItems = menuItems
+        self.preview = preview
+    }
 
     @ViewBuilder
     func body(content: Content) -> some View {

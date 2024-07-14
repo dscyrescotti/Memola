@@ -8,8 +8,21 @@
 import Combine
 import SwiftUI
 
-class Application: NSObject, ObservableObject {
+final class Application: NSObject, ObservableObject {
+    
+}
 
+extension Application {
+    func activateSearchBar() {
+        #if os(macOS)
+        guard let toolbar = NSApp.keyWindow?.toolbar else { return }
+        if let search = toolbar.items.first(where: { $0.itemIdentifier.rawValue == "com.apple.SwiftUI.search" }) as? NSSearchToolbarItem {
+            search.beginSearchInteraction()
+        }
+        #else
+        #warning("TODO: implement for ipad")
+        #endif
+    }
 }
 
 #if os(macOS)

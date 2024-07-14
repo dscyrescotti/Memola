@@ -10,9 +10,9 @@ import SwiftUI
 @main
 struct MemolaApp: App {
     #if os(macOS)
-    @NSApplicationDelegateAdaptor(Application.self) var application
+    @NSApplicationDelegateAdaptor(Application.self) private var application
     #else
-    @UIApplicationDelegateAdaptor(Application.self) var application
+    @UIApplicationDelegateAdaptor(Application.self) private var application
     #endif
 
     var body: some Scene {
@@ -30,6 +30,7 @@ struct MemolaApp: App {
                 #if os(macOS)
                 .frame(minWidth: 1000, minHeight: 600)
                 #endif
+                .environmentObject(application)
         }
         #if os(macOS)
         .defaultPosition(.center)
@@ -41,7 +42,7 @@ struct MemolaApp: App {
             AppCommands()
             FileCommands()
             EditCommands()
-            ViewCommands()
+            ViewCommands(application: application)
         }
     }
 }

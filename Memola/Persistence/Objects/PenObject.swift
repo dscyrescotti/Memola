@@ -9,7 +9,7 @@ import CoreData
 import Foundation
 
 @objc(PenObject)
-class PenObject: NSManagedObject {
+final class PenObject: NSManagedObject {
     @NSManaged var color: [CGFloat]
     @NSManaged var style: Int16
     @NSManaged var thickness: CGFloat

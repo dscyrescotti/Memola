@@ -7,7 +7,7 @@
 
 import Foundation
 
-class RTree<T> where T: Equatable & Comparable {
+final class RTree<T> where T: Equatable & Comparable {
     private var root: Node<T>
     private let maxEntries: Int
     private let minEntries: Int

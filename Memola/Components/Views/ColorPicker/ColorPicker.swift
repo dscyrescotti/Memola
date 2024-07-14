@@ -9,14 +9,18 @@ import SwiftUI
 import Foundation
 
 struct ColorPicker: View {
-    @State var hue: Double = 1
-    @State var saturation: Double = 0
-    @State var brightness: Double = 1
-    @State var alpha: Double = 1
+    @State private var hue: Double = 1
+    @State private var saturation: Double = 0
+    @State private var brightness: Double = 1
+    @State private var alpha: Double = 1
 
-    @Binding var color: Color
+    @Binding private var color: Color
 
-    let size: CGFloat = 20
+    private let size: CGFloat = 20
+
+    init(color: Binding<Color>) {
+        self._color = color
+    }
 
     var body: some View {
         VStack(spacing: 10) {
@@ -43,7 +47,7 @@ struct ColorPicker: View {
     }
 
     @ViewBuilder
-    var colorPicker: some View {
+    private var colorPicker: some View {
         GeometryReader { proxy in
             ZStack {
                 Color(hue: hue, saturation: 1, brightness: 1)
@@ -92,7 +96,7 @@ struct ColorPicker: View {
     }
 
     @ViewBuilder
-    var hueSlider: some View {
+    private var hueSlider: some View {
         GeometryReader { proxy in
             ZStack(alignment: .leading) {
                 LinearGradient(
@@ -138,7 +142,7 @@ struct ColorPicker: View {
     }
 
     @ViewBuilder
-    var alphaSlider: some View {
+    private var alphaSlider: some View {
         GeometryReader { proxy in
             let color = Color(hue: hue, saturation: saturation, brightness: brightness)
             ZStack(alignment: .leading) {
@@ -190,7 +194,7 @@ struct ColorPicker: View {
         .frame(height: size)
     }
 
-    func updateColor() {
+    private func updateColor() {
         color = Color(hue: hue, saturation: saturation, brightness: brightness).opacity(0.7 * alpha + 0.3)
     }
 }

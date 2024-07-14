@@ -8,7 +8,7 @@
 import MetalKit
 import Foundation
 
-class PointGridContext {
+final class PointGridContext {
     var vertices: [PointGridVertex] = []
     var vertexCount: Int = 0
     var vertexBuffer: MTLBuffer?

@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct DashboardView: View {
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @StateObject var memoManager: MemoManager = .shared
+    @StateObject private var memoManager: MemoManager = .shared
 
-    @State var sidebarItem: SidebarItem? = .memos
-    @AppStorage("memola.app.scene.side-bar.column-visibility") var columnVisibility: NavigationSplitViewVisibility = .all
+    @State private var sidebarItem: SidebarItem? = .memos
+    @AppStorage("memola.app.scene.side-bar.column-visibility") private var columnVisibility: NavigationSplitViewVisibility = .all
 
-    @Namespace var namespace
+    @Namespace private var namespace
 
     var body: some View {
         #if os(macOS)

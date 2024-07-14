@@ -8,24 +8,29 @@
 import SwiftUI
 
 struct PenDock: View {
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
-    @ObservedObject var tool: Tool
-    @ObservedObject var canvas: Canvas
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @ObservedObject private var tool: Tool
+    @ObservedObject private var canvas: Canvas
 
-    let size: CGFloat = 40
-    let penPropertySize: CGFloat = 32
-    var width: CGFloat {
+    private let size: CGFloat = 40
+    private let penPropertySize: CGFloat = 32
+    private var width: CGFloat {
         horizontalSizeClass == .compact ? size / 2 : size
     }
-    var height: CGFloat {
+    private var height: CGFloat {
         horizontalSizeClass == .compact ? size : size / 2
     }
 
-    @State var refreshScrollId: UUID = UUID()
-    @State var opensColorPicker: Bool = false
+    @State private var refreshScrollId: UUID = UUID()
+    @State private var opensColorPicker: Bool = false
     #if os(macOS)
-    @State var showsThinknessPicker: Bool = false
+    @State private var showsThinknessPicker: Bool = false
     #endif
+
+    init(tool: Tool, canvas: Canvas) {
+        self.tool = tool
+        self.canvas = canvas
+    }
 
     var body: some View {
         #if os(macOS)
@@ -101,7 +106,7 @@ struct PenDock: View {
     }
 
     @ViewBuilder
-    var penItemList: some View {
+    private var penItemList: some View {
         VStack(alignment: .trailing, spacing: 0) {
             ScrollViewReader { proxy in
                 ScrollView(.vertical, showsIndicators: false) {
@@ -139,7 +144,7 @@ struct PenDock: View {
     }
 
     @ViewBuilder
-    var compactPenItemList: some View {
+    private var compactPenItemList: some View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 0) {
@@ -165,7 +170,7 @@ struct PenDock: View {
         }
     }
 
-    func penItem(_ pen: Pen) -> some View {
+    private func penItem(_ pen: Pen) -> some View {
         ZStack {
             penShadow(pen)
             if let tip = pen.style.icon.tip {
@@ -242,7 +247,7 @@ struct PenDock: View {
         }
     }
 
-    func compactPenItem(_ pen: Pen) -> some View {
+    private func compactPenItem(_ pen: Pen) -> some View {
         ZStack {
             compactPenShadow(pen)
             if let tip = pen.style.compactIcon.tip {
@@ -319,7 +324,7 @@ struct PenDock: View {
     }
 
     @ViewBuilder
-    var penPropertyTool: some View {
+    private var penPropertyTool: some View {
         if let pen = tool.selectedPen {
             VStack(spacing: 5) {
                 if pen.strokeStyle == .marker {
@@ -340,7 +345,7 @@ struct PenDock: View {
     }
 
     @ViewBuilder
-    var compactPenPropertyTool: some View {
+    private var compactPenPropertyTool: some View {
         if let pen = tool.selectedPen {
             HStack(spacing: 8) {
                 penThicknessPicker(pen)
@@ -356,7 +361,7 @@ struct PenDock: View {
         }
     }
 
-    func penColorPicker(_ pen: Pen) -> some View {
+    private func penColorPicker(_ pen: Pen) -> some View {
         Button {
             opensColorPicker = true
         } label: {
@@ -409,7 +414,7 @@ struct PenDock: View {
     }
 
     @ViewBuilder
-    func penThicknessPicker(_ pen: Pen) -> some View {
+    private func penThicknessPicker(_ pen: Pen) -> some View {
         let minimum: CGFloat = pen.style.thickness.min
         let maximum: CGFloat = pen.style.thickness.max
         let start: CGFloat = 4
@@ -453,7 +458,7 @@ struct PenDock: View {
         }
     }
 
-    var newPenButton: some View {
+    private var newPenButton: some View {
         Button {
             createNewPen()
         } label: {
@@ -474,7 +479,7 @@ struct PenDock: View {
         #endif
     }
 
-    func penPreview(_ pen: Pen) -> some View {
+    private func penPreview(_ pen: Pen) -> some View {
         ZStack {
             if let tip = pen.style.icon.tip {
                 Image(tip)
@@ -490,7 +495,7 @@ struct PenDock: View {
         .padding(.leading, 10)
     }
 
-    func compactPenPreview(_ pen: Pen) -> some View {
+    private func compactPenPreview(_ pen: Pen) -> some View {
         ZStack {
             if let tip = pen.style.compactIcon.tip {
                 Image(tip)
@@ -506,7 +511,7 @@ struct PenDock: View {
         .padding(.horizontal, 5)
     }
 
-    func penShadow(_ pen: Pen) -> some View {
+    private func penShadow(_ pen: Pen) -> some View {
         ZStack {
             Group {
                 if let tip = pen.style.icon.tip {
@@ -530,7 +535,7 @@ struct PenDock: View {
         }
     }
 
-    func compactPenShadow(_ pen: Pen) -> some View {
+    private func compactPenShadow(_ pen: Pen) -> some View {
         ZStack {
             Group {
                 if let tip = pen.style.compactIcon.tip {
@@ -554,7 +559,7 @@ struct PenDock: View {
         }
     }
 
-    func createNewPen() {
+    private func createNewPen() {
         let pen = PenObject.createObject(\.viewContext, penStyle: .marker)
         var selectedPen = tool.selectedPen
         selectedPen = (selectedPen?.strokeStyle == .marker ? (selectedPen ?? tool.pens.last) : tool.pens.last)

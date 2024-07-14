@@ -409,7 +409,7 @@
 			children = (
 				EC2002D32C416002002EBD5F /* Commands */,
 				EC2002DF2C416466002EBD5F /* Core */,
-				EC2002E72C4167B1002EBD5F /* EnvironmentKeys */,
+				EC2002E72C4167B1002EBD5F /* EnvironmentValues */,
 			);
 			path = Shortcut;
 			sourceTree = "<group>";
@@ -423,12 +423,12 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
-		EC2002E72C4167B1002EBD5F /* EnvironmentKeys */ = {
+		EC2002E72C4167B1002EBD5F /* EnvironmentValues */ = {
 			isa = PBXGroup;
 			children = (
 				EC2002E82C4167C5002EBD5F /* ShortcutKey.swift */,
 			);
-			path = EnvironmentKeys;
+			path = EnvironmentValues;
 			sourceTree = "<group>";
 		};
 		EC2002EE2C417BBF002EBD5F /* AppScene */ = {

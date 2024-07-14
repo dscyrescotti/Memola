@@ -8,7 +8,7 @@
 import MetalKit
 import Foundation
 
-class LineGridContext {
+final class LineGridContext {
     var vertices: [LineGridVertex] = []
     var vertexCount: Int = 0
     var vertexBuffer: MTLBuffer?

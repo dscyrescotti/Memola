@@ -8,18 +8,18 @@
 import Combine
 import Foundation
 
-class Shortcut {
+final class Shortcut {
     static let shared: Shortcut = .init()
 
-    private let shortcutPublisher = PassthroughSubject<Shortcuts, Never>()
+    private let _publisher = PassthroughSubject<Shortcuts, Never>()
+
+    lazy var publisher: AnyPublisher<Shortcuts, Never> = {
+        _publisher.eraseToAnyPublisher()
+    }()
 
     private init() { }
 
     func trigger(_ shortcut: Shortcuts) {
-        shortcutPublisher.send(shortcut)
-    }
-
-    func publisher() -> AnyPublisher<Shortcuts, Never> {
-        shortcutPublisher.eraseToAnyPublisher()
+        _publisher.send(shortcut)
     }
 }

@@ -8,7 +8,7 @@
 import MetalKit
 import Foundation
 
-class PhotoRenderPass: RenderPass {
+final class PhotoRenderPass: RenderPass {
     var label: String = "Photo Render Pass"
     
     var descriptor: MTLRenderPassDescriptor?

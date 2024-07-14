@@ -9,7 +9,7 @@ import CoreData
 import Foundation
 
 @objc(ToolObject)
-class ToolObject: NSManagedObject {
+final class ToolObject: NSManagedObject {
     @NSManaged var selection: Int16
     @NSManaged var pens: NSMutableSet
     @NSManaged var memo: MemoObject?

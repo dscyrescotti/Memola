@@ -8,7 +8,7 @@
 #if canImport(AppKit)
 import AppKit
 
-class NSCenterClipView: NSClipView {
+final class NSCenterClipView: NSClipView {
     override func constrainBoundsRect(_ proposedBounds: NSRect) -> NSRect {
         var rect = super.constrainBoundsRect(proposedBounds)
         if let containerView = self.documentView {

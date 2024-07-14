@@ -10,12 +10,17 @@ import PhotosUI
 import AVFoundation
 
 struct ElementToolbar: View {
-    @Environment(\.colorScheme) var colorScheme
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    let size: CGFloat = 40
-    @ObservedObject var tool: Tool
-    @ObservedObject var canvas: Canvas
+    private let size: CGFloat = 40
+    @ObservedObject private var tool: Tool
+    @ObservedObject private var canvas: Canvas
+
+    init(tool: Tool, canvas: Canvas) {
+        self.tool = tool
+        self.canvas = canvas
+    }
 
     var body: some View {
         Group {
@@ -41,7 +46,7 @@ struct ElementToolbar: View {
         .foregroundStyle(Color.accentColor)
     }
 
-    var regularToolbar: some View {
+    private var regularToolbar: some View {
         HStack(spacing: 0) {
             Button {
                 withAnimation {
@@ -124,7 +129,7 @@ struct ElementToolbar: View {
         .transition(.move(edge: .top).combined(with: .blurReplace))
     }
 
-    var compactToolbar: some View {
+    private var compactToolbar: some View {
         HStack(spacing: 0) {
             Button {
                 withAnimation {

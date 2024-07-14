@@ -10,8 +10,8 @@ import SwiftUI
 import CoreData
 import Foundation
 
-public class Tool: NSObject, ObservableObject {
-    let object: ToolObject
+final class Tool: NSObject, ObservableObject {
+    private let object: ToolObject
 
     @Published var pens: [Pen] = []
 

@@ -8,9 +8,13 @@
 import SwiftUI
 
 private struct OnDismissSearchViewModifier: ViewModifier {
-    @Environment(\.dismissSearch) var dismissSearch
+    @Environment(\.dismissSearch) private var dismissSearch
 
-    @Binding var isActive: Bool
+    @Binding private var isActive: Bool
+
+    init(isActive: Binding<Bool>) {
+        self._isActive = isActive
+    }
 
     func body(content: Content) -> some View {
         content

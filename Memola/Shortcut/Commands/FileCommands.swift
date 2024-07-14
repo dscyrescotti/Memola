@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct FileCommands: Commands {
-    @Environment(\.shortcut) var shortcut
-    @FocusedValue(\.activeSceneKey) var appScene
+    @Environment(\.shortcut) private var shortcut
+    @FocusedValue(\.activeSceneKey) private var appScene
 
     var body: some Commands {
         CommandGroup(replacing: .newItem) {

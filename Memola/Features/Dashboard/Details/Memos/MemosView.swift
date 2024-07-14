@@ -8,21 +8,21 @@
 import SwiftUI
 
 struct MemosView: View {
-    @Environment(\.shortcut) var shortcut
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.shortcut) private var shortcut
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @FetchRequest var memoObjects: FetchedResults<MemoObject>
+    @FetchRequest private var memoObjects: FetchedResults<MemoObject>
 
-    @State var query: String = ""
-    @State var currentDate: Date = .now
-    @State var isActiveSearch: Bool = false
+    @State private var query: String = ""
+    @State private var currentDate: Date = .now
+    @State private var isActiveSearch: Bool = false
 
-    @AppStorage("memola.memo-objects.memos.sort") var sort: Sort = .recent
-    @AppStorage("memola.memo-objects.memos.filter") var filter: Filter = .none
+    @AppStorage("memola.memo-objects.memos.sort") private var sort: Sort = .recent
+    @AppStorage("memola.memo-objects.memos.filter") private var filter: Filter = .none
 
-    let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
+    private let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
 
-    var placeholder: Placeholder.Info {
+    private var placeholder: Placeholder.Info {
         query.isEmpty ? .memoEmpty : .memoNotFound
     }
 
@@ -157,12 +157,12 @@ struct MemosView: View {
         .onReceive(timer) { date in
             currentDate = date
         }
-        .onReceive(shortcut.publisher()) { shortcut in
+        .onReceive(shortcut.publisher) { shortcut in
             handleShortcut(for: shortcut)
         }
     }
 
-    func memoCard(_ memoObject: MemoObject, _ cellWidth: CGFloat) -> some View {
+    private func memoCard(_ memoObject: MemoObject, _ cellWidth: CGFloat) -> some View {
         MemoCard(memoObject: memoObject, cellWidth: cellWidth) { card in
             card
                 .contextMenu {
@@ -208,7 +208,7 @@ struct MemosView: View {
         }
     }
 
-    func createMemo(title: String) {
+    private func createMemo(title: String) {
         let memoObject = MemoObject(\.viewContext)
         memoObject.title = title
         memoObject.createdAt = .now
@@ -258,11 +258,11 @@ struct MemosView: View {
         }
     }
 
-    func openMemo(for memo: MemoObject) {
+    private func openMemo(for memo: MemoObject) {
         MemoManager.shared.openMemo(memo)
     }
 
-    func updatePredicate() {
+    private func updatePredicate() {
         var predicates: [NSPredicate] = [NSPredicate(format: "isTrash = NO")]
         if !query.isEmpty {
             predicates.append(NSPredicate(format: "title contains[c] %@", query))
@@ -273,14 +273,14 @@ struct MemosView: View {
         memoObjects.nsPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
     }
 
-    func toggleFavorite(for memo: MemoObject) {
+    private func toggleFavorite(for memo: MemoObject) {
         memo.isFavorite.toggle()
         withPersistence(\.viewContext) { context in
             try context.saveIfNeeded()
         }
     }
 
-    func markAsTrash(for memo: MemoObject) {
+    private func markAsTrash(for memo: MemoObject) {
         memo.isTrash = true
         memo.deletedAt = .now
         withPersistence(\.viewContext) { context in
@@ -288,7 +288,7 @@ struct MemosView: View {
         }
     }
 
-    func handleShortcut(for shortcut: Shortcuts) {
+    private func handleShortcut(for shortcut: Shortcuts) {
         switch shortcut {
         case .newMemo:
             if MemoManager.shared.memoObject == nil {

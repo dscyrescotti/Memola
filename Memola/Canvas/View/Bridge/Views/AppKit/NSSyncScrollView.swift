@@ -13,7 +13,7 @@ protocol NSSyncScrollViewDelegate: AnyObject {
     func scrollViewDidScroll(_ scrollView: NSSyncScrollView)
 }
 
-class NSSyncScrollView: NSScrollView {
+final class NSSyncScrollView: NSScrollView {
     weak var delegate: NSSyncScrollViewDelegate?
 
     override func magnify(with event: NSEvent) {

@@ -8,9 +8,15 @@
 import SwiftUI
 
 struct CanvasView: Platform.ViewControllerRepresentable {
-    @ObservedObject var tool: Tool
-    @ObservedObject var canvas: Canvas
-    @ObservedObject var history: History
+    @ObservedObject private var tool: Tool
+    @ObservedObject private var canvas: Canvas
+    @ObservedObject private var history: History
+
+    init(tool: Tool, canvas: Canvas, history: History) {
+        self.tool = tool
+        self.canvas = canvas
+        self.history = history
+    }
 
     #if os(macOS)
     func makeNSViewController(context: Context) -> CanvasViewController {

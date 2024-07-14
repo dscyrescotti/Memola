@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-class History: ObservableObject {
+final class History: ObservableObject {
     var memo: MemoObject?
 
     init(memo: MemoObject?) {

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ActiveSceneKey: FocusedValueKey {
+private struct ActiveSceneKey: FocusedValueKey {
     typealias Value = AppScene
 }
 

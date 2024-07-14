@@ -9,19 +9,19 @@ import SwiftUI
 import Foundation
 
 struct Toolbar: View {
-    @Environment(\.dismiss) var dismiss
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @ObservedObject var tool: Tool
-    @ObservedObject var canvas: Canvas
-    @ObservedObject var history: History
+    @ObservedObject private var tool: Tool
+    @ObservedObject private var canvas: Canvas
+    @ObservedObject private var history: History
 
-    @State var title: String
+    @State private var title: String
 
-    @FocusState var textFieldState: Bool
+    @FocusState private var textFieldState: Bool
 
-    let size: CGFloat = 40
-    let memo: MemoObject
+    private let size: CGFloat = 40
+    private let memo: MemoObject
 
     init(memo: MemoObject, tool: Tool, canvas: Canvas, history: History) {
         self.memo = memo
@@ -57,7 +57,7 @@ struct Toolbar: View {
         .foregroundStyle(Color.accentColor)
     }
 
-    var closeButton: some View {
+    private var closeButton: some View {
         Button {
             closeMemo()
         } label: {
@@ -76,7 +76,7 @@ struct Toolbar: View {
         .transition(.move(edge: .top).combined(with: .blurReplace))
     }
 
-    var titleField: some View {
+    private var titleField: some View {
         TextField("", text: $title)
             .focused($textFieldState)
             .textFieldStyle(.plain)
@@ -100,7 +100,7 @@ struct Toolbar: View {
             .transition(.move(edge: .top).combined(with: .blurReplace))
     }
 
-    var historyControl: some View {
+    private var historyControl: some View {
         HStack(spacing: 0) {
             Button {
                 history.historyPublisher.send(.undo)
@@ -135,7 +135,7 @@ struct Toolbar: View {
         .transition(.move(edge: .top).combined(with: .blurReplace))
     }
 
-    var gridModeControl: some View {
+    private var gridModeControl: some View {
         #if os(macOS)
         Button {
             switch canvas.gridMode {
@@ -183,7 +183,7 @@ struct Toolbar: View {
         #endif
     }
 
-    func closeMemo() {
+    private func closeMemo() {
         canvas.save(for: memo) {
             #if os(macOS)
             MemoManager.shared.closeMemo()

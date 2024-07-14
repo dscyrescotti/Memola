@@ -8,19 +8,19 @@
 import SwiftUI
 
 struct TrashView: View {
-    @Environment(\.shortcut) var shortcut
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.shortcut) private var shortcut
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @FetchRequest var memoObjects: FetchedResults<MemoObject>
+    @FetchRequest private var memoObjects: FetchedResults<MemoObject>
 
-    @State var query: String = ""
-    @State var restoredMemo: MemoObject?
-    @State var deletedMemo: MemoObject?
-    @State var isActiveSearch: Bool = false
+    @State private var query: String = ""
+    @State private var restoredMemo: MemoObject?
+    @State private var deletedMemo: MemoObject?
+    @State private var isActiveSearch: Bool = false
 
-    @Binding var sidebarItem: SidebarItem?
+    @Binding private var sidebarItem: SidebarItem?
 
-    var placeholder: Placeholder.Info {
+    private var placeholder: Placeholder.Info {
         query.isEmpty ? .trashEmpty : .trashNotFound
     }
 
@@ -102,7 +102,7 @@ struct TrashView: View {
         }
     }
 
-    func memoCard(_ memoObject: MemoObject, _ cellWidth: CGFloat) -> some View {
+    private func memoCard(_ memoObject: MemoObject, _ cellWidth: CGFloat) -> some View {
         MemoCard(memoObject: memoObject, cellWidth: cellWidth) { card in
             card
                 .contextMenu {
@@ -131,7 +131,7 @@ struct TrashView: View {
         }
     }
 
-    func updatePredicate() {
+    private func updatePredicate() {
         var predicates: [NSPredicate] = [NSPredicate(format: "isTrash = YES")]
         if !query.isEmpty {
             predicates.append(NSPredicate(format: "title contains[c] %@", query))
@@ -139,7 +139,7 @@ struct TrashView: View {
         memoObjects.nsPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
     }
 
-    func restoreMemo(for memo: MemoObject?) {
+    private func restoreMemo(for memo: MemoObject?) {
         guard let memo else { return }
         memo.isTrash = false
         memo.deletedAt = nil
@@ -148,7 +148,7 @@ struct TrashView: View {
         }
     }
 
-    func restoreAndOpenMemo(for memo: MemoObject?) {
+    private func restoreAndOpenMemo(for memo: MemoObject?) {
         restoreMemo(for: memo)
         self.sidebarItem = .memos
         if let memo {
@@ -156,7 +156,7 @@ struct TrashView: View {
         }
     }
 
-    func deleteMemo(for memo: MemoObject?) {
+    private func deleteMemo(for memo: MemoObject?) {
         guard let memo else { return }
         withPersistenceSync(\.viewContext) { context in
             context.delete(memo)

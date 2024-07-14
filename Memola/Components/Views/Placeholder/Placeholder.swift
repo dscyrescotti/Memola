@@ -8,9 +8,13 @@
 import SwiftUI
 
 struct Placeholder: View {
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    let info: Info
+    private let info: Info
+
+    init(info: Info) {
+        self.info = info
+    }
 
     var body: some View {
         VStack(spacing: 15) {

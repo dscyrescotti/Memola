@@ -9,10 +9,10 @@ import SwiftUI
 import MetalKit
 import Foundation
 
-class DrawingView: Platform.View {
-    let tool: Tool
-    let canvas: Canvas
-    let history: History
+final class DrawingView: Platform.View {
+    private let tool: Tool
+    private let canvas: Canvas
+    private let history: History
     let renderView: MTKView
 
     var ratio: CGFloat { canvas.size.width / bounds.width }

@@ -8,18 +8,18 @@
 import SwiftUI
 
 struct ViewCommands: Commands {
-    @FocusedValue(\.activeSceneKey) var appScene
+    @ObservedObject private var application: Application
+    @FocusedValue(\.activeSceneKey) private var appScene
+
+    init(application: Application) {
+        self.application = application
+    }
 
     var body: some Commands {
         CommandGroup(replacing: .toolbar) {
             if appScene == .trash || appScene == .memos {
                 Button {
-                    #if os(macOS)
-                    guard let toolbar = NSApp.keyWindow?.toolbar else { return }
-                    if let search = toolbar.items.first(where: { $0.itemIdentifier.rawValue == "com.apple.SwiftUI.search" }) as? NSSearchToolbarItem {
-                        search.beginSearchInteraction()
-                    }
-                    #endif
+                    application.activateSearchBar()
                 } label: {
                     Text("Find Memo")
                 }

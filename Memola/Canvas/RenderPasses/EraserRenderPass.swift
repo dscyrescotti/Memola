@@ -8,7 +8,7 @@
 import MetalKit
 import Foundation
 
-class EraserRenderPass: RenderPass {
+final class EraserRenderPass: RenderPass {
     var label: String = "Eraser Render Pass"
 
     var descriptor: MTLRenderPassDescriptor?
