@@ -9,7 +9,22 @@ import Combine
 import SwiftUI
 
 final class Application: NSObject, ObservableObject {
+    @Published var memoObject: MemoObject?
     @Published private(set) var sidebarVisibility: SidebarVisibility = .shown
+}
+
+extension Application {
+    func openMemo(_ memoObject: MemoObject?) {
+        withAnimation(.easeOut) {
+            self.memoObject = memoObject
+        }
+    }
+
+    func closeMemo() {
+        withAnimation(.easeOut) {
+            self.memoObject = nil
+        }
+    }
 }
 
 extension Application {

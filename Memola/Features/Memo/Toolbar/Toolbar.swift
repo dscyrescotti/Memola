@@ -12,6 +12,10 @@ struct Toolbar: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
+    #if os(macOS)
+    @EnvironmentObject private var application: Application
+    #endif
+
     @ObservedObject private var tool: Tool
     @ObservedObject private var canvas: Canvas
     @ObservedObject private var history: History
@@ -186,7 +190,7 @@ struct Toolbar: View {
     private func closeMemo() {
         canvas.save(for: memo) {
             #if os(macOS)
-            MemoManager.shared.closeMemo()
+            application.closeMemo()
             #else
             dismiss()
             #endif

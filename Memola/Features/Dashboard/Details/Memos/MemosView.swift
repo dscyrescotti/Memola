@@ -11,6 +11,8 @@ struct MemosView: View {
     @Environment(\.shortcut) private var shortcut
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
+    @EnvironmentObject private var application: Application
+
     @FetchRequest private var memoObjects: FetchedResults<MemoObject>
 
     @State private var query: String = ""
@@ -259,7 +261,7 @@ struct MemosView: View {
     }
 
     private func openMemo(for memo: MemoObject) {
-        MemoManager.shared.openMemo(memo)
+        application.openMemo(memo)
     }
 
     private func updatePredicate() {
@@ -291,7 +293,7 @@ struct MemosView: View {
     private func handleShortcut(for shortcut: Shortcuts) {
         switch shortcut {
         case .newMemo:
-            if MemoManager.shared.memoObject == nil {
+            if application.memoObject == nil {
                 createMemo(title: "Untitled")
             }
         default:

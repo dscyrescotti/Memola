@@ -10,7 +10,6 @@ import SwiftUI
 struct DashboardView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @StateObject private var memoManager: MemoManager = .shared
     @EnvironmentObject private var application: Application
 
     @State private var sidebarItem: SidebarItem? = .memos
@@ -32,10 +31,10 @@ struct DashboardView: View {
                 MemosView()
             }
         }
-        .toolbar(memoManager.memoObject == nil ? .visible : .hidden, for: .windowToolbar)
-        .toolbarBackground(memoManager.memoObject == nil ? .clear : Color(nsColor: .windowBackgroundColor), for: .windowToolbar)
+        .toolbar(application.memoObject == nil ? .visible : .hidden, for: .windowToolbar)
+        .toolbarBackground(application.memoObject == nil ? .clear : Color(nsColor: .windowBackgroundColor), for: .windowToolbar)
         .overlay {
-            if let memo = memoManager.memoObject {
+            if let memo = application.memoObject {
                 MemoView(memo: memo)
                     .onDisappear {
                         withPersistence(\.viewContext) { context in
@@ -62,7 +61,7 @@ struct DashboardView: View {
                 MemosView()
             }
         }
-        .fullScreenCover(item: $memoManager.memoObject) { memo in
+        .fullScreenCover(item: $application.memoObject) { memo in
             MemoView(memo: memo)
                 .onDisappear {
                     withPersistence(\.viewContext) { context in

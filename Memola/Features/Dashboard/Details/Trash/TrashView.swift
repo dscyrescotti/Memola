@@ -11,6 +11,8 @@ struct TrashView: View {
     @Environment(\.shortcut) private var shortcut
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
+    @EnvironmentObject private var application: Application
+
     @FetchRequest private var memoObjects: FetchedResults<MemoObject>
 
     @State private var query: String = ""
@@ -152,7 +154,7 @@ struct TrashView: View {
         restoreMemo(for: memo)
         self.sidebarItem = .memos
         if let memo {
-            MemoManager.shared.openMemo(memo)
+            application.openMemo(memo)
         }
     }
 
