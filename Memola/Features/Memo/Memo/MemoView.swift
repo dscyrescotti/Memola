@@ -61,6 +61,8 @@ struct MemoView: View {
                 loadingIndicator("Loading photo...")
             }
         }
+        .focusedSceneObject(tool)
+        .focusedSceneObject(canvas)
         .focusedSceneObject(history)
         .focusedSceneValue(\.activeSceneKey, .memo)
     }

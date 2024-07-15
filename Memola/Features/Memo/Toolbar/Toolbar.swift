@@ -142,14 +142,7 @@ struct Toolbar: View {
     private var gridModeControl: some View {
         #if os(macOS)
         Button {
-            switch canvas.gridMode {
-            case .none:
-                canvas.gridMode = .point
-            case .point:
-                canvas.gridMode = .line
-            case .line:
-                canvas.gridMode = .none
-            }
+            canvas.toggleGridMode()
         } label: {
             Image(systemName: canvas.gridMode.icon)
                 .frame(width: size, height: size)

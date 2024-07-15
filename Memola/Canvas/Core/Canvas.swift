@@ -181,6 +181,19 @@ extension Canvas {
             try context.saveIfNeeded()
         }
     }
+
+    func toggleGridMode() {
+        let _gridMode: GridMode
+        switch gridMode {
+        case .none:
+            _gridMode = .point
+        case .point:
+            _gridMode = .line
+        case .line:
+            _gridMode = .none
+        }
+        setGridMode(_gridMode)
+    }
 }
 
 // MARK: - Stroke

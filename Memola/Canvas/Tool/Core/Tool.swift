@@ -35,6 +35,7 @@ final class Tool: NSObject, ObservableObject {
     }
 
     func selectTool(_ selection: ToolSelection) {
+        guard self.selection != selection else { return }
         self.selection = selection
         withPersistence(\.viewContext) { [weak object] context in
             object?.selection = selection.rawValue
