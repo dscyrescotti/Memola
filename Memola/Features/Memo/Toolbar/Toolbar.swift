@@ -71,12 +71,12 @@ struct Toolbar: View {
                 .clipShape(.rect(cornerRadius: 8))
                 .contentShape(.rect(cornerRadius: 8))
         }
+        .disabled(title.isEmpty)
         #if os(iOS)
         .hoverEffect(.lift)
         #else
         .buttonStyle(.plain)
         #endif
-        .disabled(textFieldState)
         .transition(.move(edge: .top).combined(with: .blurReplace))
     }
 
@@ -102,6 +102,9 @@ struct Toolbar: View {
                 }
             }
             .transition(.move(edge: .top).combined(with: .blurReplace))
+            .onSubmit(of: .text) {
+                textFieldState = false
+            }
     }
 
     private var historyControl: some View {
@@ -135,7 +138,6 @@ struct Toolbar: View {
         }
         .background(.regularMaterial)
         .clipShape(.rect(cornerRadius: 8))
-        .disabled(textFieldState)
         .transition(.move(edge: .top).combined(with: .blurReplace))
     }
 
