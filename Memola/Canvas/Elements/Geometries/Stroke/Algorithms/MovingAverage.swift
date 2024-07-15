@@ -7,7 +7,7 @@
 
 import Foundation
 
-class MovingAverage {
+final class MovingAverage {
     private var sum: CGPoint
     private var points: [CGPoint]
     private var windowSize: Int

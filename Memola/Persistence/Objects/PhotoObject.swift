@@ -9,7 +9,7 @@ import CoreData
 import Foundation
 
 @objc(PhotoObject)
-class PhotoObject: NSManagedObject {
+final class PhotoObject: NSManagedObject {
     @NSManaged var width: CGFloat
     @NSManaged var originY: CGFloat
     @NSManaged var originX: CGFloat

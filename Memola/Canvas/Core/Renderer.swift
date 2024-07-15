@@ -110,9 +110,9 @@ final class Renderer {
         viewPortRenderPass.draw(into: commandBuffer, on: canvas, with: self)
     }
 
-    func drawPreview(on canvas: Canvas) -> UIImage? {
+    func drawPreview(on canvas: Canvas) -> Platform.Image? {
         guard let commandBuffer = commandQueue.makeCommandBuffer() else {
-            NSLog("[Memola] - Unable to create command buffer")
+            NSLog("[Memola] - Unable to create command buffer for preview")
             return nil
         }
         strokeRenderPass.eraserRenderPass = eraserRenderPass
@@ -124,6 +124,10 @@ final class Renderer {
         guard let cgImage = previewRenderPass.previewTexture?.getImage() else {
             return nil
         }
+        #if os(macOS)
+        return NSImage(cgImage: cgImage, size: .init(width: CGFloat(cgImage.width), height: CGFloat(cgImage.height))).flipped(flipVertically: true)
+        #else
         return UIImage(cgImage: cgImage, scale: 1.0, orientation: .downMirrored)
+        #endif
     }
 }

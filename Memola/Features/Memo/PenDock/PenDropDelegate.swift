@@ -9,9 +9,15 @@ import SwiftUI
 import Foundation
 
 struct PenDropDelegate: DropDelegate {
-    let id: String
-    @ObservedObject var tool: Tool
-    let action: () -> Void
+    private let id: String
+    @ObservedObject private var tool: Tool
+    private let action: () -> Void
+
+    init(id: String, tool: Tool, action: @escaping () -> Void) {
+        self.id = id
+        self.tool = tool
+        self.action = action
+    }
 
     func performDrop(info: DropInfo) -> Bool {
         tool.draggedPen = nil

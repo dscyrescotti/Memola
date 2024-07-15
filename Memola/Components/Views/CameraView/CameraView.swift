@@ -7,12 +7,18 @@
 
 import SwiftUI
 
+#if os(iOS)
 struct CameraView: UIViewControllerRepresentable {
-    @Binding var image: UIImage?
+    @Binding private var image: UIImage?
 
-    @ObservedObject var canvas: Canvas
+    @ObservedObject private var canvas: Canvas
 
     @Environment(\.dismiss) private var dismiss
+
+    init(image: Binding<UIImage?>, canvas: Canvas) {
+        self._image = image
+        self.canvas = canvas
+    }
 
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController()
@@ -44,3 +50,4 @@ struct CameraView: UIViewControllerRepresentable {
         }
     }
 }
+#endif

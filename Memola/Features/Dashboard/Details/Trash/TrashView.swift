@@ -8,23 +8,25 @@
 import SwiftUI
 
 struct TrashView: View {
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.shortcut) private var shortcut
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @FetchRequest var memoObjects: FetchedResults<MemoObject>
+    @EnvironmentObject private var application: Application
 
-    @State var query: String = ""
-    @State var restoredMemo: MemoObject?
-    @State var deletedMemo: MemoObject?
+    @FetchRequest private var memoObjects: FetchedResults<MemoObject>
 
-    @Binding var memo: MemoObject?
-    @Binding var sidebarItem: SidebarItem?
+    @State private var query: String = ""
+    @State private var restoredMemo: MemoObject?
+    @State private var deletedMemo: MemoObject?
+    @State private var isActiveSearch: Bool = false
 
-    var placeholder: Placeholder.Info {
+    @Binding private var sidebarItem: SidebarItem?
+
+    private var placeholder: Placeholder.Info {
         query.isEmpty ? .trashEmpty : .trashNotFound
     }
 
-    init(memo: Binding<MemoObject?>, sidebarItem: Binding<SidebarItem?>) {
-        _memo = memo
+    init(sidebarItem: Binding<SidebarItem?>) {
         _sidebarItem = sidebarItem
         let descriptors = [SortDescriptor(\MemoObject.deletedAt, order: .reverse)]
         let predicate = NSPredicate(format: "isTrash = YES")
@@ -45,10 +47,24 @@ struct TrashView: View {
         MemoGrid(memoObjects: memoObjects, placeholder: placeholder) { memoObject, cellWidth in
             memoCard(memoObject, cellWidth)
         }
+        .onDismissSearch(isActive: $isActiveSearch)
+        .focusedSceneValue(\.activeSceneKey, .trash)
         .navigationTitle(horizontalSizeClass == .compact ? "Trash" : "")
+        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
-        .searchable(text: $query, placement: .toolbar, prompt: Text("Search"))
+        #endif
+        .searchable(text: $query, isPresented: $isActiveSearch, placement: .toolbar, prompt: Text("Search"))
+        .onSubmit(of: .search) {
+            isActiveSearch = false
+        }
         .toolbar {
+            #if os(macOS)
+            ToolbarItem(placement: .navigation) {
+                Text("Memola")
+                    .font(.title3)
+                    .fontWeight(.bold)
+            }
+            #else
             if horizontalSizeClass == .regular {
                 ToolbarItem(placement: .topBarLeading) {
                     Text("Memola")
@@ -56,6 +72,7 @@ struct TrashView: View {
                         .fontWeight(.bold)
                 }
             }
+            #endif
         }
         .onChange(of: query) { oldValue, newValue in
             updatePredicate()
@@ -87,7 +104,7 @@ struct TrashView: View {
         }
     }
 
-    func memoCard(_ memoObject: MemoObject, _ cellWidth: CGFloat) -> some View {
+    private func memoCard(_ memoObject: MemoObject, _ cellWidth: CGFloat) -> some View {
         MemoCard(memoObject: memoObject, cellWidth: cellWidth) { card in
             card
                 .contextMenu {
@@ -95,11 +112,13 @@ struct TrashView: View {
                         restoreMemo(for: memoObject)
                     } label: {
                         Label("Restore", systemImage: "square.and.arrow.down")
+                            .labelStyle(.titleAndIcon)
                     }
                     Button(role: .destructive) {
                         deletedMemo = memoObject
                     } label: {
                         Label("Delete Permanently", systemImage: "trash")
+                            .labelStyle(.titleAndIcon)
                     }
                 }
         } details: {
@@ -114,7 +133,7 @@ struct TrashView: View {
         }
     }
 
-    func updatePredicate() {
+    private func updatePredicate() {
         var predicates: [NSPredicate] = [NSPredicate(format: "isTrash = YES")]
         if !query.isEmpty {
             predicates.append(NSPredicate(format: "title contains[c] %@", query))
@@ -122,7 +141,7 @@ struct TrashView: View {
         memoObjects.nsPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
     }
 
-    func restoreMemo(for memo: MemoObject?) {
+    private func restoreMemo(for memo: MemoObject?) {
         guard let memo else { return }
         memo.isTrash = false
         memo.deletedAt = nil
@@ -131,13 +150,15 @@ struct TrashView: View {
         }
     }
 
-    func restoreAndOpenMemo(for memo: MemoObject?) {
+    private func restoreAndOpenMemo(for memo: MemoObject?) {
         restoreMemo(for: memo)
         self.sidebarItem = .memos
-        self.memo = memo
+        if let memo {
+            application.openMemo(memo)
+        }
     }
 
-    func deleteMemo(for memo: MemoObject?) {
+    private func deleteMemo(for memo: MemoObject?) {
         guard let memo else { return }
         withPersistenceSync(\.viewContext) { context in
             context.delete(memo)

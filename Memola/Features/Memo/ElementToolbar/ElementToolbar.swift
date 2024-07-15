@@ -10,29 +10,29 @@ import PhotosUI
 import AVFoundation
 
 struct ElementToolbar: View {
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
-    let size: CGFloat
-    @ObservedObject var tool: Tool
-    @ObservedObject var canvas: Canvas
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @State var opensCamera: Bool = false
-    @State var isCameraAccessDenied: Bool = false
-    @State var photosPickerItem: PhotosPickerItem?
+    private let size: CGFloat = 40
+    @ObservedObject private var tool: Tool
+    @ObservedObject private var canvas: Canvas
 
-    @Namespace var namespace
+    init(tool: Tool, canvas: Canvas) {
+        self.tool = tool
+        self.canvas = canvas
+    }
 
     var body: some View {
         Group {
+            #if os(macOS)
+            regularToolbar
+            #else
             if horizontalSizeClass == .regular {
                 regularToolbar
             } else {
                 ZStack(alignment: .bottom) {
                     if tool.selection == .photo {
-                        photoOption
-                            .background {
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(.regularMaterial)
-                            }
+                        PhotoDock(tool: tool, canvas: canvas)
                             .padding(.bottom, 10)
                             .frame(maxWidth: .infinity)
                             .transition(.move(edge: .bottom).combined(with: .blurReplace))
@@ -40,46 +40,13 @@ struct ElementToolbar: View {
                         compactToolbar
                     }
                 }
-                .padding(.bottom, 10)
             }
+            #endif
         }
-        .fullScreenCover(isPresented: $opensCamera) {
-            let image: Binding<UIImage?> = Binding {
-                tool.selectedPhotoItem?.image
-            } set: { image in
-                guard let image else { return }
-                tool.selectPhoto(image, for: canvas.canvasID)
-            }
-            CameraView(image: image, canvas: canvas)
-                .ignoresSafeArea()
-        }
-        .alert("Camera Access Denied", isPresented: $isCameraAccessDenied) {
-            Button {
-                if let url = URL(string: UIApplication.openSettingsURLString + "&path=CAMERA/\(String(describing: Bundle.main.bundleIdentifier))") {
-                    UIApplication.shared.open(url)
-                }
-            } label: {
-                Text("Open Settings")
-            }
-            Button("Cancel", role: .cancel) { }
-        } message: {
-            Text("Memola requires access to the camera to capture photos. Please open Settings and enable camera access.")
-        }
-        .onChange(of: photosPickerItem) { oldValue, newValue in
-            if newValue != nil {
-                Task {
-                    tool.isLoadingPhoto = true
-                    let data = try? await newValue?.loadTransferable(type: Data.self)
-                    if let data, let image = UIImage(data: data) {
-                        tool.selectPhoto(image, for: canvas.canvasID)
-                    }
-                    photosPickerItem = nil
-                }
-            }
-        }
+        .foregroundStyle(Color.accentColor)
     }
 
-    var regularToolbar: some View {
+    private var regularToolbar: some View {
         HStack(spacing: 0) {
             Button {
                 withAnimation {
@@ -90,15 +57,19 @@ struct ElementToolbar: View {
                     .fontWeight(.heavy)
                     .contentShape(.circle)
                     .frame(width: size, height: size)
-                    .foregroundStyle(tool.selection == .hand ? Color.white : Color.accentColor)
+                    .foregroundStyle(tool.selection == .hand ? colorScheme == .light ? Color.white : Color.black : Color.accentColor)
                     .clipShape(.rect(cornerRadius: 8))
+                    .contentShape(.rect(cornerRadius: 8))
             }
+            #if os(iOS)
             .hoverEffect(.lift)
+            #else
+            .buttonStyle(.plain)
+            #endif
             .background {
                 if tool.selection == .hand {
                     Color.accentColor
                         .clipShape(.rect(cornerRadius: 8))
-                        .matchedGeometryEffect(id: "element.toolbar.bg", in: namespace)
                 }
             }
             Button {
@@ -110,15 +81,19 @@ struct ElementToolbar: View {
                     .fontWeight(.heavy)
                     .contentShape(.circle)
                     .frame(width: size, height: size)
-                    .foregroundStyle(tool.selection == .pen ? Color.white : Color.accentColor)
+                    .foregroundStyle(tool.selection == .pen ? colorScheme == .light ? Color.white : Color.black : Color.accentColor)
                     .clipShape(.rect(cornerRadius: 8))
+                    .contentShape(.rect(cornerRadius: 8))
             }
+            #if os(iOS)
             .hoverEffect(.lift)
+            #else
+            .buttonStyle(.plain)
+            #endif
             .background {
                 if tool.selection == .pen {
                     Color.accentColor
                         .clipShape(.rect(cornerRadius: 8))
-                        .matchedGeometryEffect(id: "element.toolbar.bg", in: namespace)
                 }
             }
             HStack(spacing: 0) {
@@ -130,32 +105,20 @@ struct ElementToolbar: View {
                     Image(systemName: "photo")
                         .contentShape(.circle)
                         .frame(width: size, height: size)
-                        .foregroundStyle(tool.selection == .photo ? Color.white : Color.accentColor)
+                        .foregroundStyle(tool.selection == .photo ? colorScheme == .light ? Color.white : Color.black : Color.accentColor)
                         .clipShape(.rect(cornerRadius: 8))
+                        .contentShape(.rect(cornerRadius: 8))
                 }
+                #if os(iOS)
                 .hoverEffect(.lift)
+                #else
+                .buttonStyle(.plain)
+                #endif
                 .background {
                     if tool.selection == .photo {
                         Color.accentColor
                             .clipShape(.rect(cornerRadius: 8))
-                            .matchedGeometryEffect(id: "element.toolbar.bg", in: namespace)
                     }
-                    if tool.selection != .photo {
-                        Color.clear
-                            .matchedGeometryEffect(id: "element.toolbar.photo.options", in: namespace)
-                    }
-                }
-                if tool.selection == .photo {
-                    photoOption
-                        .matchedGeometryEffect(id: "element.toolbar.photo.options", in: namespace)
-                        .transition(.blurReplace.animation(.easeIn(duration: 0.1)))
-                }
-            }
-            .background {
-                if tool.selection == .photo {
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color.white.tertiary)
-                        .transition(.move(edge: .leading).combined(with: .opacity).animation(.easeIn(duration: 0.1)))
                 }
             }
         }
@@ -166,7 +129,7 @@ struct ElementToolbar: View {
         .transition(.move(edge: .top).combined(with: .blurReplace))
     }
 
-    var compactToolbar: some View {
+    private var compactToolbar: some View {
         HStack(spacing: 0) {
             Button {
                 withAnimation {
@@ -179,7 +142,9 @@ struct ElementToolbar: View {
                     .frame(width: size, height: size)
                     .clipShape(.rect(cornerRadius: 8))
             }
+            #if os(iOS)
             .hoverEffect(.lift)
+            #endif
             Button {
                 withAnimation {
                     tool.selectTool(.photo)
@@ -190,7 +155,9 @@ struct ElementToolbar: View {
                     .frame(width: size, height: size)
                     .clipShape(.rect(cornerRadius: 8))
             }
+            #if os(iOS)
             .hoverEffect(.lift)
+            #endif
         }
         .background {
             RoundedRectangle(cornerRadius: 8)
@@ -201,44 +168,5 @@ struct ElementToolbar: View {
         .transition(.move(edge: .bottom).combined(with: .blurReplace))
     }
 
-    var photoOption: some View {
-        HStack(spacing: 0) {
-            Button {
-                openCamera()
-            } label: {
-                Image(systemName: "camera.fill")
-                    .contentShape(.circle)
-                    .frame(width: size, height: size)
-                    .clipShape(.rect(cornerRadius: 8))
-            }
-            .hoverEffect(.lift)
-            PhotosPicker(selection: $photosPickerItem, matching: .images, preferredItemEncoding: .compatible) {
-                Image(systemName: "photo.fill.on.rectangle.fill")
-                    .contentShape(.circle)
-                    .frame(width: size, height: size)
-                    .clipShape(.rect(cornerRadius: 8))
-            }
-            .hoverEffect(.lift)
-        }
-    }
-
-    func openCamera() {
-        let status = AVCaptureDevice.authorizationStatus(for: .video)
-        switch status {
-        case .notDetermined:
-            AVCaptureDevice.requestAccess(for: .video) { status in
-                withAnimation {
-                    if status {
-                        opensCamera = true
-                    } else {
-                        isCameraAccessDenied = true
-                    }
-                }
-            }
-        case .authorized:
-            opensCamera = true
-        default:
-            isCameraAccessDenied = true
-        }
-    }
+    
 }

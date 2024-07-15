@@ -9,17 +9,17 @@ import SwiftUI
 import CoreData
 
 struct MemoView: View {
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @StateObject var tool: Tool
-    @StateObject var canvas: Canvas
-    @StateObject var history: History
+    @StateObject private var tool: Tool
+    @StateObject private var canvas: Canvas
+    @StateObject private var history: History
 
-    @State var memo: MemoObject
-    @State var title: String
-    @FocusState var textFieldState: Bool
+    @State private var title: String
+    @FocusState private var textFieldState: Bool
 
-    let size: CGFloat = 32
+    private let memo: MemoObject
+    private let size: CGFloat = 40
 
     init(memo: MemoObject) {
         self.memo = memo
@@ -31,14 +31,18 @@ struct MemoView: View {
 
     var body: some View {
         Group {
+            #if os(macOS)
+            canvasView
+            #else
             if horizontalSizeClass == .regular {
                 canvasView
             } else {
                 compactCanvasView
             }
+            #endif
         }
         .overlay(alignment: .top) {
-            Toolbar(size: size, memo: memo, tool: tool, canvas: canvas, history: history)
+            Toolbar(memo: memo, tool: tool, canvas: canvas, history: history)
         }
         .disabled(textFieldState || tool.isLoadingPhoto)
         .disabled(canvas.state == .loading || canvas.state == .closing)
@@ -57,21 +61,28 @@ struct MemoView: View {
                 loadingIndicator("Loading photo...")
             }
         }
+        .focusedSceneObject(tool)
+        .focusedSceneObject(canvas)
+        .focusedSceneObject(history)
+        .focusedSceneValue(\.activeSceneKey, .memo)
     }
 
-    var canvasView: some View {
+    private var canvasView: some View {
         CanvasView(tool: tool, canvas: canvas, history: history)
             .ignoresSafeArea()
-            .overlay(alignment: .bottomTrailing) {
+            .overlay(alignment: .trailing) {
                 switch tool.selection {
                 case .pen:
-                    PenDock(tool: tool, canvas: canvas, size: size)
-                        .transition(.move(edge: .trailing).combined(with: .blurReplace))
+                    PenDock(tool: tool, canvas: canvas)
                 case .photo:
-                    if let photoItem = tool.selectedPhotoItem {
-                        PhotoPreview(photoItem: photoItem, tool: tool)
-                            .transition(.move(edge: .trailing).combined(with: .blurReplace))
+                    ZStack(alignment: .bottomTrailing) {
+                        PhotoDock(tool: tool, canvas: canvas)
+                        if let photoItem = tool.selectedPhotoItem {
+                            PhotoPreview(photoItem: photoItem, tool: tool)
+                                .transition(.move(edge: .trailing).combined(with: .blurReplace))
+                        }
                     }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 default:
                     EmptyView()
                 }
@@ -81,13 +92,13 @@ struct MemoView: View {
             }
     }
 
-    var compactCanvasView: some View {
+    private var compactCanvasView: some View {
         CanvasView(tool: tool, canvas: canvas, history: history)
             .ignoresSafeArea()
             .overlay(alignment: .bottom) {
                 switch tool.selection {
                 case .pen:
-                    PenDock(tool: tool, canvas: canvas, size: size)
+                    PenDock(tool: tool, canvas: canvas)
                         .transition(.move(edge: .bottom).combined(with: .blurReplace))
                 case .photo:
                     if let photoItem = tool.selectedPhotoItem {
@@ -101,69 +112,86 @@ struct MemoView: View {
             }
             .overlay(alignment: .bottom) {
                 if tool.selection != .pen {
-                    ElementToolbar(size: size, tool: tool, canvas: canvas)
+                    ElementToolbar(tool: tool, canvas: canvas)
                         .transition(.move(edge: .bottom).combined(with: .blurReplace))
-                }
-            }
-            .overlay(alignment: .bottom) {
-                if tool.selection != .hand {
-                    Button {
-                        withAnimation {
-                            tool.selectTool(.hand)
-                        }
-                    } label: {
-                        Image(systemName: "chevron.compact.down")
-                            .font(.headline)
-                            .frame(width: 80)
-                            .padding(5)
-                            .background(.regularMaterial)
-                            .clipShape(.capsule)
-                            .contentShape(.capsule)
-                    }
-                    .offset(y: 5)
                 }
             }
     }
 
     @ViewBuilder
-    var zoomControl: some View {
+    private var zoomControl: some View {
         let upperBound: CGFloat = 400
         let lowerBound: CGFloat = 10
         let zoomScale: CGFloat = (((canvas.zoomScale - canvas.minimumZoomScale) * (upperBound - lowerBound) / (canvas.maximumZoomScale - canvas.minimumZoomScale)) + lowerBound).rounded()
         let zoomScales: [Int] = [400, 200, 100, 75, 50, 25, 10]
-        if !canvas.locksCanvas {
-            Menu {
-                ForEach(zoomScales, id: \.self) { scale in
-                    Button {
-                        let zoomScale = ((CGFloat(scale) - lowerBound) * (canvas.maximumZoomScale - canvas.minimumZoomScale) / (upperBound - lowerBound)) + canvas.minimumZoomScale
-                        canvas.zoomPublisher.send(zoomScale)
-                    } label: {
-                        Label {
-                            Text(scale, format: .percent)
-                        } icon: {
-                            if CGFloat(scale) == zoomScale {
-                                Image(systemName: "checkmark")
-                            }
+        #if os(macOS)
+        Menu {
+            ForEach(zoomScales, id: \.self) { scale in
+                Button {
+                    let zoomScale = ((CGFloat(scale) - lowerBound) * (canvas.maximumZoomScale - canvas.minimumZoomScale) / (upperBound - lowerBound)) + canvas.minimumZoomScale
+                    canvas.zoomPublisher.send(zoomScale)
+                } label: {
+                    Label {
+                        Text(scale, format: .percent)
+                    } icon: {
+                        if CGFloat(scale) == zoomScale {
+                            Image(systemName: "checkmark")
                         }
-                        .font(.headline)
                     }
+                    .font(.headline)
                 }
-            } label: {
-                Text(zoomScale / 100, format: .percent)
-                    .frame(width: 45)
-                    .font(.subheadline)
-                    .padding(.horizontal, size / 2.5)
-                    .frame(height: size)
-                    .background(.regularMaterial)
-                    .clipShape(.rect(cornerRadius: 8))
-                    .padding(10)
             }
-            .hoverEffect(.lift)
-            .transition(.move(edge: .bottom).combined(with: .blurReplace))
+        } label: {
+            Text(zoomScale / 100, format: .percent)
+                .foregroundStyle(Color.accentColor)
+                .font(.subheadline)
+                .frame(height: size)
+                .clipShape(.rect(cornerRadius: 8))
+                .contentShape(.rect(cornerRadius: 8))
         }
+        .menuIndicator(.hidden)
+        .frame(width: 50, height: size)
+        .padding(.leading, 12)
+        .background(.regularMaterial)
+        .clipShape(.rect(cornerRadius: 8))
+        .contentShape(.rect(cornerRadius: 8))
+        .menuStyle(.borderlessButton)
+        .transition(.move(edge: .bottom).combined(with: .blurReplace))
+        .padding(10)
+        #else
+        Menu {
+            ForEach(zoomScales, id: \.self) { scale in
+                Button {
+                    let zoomScale = ((CGFloat(scale) - lowerBound) * (canvas.maximumZoomScale - canvas.minimumZoomScale) / (upperBound - lowerBound)) + canvas.minimumZoomScale
+                    canvas.zoomPublisher.send(zoomScale)
+                } label: {
+                    Label {
+                        Text(scale, format: .percent)
+                    } icon: {
+                        if CGFloat(scale) == zoomScale {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                    .font(.headline)
+                }
+            }
+        } label: {
+            Text(zoomScale / 100, format: .percent)
+                .frame(width: 45)
+                .font(.subheadline)
+                .padding(.horizontal, size / 2.5)
+                .frame(height: size)
+                .background(.regularMaterial)
+                .clipShape(.rect(cornerRadius: 8))
+                .contentShape(.rect(cornerRadius: 8))
+                .padding(10)
+        }
+        .hoverEffect(.lift)
+        .transition(.move(edge: .bottom).combined(with: .blurReplace))
+        #endif
     }
 
-    func loadingIndicator(_ title: String) -> some View {
+    private func loadingIndicator(_ title: String) -> some View {
         ProgressView {
             Text(title)
         }

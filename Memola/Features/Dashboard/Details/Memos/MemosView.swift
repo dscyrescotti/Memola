@@ -8,31 +8,32 @@
 import SwiftUI
 
 struct MemosView: View {
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.shortcut) private var shortcut
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @FetchRequest var memoObjects: FetchedResults<MemoObject>
+    @EnvironmentObject private var application: Application
 
-    @State var query: String = ""
-    @State var currentDate: Date = .now
+    @FetchRequest private var memoObjects: FetchedResults<MemoObject>
 
-    @Binding var memo: MemoObject?
+    @State private var query: String = ""
+    @State private var currentDate: Date = .now
+    @State private var isActiveSearch: Bool = false
 
-    @AppStorage("memola.memo-objects.memos.sort") var sort: Sort = .recent
-    @AppStorage("memola.memo-objects.memos.filter") var filter: Filter = .none
+    @AppStorage("memola.memo-objects.memos.sort") private var sort: Sort = .recent
+    @AppStorage("memola.memo-objects.memos.filter") private var filter: Filter = .none
 
-    let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
+    private let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
 
-    var placeholder: Placeholder.Info {
+    private var placeholder: Placeholder.Info {
         query.isEmpty ? .memoEmpty : .memoNotFound
     }
 
-    init(memo: Binding<MemoObject?>) {
-        _memo = memo
+    init() {
         let standard = UserDefaults.standard
         var descriptors: [SortDescriptor<MemoObject>] = []
         var predicates: [NSPredicate] = [NSPredicate(format: "isTrash = NO")]
-        let sort = Sort(rawValue: standard.value(forKey: "memola.memo-objects.sort") as? String ?? "") ?? .recent
-        let filter = Filter(rawValue: standard.value(forKey: "memola.memo-objects.filter") as? String ?? "") ?? .none
+        let sort = Sort(rawValue: standard.value(forKey: "memola.memo-objects.memos.sort") as? String ?? "") ?? .recent
+        let filter = Filter(rawValue: standard.value(forKey: "memola.memo-objects.memos.filter") as? String ?? "") ?? .none
         if filter == .favorites {
             predicates.append(NSPredicate(format: "isFavorite = YES"))
         }
@@ -45,10 +46,45 @@ struct MemosView: View {
         MemoGrid(memoObjects: memoObjects, placeholder: placeholder) { memoObject, cellWidth in
             memoCard(memoObject, cellWidth)
         }
+        .onDismissSearch(isActive: $isActiveSearch)
+        .focusedSceneValue(\.activeSceneKey, .memos)
         .navigationTitle(horizontalSizeClass == .compact ? "Memos" : "")
+        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
-        .searchable(text: $query, placement: .toolbar, prompt: Text("Search"))
+        #endif
+        .searchable(text: $query, isPresented: $isActiveSearch, placement: .toolbar, prompt: Text("Search"))
+        .onSubmit(of: .search) {
+            isActiveSearch = false
+        }
         .toolbar {
+            #if os(macOS)
+            ToolbarItem(placement: .navigation) {
+                Text("Memola")
+                    .font(.title3)
+                    .fontWeight(.bold)
+            }
+            ToolbarItemGroup(placement: .primaryAction) {
+                HStack(spacing: 5) {
+                    Button {
+                        createMemo(title: "Untitled")
+                    } label: {
+                        Image(systemName: "square.and.pencil")
+                    }
+                    Picker("", selection: $sort) {
+                        ForEach(Sort.all) { sort in
+                            Text(sort.name)
+                                .tag(sort)
+                        }
+                    }
+                    Picker("", selection: $filter) {
+                        ForEach(Filter.all) { filter in
+                            Text(filter.name)
+                                .tag(filter)
+                        }
+                    }
+                }
+            }
+            #else
             if horizontalSizeClass == .regular {
                 ToolbarItem(placement: .topBarLeading) {
                     Text("Memola")
@@ -73,14 +109,12 @@ struct MemosView: View {
                                             .tag(sort)
                                     }
                                 }
-                                .pickerStyle(.automatic)
                                 Picker("", selection: $filter) {
                                     ForEach(Filter.all) { filter in
                                         Text(filter.name)
                                             .tag(filter)
                                     }
                                 }
-                                .pickerStyle(.automatic)
                             }
                         } label: {
                             Image(systemName: "ellipsis.circle")
@@ -104,13 +138,14 @@ struct MemosView: View {
                                         .tag(filter)
                                 }
                             }
-                            .pickerStyle(.automatic)
                         } label: {
                             Image(systemName: "line.3.horizontal.decrease.circle")
                         }
+                        .hoverEffect(.lift)
                     }
                 }
             }
+            #endif
         }
         .onChange(of: sort) { oldValue, newValue in
             memoObjects.sortDescriptors = newValue.memoSortDescriptors
@@ -124,13 +159,12 @@ struct MemosView: View {
         .onReceive(timer) { date in
             currentDate = date
         }
-        .onAppear {
-            memoObjects.sortDescriptors = sort.memoSortDescriptors
-            updatePredicate()
+        .onReceive(shortcut.publisher) { shortcut in
+            handleShortcut(for: shortcut)
         }
     }
 
-    func memoCard(_ memoObject: MemoObject, _ cellWidth: CGFloat) -> some View {
+    private func memoCard(_ memoObject: MemoObject, _ cellWidth: CGFloat) -> some View {
         MemoCard(memoObject: memoObject, cellWidth: cellWidth) { card in
             card
                 .contextMenu {
@@ -138,11 +172,13 @@ struct MemosView: View {
                         openMemo(for: memoObject)
                     } label: {
                         Label("Open", systemImage: "doc.text")
+                            .labelStyle(.titleAndIcon)
                     }
                     Button(role: .destructive) {
                         markAsTrash(for: memoObject)
                     } label: {
                         Label("Delete", systemImage: "trash")
+                            .labelStyle(.titleAndIcon)
                     }
                 }
                 .overlay(alignment: .topTrailing) {
@@ -152,7 +188,11 @@ struct MemosView: View {
                         .animation(.easeInOut, value: memoObject.isFavorite)
                         .frame(width: 20, height: 20)
                         .padding(5)
+                        #if os(macOS)
+                        .background(.gray)
+                        #else
                         .background(.gray.tertiary)
+                        #endif
                         .cornerRadius(5)
                         .contentShape(Rectangle())
                         .onTapGesture {
@@ -170,7 +210,7 @@ struct MemosView: View {
         }
     }
 
-    func createMemo(title: String) {
+    private func createMemo(title: String) {
         let memoObject = MemoObject(\.viewContext)
         memoObject.title = title
         memoObject.createdAt = .now
@@ -220,11 +260,11 @@ struct MemosView: View {
         }
     }
 
-    func openMemo(for memo: MemoObject) {
-        self.memo = memo
+    private func openMemo(for memo: MemoObject) {
+        application.openMemo(memo)
     }
 
-    func updatePredicate() {
+    private func updatePredicate() {
         var predicates: [NSPredicate] = [NSPredicate(format: "isTrash = NO")]
         if !query.isEmpty {
             predicates.append(NSPredicate(format: "title contains[c] %@", query))
@@ -235,18 +275,29 @@ struct MemosView: View {
         memoObjects.nsPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
     }
 
-    func toggleFavorite(for memo: MemoObject) {
+    private func toggleFavorite(for memo: MemoObject) {
         memo.isFavorite.toggle()
         withPersistence(\.viewContext) { context in
             try context.saveIfNeeded()
         }
     }
 
-    func markAsTrash(for memo: MemoObject) {
+    private func markAsTrash(for memo: MemoObject) {
         memo.isTrash = true
         memo.deletedAt = .now
         withPersistence(\.viewContext) { context in
             try context.saveIfNeeded()
+        }
+    }
+
+    private func handleShortcut(for shortcut: Shortcuts) {
+        switch shortcut {
+        case .newMemo:
+            if application.memoObject == nil {
+                createMemo(title: "Untitled")
+            }
+        default:
+            break
         }
     }
 }

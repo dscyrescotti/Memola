@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ElementGroup {
+final class ElementGroup {
     var elements: [Element] = []
     var type: ElementGroupType
 

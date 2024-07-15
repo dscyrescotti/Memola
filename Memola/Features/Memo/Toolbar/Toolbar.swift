@@ -9,22 +9,25 @@ import SwiftUI
 import Foundation
 
 struct Toolbar: View {
-    @Environment(\.dismiss) var dismiss
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @ObservedObject var tool: Tool
-    @ObservedObject var canvas: Canvas
-    @ObservedObject var history: History
+    #if os(macOS)
+    @EnvironmentObject private var application: Application
+    #endif
 
-    @State var title: String
-    @State var memo: MemoObject
+    @ObservedObject private var tool: Tool
+    @ObservedObject private var canvas: Canvas
+    @ObservedObject private var history: History
 
-    @FocusState var textFieldState: Bool
+    @State private var title: String
 
-    let size: CGFloat
+    @FocusState private var textFieldState: Bool
 
-    init(size: CGFloat, memo: MemoObject, tool: Tool, canvas: Canvas, history: History) {
-        self.size = size
+    private let size: CGFloat = 40
+    private let memo: MemoObject
+
+    init(memo: MemoObject, tool: Tool, canvas: Canvas, history: History) {
         self.memo = memo
         self.tool = tool
         self.canvas = canvas
@@ -35,43 +38,49 @@ struct Toolbar: View {
     var body: some View {
         HStack(spacing: 5) {
             HStack(spacing: 5) {
-                if !canvas.locksCanvas {
-                    closeButton
-                    titleField
-                }
+                closeButton
+                titleField
+                    .foregroundStyle(Color.primary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            if !canvas.locksCanvas, horizontalSizeClass == .regular {
-                ElementToolbar(size: size, tool: tool, canvas: canvas)
+            #if os(macOS)
+            ElementToolbar(tool: tool, canvas: canvas)
+            #else
+            if horizontalSizeClass == .regular {
+                ElementToolbar(tool: tool, canvas: canvas)
             }
+            #endif
             HStack(spacing: 5) {
-                if !canvas.locksCanvas {
-                    gridModeControl
-                    historyControl
-                }
+                gridModeControl
+                historyControl
             }
             .frame(maxWidth: .infinity, alignment: .trailing)
         }
         .font(.subheadline)
         .padding(10)
+        .foregroundStyle(Color.accentColor)
     }
 
-    var closeButton: some View {
+    private var closeButton: some View {
         Button {
             closeMemo()
         } label: {
             Image(systemName: "xmark")
-                .contentShape(.circle)
                 .frame(width: size, height: size)
                 .background(.regularMaterial)
                 .clipShape(.rect(cornerRadius: 8))
+                .contentShape(.rect(cornerRadius: 8))
         }
+        .disabled(title.isEmpty)
+        #if os(iOS)
         .hoverEffect(.lift)
-        .disabled(textFieldState)
+        #else
+        .buttonStyle(.plain)
+        #endif
         .transition(.move(edge: .top).combined(with: .blurReplace))
     }
 
-    var titleField: some View {
+    private var titleField: some View {
         TextField("", text: $title)
             .focused($textFieldState)
             .textFieldStyle(.plain)
@@ -93,35 +102,60 @@ struct Toolbar: View {
                 }
             }
             .transition(.move(edge: .top).combined(with: .blurReplace))
+            .onSubmit(of: .text) {
+                textFieldState = false
+            }
     }
 
-    var historyControl: some View {
-        HStack {
+    private var historyControl: some View {
+        HStack(spacing: 0) {
             Button {
                 history.historyPublisher.send(.undo)
             } label: {
                 Image(systemName: "arrow.uturn.backward.circle")
-                    .contentShape(.circle)
+                    .frame(width: size, height: size)
+                    .contentShape(.rect(cornerRadius: 8))
             }
+            #if os(iOS)
             .hoverEffect(.lift)
+            #else
+            .buttonStyle(.plain)
+            #endif
             .disabled(history.undoDisabled)
             Button {
                 history.historyPublisher.send(.redo)
             } label: {
                 Image(systemName: "arrow.uturn.forward.circle")
-                    .contentShape(.circle)
+                    .frame(width: size, height: size)
+                    .contentShape(.rect(cornerRadius: 8))
             }
+            #if os(iOS)
             .hoverEffect(.lift)
+            #else
+            .buttonStyle(.plain)
+            #endif
             .disabled(history.redoDisabled)
         }
-        .frame(width: size * 2, height: size)
         .background(.regularMaterial)
         .clipShape(.rect(cornerRadius: 8))
-        .disabled(textFieldState)
         .transition(.move(edge: .top).combined(with: .blurReplace))
     }
 
-    var gridModeControl: some View {
+    private var gridModeControl: some View {
+        #if os(macOS)
+        Button {
+            canvas.toggleGridMode()
+        } label: {
+            Image(systemName: canvas.gridMode.icon)
+                .frame(width: size, height: size)
+                .background(.regularMaterial)
+                .clipShape(.rect(cornerRadius: 8))
+                .contentShape(.rect(cornerRadius: 8))
+        }
+        .buttonStyle(.plain)
+        .contentTransition(.symbolEffect(.replace))
+        .transition(.move(edge: .top).combined(with: .blurReplace))
+        #else
         Menu {
             ForEach(GridMode.all, id: \.self) { mode in
                 Button {
@@ -137,19 +171,24 @@ struct Toolbar: View {
             }
         } label: {
             Image(systemName: canvas.gridMode.icon)
-                .contentShape(.circle)
                 .frame(width: size, height: size)
                 .background(.regularMaterial)
                 .clipShape(.rect(cornerRadius: 8))
+                .contentShape(.rect(cornerRadius: 8))
         }
         .hoverEffect(.lift)
         .contentTransition(.symbolEffect(.replace))
         .transition(.move(edge: .top).combined(with: .blurReplace))
+        #endif
     }
 
-    func closeMemo() {
+    private func closeMemo() {
         canvas.save(for: memo) {
+            #if os(macOS)
+            application.closeMemo()
+            #else
             dismiss()
+            #endif
         }
     }
 }

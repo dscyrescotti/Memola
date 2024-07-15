@@ -5,14 +5,14 @@
 //  Created by Dscyre Scotti on 5/4/24.
 //
 
-import UIKit
+import SwiftUI
 import MetalKit
 import Foundation
 
-class DrawingView: UIView {
-    let tool: Tool
-    let canvas: Canvas
-    let history: History
+final class DrawingView: Platform.View {
+    private let tool: Tool
+    private let canvas: Canvas
+    private let history: History
     let renderView: MTKView
 
     var ratio: CGFloat { canvas.size.width / bounds.width }
@@ -36,7 +36,29 @@ class DrawingView: UIView {
     func updateDrawableSize(with size: CGSize) {
         renderView.drawableSize = size.multiply(by: 2)
     }
+    
+    #if os(macOS)
+    override func mouseDown(with event: NSEvent) {
+        super.mouseDown(with: event)
+        let pointInLeftBottomOrigin = convert(event.locationInWindow, from: nil)
+        let point = CGPoint(x: pointInLeftBottomOrigin.x, y: bounds.height - pointInLeftBottomOrigin.y)
+        touchBegan(at: point)
+    }
 
+    override func mouseDragged(with event: NSEvent) {
+        super.mouseDragged(with: event)
+        let pointInLeftBottomOrigin = convert(event.locationInWindow, from: nil)
+        let point = CGPoint(x: pointInLeftBottomOrigin.x, y: bounds.height - pointInLeftBottomOrigin.y)
+        touchMoved(to: point)
+    }
+
+    override func mouseUp(with event: NSEvent) {
+        super.mouseUp(with: event)
+        let pointInLeftBottomOrigin = convert(event.locationInWindow, from: nil)
+        let point = CGPoint(x: pointInLeftBottomOrigin.x, y: bounds.height - pointInLeftBottomOrigin.y)
+        touchEnded(at: point)
+    }
+    #else
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         !canvas.hasValidStroke
     }
@@ -78,6 +100,7 @@ class DrawingView: UIView {
         let point = touch.preciseLocation(in: self)
         touchEnded(at: point)
     }
+    #endif
 
     func touchBegan(at point: CGPoint) {
         guard !disablesUserInteraction else { return }

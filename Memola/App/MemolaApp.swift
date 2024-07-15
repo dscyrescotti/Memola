@@ -9,11 +9,17 @@ import SwiftUI
 
 @main
 struct MemolaApp: App {
+    #if os(macOS)
+    @NSApplicationDelegateAdaptor(Application.self) private var application
+    #else
+    @UIApplicationDelegateAdaptor(Application.self) private var application
+    #endif
+
     var body: some Scene {
         WindowGroup {
             DashboardView()
                 .persistence(\.viewContext)
-                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willTerminateNotification)) { _ in
+                .onReceive(NotificationCenter.default.publisher(for: Platform.Application.willTerminateNotification)) { _ in
                     withPersistenceSync(\.viewContext) { context in
                         try context.saveIfNeeded()
                     }
@@ -21,6 +27,22 @@ struct MemolaApp: App {
                         try context.saveIfNeeded()
                     }
                 }
+                #if os(macOS)
+                .frame(minWidth: 1000, minHeight: 600)
+                #endif
+                .environmentObject(application)
+        }
+        #if os(macOS)
+        .defaultPosition(.center)
+        .windowResizability(.contentSize)
+        .defaultSize(width: 1200, height: 800)
+        .windowToolbarStyle(.unifiedCompact)
+        #endif
+        .commands {
+            AppCommands()
+            FileCommands()
+            EditCommands()
+            ViewCommands(application: application)
         }
     }
 }

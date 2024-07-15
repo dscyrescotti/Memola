@@ -9,7 +9,7 @@ import CoreData
 import Foundation
 
 @objc(PenObject)
-class PenObject: NSManagedObject {
+final class PenObject: NSManagedObject {
     @NSManaged var color: [CGFloat]
     @NSManaged var style: Int16
     @NSManaged var thickness: CGFloat
@@ -20,7 +20,7 @@ class PenObject: NSManagedObject {
 
 extension PenObject {
     static func createObject(_ keyPath: KeyPath<Persistence, NSManagedObjectContext>, penStyle: any PenStyle) -> PenObject {
-        let object = PenObject(context: Persistence.shared[keyPath: keyPath])
+        let object = PenObject(keyPath)
         object.color = penStyle.color
         object.style = penStyle.strokeStyle.rawValue
         object.isSelected = false

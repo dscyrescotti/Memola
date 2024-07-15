@@ -8,7 +8,7 @@
 import MetalKit
 import Foundation
 
-class StrokeRenderPass: RenderPass {
+final class StrokeRenderPass: RenderPass {
     var label: String = "Stroke Render Pass"
 
     var descriptor: MTLRenderPassDescriptor?

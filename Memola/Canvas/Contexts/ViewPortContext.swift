@@ -8,7 +8,7 @@
 import MetalKit
 import Foundation
 
-class ViewPortContext {
+final class ViewPortContext {
     var vertices: [ViewPortVertex] = []
     let vertexCount: Int = 4
     var vertexBuffer: MTLBuffer?

@@ -8,13 +8,18 @@
 import SwiftUI
 
 struct PhotoPreview: View {
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    let photoItem: PhotoItem
-    @ObservedObject var tool: Tool
+    private let photoItem: PhotoItem
+    @ObservedObject private var tool: Tool
+
+    init(photoItem: PhotoItem, tool: Tool) {
+        self.photoItem = photoItem
+        self.tool = tool
+    }
 
     var body: some View {
-        Image(uiImage: photoItem.previewImage)
+        Image(image: photoItem.previewImage)
             .resizable()
             .scaledToFit()
             .frame(width: horizontalSizeClass == .compact ? 80 : nil, height: horizontalSizeClass == .compact ? nil : 100)
@@ -40,7 +45,9 @@ struct PhotoPreview: View {
                         }
                 }
                 .foregroundStyle(.red)
+                #if os(iOS)
                 .hoverEffect(.lift)
+                #endif
                 .offset(x: -12, y: -12)
             }
             .padding(10)

@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct MemoCard<Preview: View, Detail: View>: View {
-    let memoObject: MemoObject
-    let cellWidth: CGFloat
-    let modifyPreview: ((MemoPreview) -> Preview)?
-    let details: () -> Detail
+    private let memoObject: MemoObject
+    private let cellWidth: CGFloat
+    private let modifyPreview: ((MemoPreview) -> Preview)?
+    private let details: () -> Detail
 
-    init(memoObject: MemoObject, cellWidth: CGFloat, @ViewBuilder modifyPreview: @escaping (MemoPreview) -> Preview, @ViewBuilder details: @escaping () -> Detail) {
+    init(memoObject: MemoObject, cellWidth: CGFloat, modifyPreview: ((MemoPreview) -> Preview)?, @ViewBuilder details: @escaping () -> Detail) {
         self.memoObject = memoObject
         self.cellWidth = cellWidth
         self.modifyPreview = modifyPreview

@@ -12,7 +12,7 @@ final class Photo: @unchecked Sendable, Equatable {
     var id: UUID = UUID()
     var size: CGSize
     var origin: CGPoint
-    var image: UIImage?
+    var image: Platform.Image?
     var url: URL?
     var bounds: [CGFloat]
     var createdAt: Date

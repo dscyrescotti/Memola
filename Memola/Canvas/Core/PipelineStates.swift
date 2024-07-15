@@ -8,7 +8,7 @@
 import MetalKit
 import Foundation
 
-struct PipelineStates {
+enum PipelineStates {
     static func createPointGridPipelineState(from renderer: Renderer, pixelFormat: MTLPixelFormat? = nil) -> MTLRenderPipelineState? {
         let device = renderer.device
         let library = renderer.library

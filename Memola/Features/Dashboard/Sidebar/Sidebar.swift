@@ -8,10 +8,15 @@
 import SwiftUI
 
 struct Sidebar: View {
-    let sidebarItems: [SidebarItem] = [.memos, .trash]
-    @Binding var sidebarItem: SidebarItem?
+    private let sidebarItems: [SidebarItem] = [.memos, .trash]
+    @Binding private var sidebarItem: SidebarItem?
 
-    let horizontalSizeClass: UserInterfaceSizeClass?
+    private let horizontalSizeClass: UserInterfaceSizeClass?
+
+    init(sidebarItem: Binding<SidebarItem?>, horizontalSizeClass: UserInterfaceSizeClass?) {
+        self._sidebarItem = sidebarItem
+        self.horizontalSizeClass = horizontalSizeClass
+    }
 
     var body: some View {
         List(selection: $sidebarItem) {
@@ -38,14 +43,20 @@ struct Sidebar: View {
         .listStyle(.sidebar)
         .navigationTitle(horizontalSizeClass == .compact ? "Memola" : "")
         .scrollContentBackground(.hidden)
-        .background(Color(uiColor: .secondarySystemBackground))
+        #if os(macOS)
+        .background(Color(color: .windowBackgroundColor))
+        #else
+        .background(Color(color: .secondarySystemBackground))
+        #endif
         .navigationSplitViewColumnWidth(min: 250, ideal: 250, max: 250)
+        #if os(iOS)
         .navigationBarTitleDisplayMode(horizontalSizeClass == .compact ? .automatic : .inline)
+        #endif
     }
 }
 
 extension Sidebar {
-    struct SidebarItemButtonStyle: ButtonStyle {
+    fileprivate struct SidebarItemButtonStyle: ButtonStyle {
         let state: State
 
         func makeBody(configuration: Configuration) -> some View {

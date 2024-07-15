@@ -8,7 +8,7 @@
 import MetalKit
 import Foundation
 
-class ViewPortRenderPass: RenderPass {
+final class ViewPortRenderPass: RenderPass {
     var label: String { "View Port Render Pass"}
     var descriptor: MTLRenderPassDescriptor?
 

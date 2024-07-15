@@ -32,7 +32,6 @@ final class Canvas: ObservableObject, Identifiable, @unchecked Sendable {
 
     @Published var state: State = .initial
     @Published var zoomScale: CGFloat = .zero
-    @Published var locksCanvas: Bool = false
 
     @Published var gridMode: GridMode = .point
 
@@ -85,7 +84,11 @@ extension Canvas {
     func save(for memoObject: MemoObject, completion: @escaping () -> Void) {
         state = .closing
         let previewImage = renderer?.drawPreview(on: self)
+        #if os(macOS)
+        memoObject.preview = previewImage?.tiffRepresentation
+        #else
         memoObject.preview = previewImage?.jpegData(compressionQuality: 0.8)
+        #endif
         withPersistenceSync(\.viewContext) { context in
             try context.saveIfNeeded()
         }
@@ -105,7 +108,13 @@ extension Canvas {
     func updateTransform(on drawingView: DrawingView) {
         let bounds = CGRect(origin: .zero, size: size)
         let renderView = drawingView.renderView
+        #if os(macOS)
+        let drawingViewBounds = drawingView.bounds
+        var targetRect = drawingView.convert(drawingViewBounds, to: renderView)
+        targetRect.origin.y = renderView.bounds.height - targetRect.maxY
+        #else
         let targetRect = drawingView.convert(drawingView.bounds, to: renderView)
+        #endif
         let transform1 = bounds.transform(to: targetRect)
         let transform2 = renderView.bounds.transform(to: CGRect(x: -1.0, y: -1.0, width: 2.0, height: 2.0))
         let transform3 = CGAffineTransform.identity.translatedBy(x: 0, y: 1).scaledBy(x: 1, y: -1).translatedBy(x: 0, y: 1)
@@ -135,20 +144,30 @@ extension Canvas {
         self.previewTransform = simd_float4x4(transform)
     }
 
-    func updateClipBounds(_ scrollView: UIScrollView, on drawingView: DrawingView) {
+    func updateClipBounds(_ scrollView: Platform.ScrollView, on drawingView: DrawingView) {
+        #if os(macOS)
+        let ratio = drawingView.ratio
+        var bounds = scrollView.convert(scrollView.bounds, to: drawingView)
+        bounds.origin.y = drawingView.bounds.height - (bounds.origin.y + bounds.height)
+        clipBounds = CGRect(origin: bounds.origin.muliply(by: ratio), size: bounds.size.multiply(by: ratio))
+        #else
         let ratio = drawingView.ratio
         let bounds = scrollView.convert(scrollView.bounds, to: drawingView)
         clipBounds = CGRect(origin: bounds.origin.muliply(by: ratio), size: bounds.size.multiply(by: ratio))
+        #endif
     }
 }
 
 // MARK: - Zoom Scale
 extension Canvas {
     func setZoomScale(_ zoomScale: CGFloat) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
+        #if os(macOS)
+        self.zoomScale = min(max(zoomScale, minimumZoomScale), maximumZoomScale)
+        #else
+        DispatchQueue.main.async { [unowned self] in
             self.zoomScale = min(max(zoomScale, minimumZoomScale), maximumZoomScale)
         }
+        #endif
     }
 }
 
@@ -161,6 +180,19 @@ extension Canvas {
             object?.gridMode = gridMode.rawValue
             try context.saveIfNeeded()
         }
+    }
+
+    func toggleGridMode() {
+        let _gridMode: GridMode
+        switch gridMode {
+        case .none:
+            _gridMode = .point
+        case .point:
+            _gridMode = .line
+        case .line:
+            _gridMode = .none
+        }
+        setGridMode(_gridMode)
     }
 }
 

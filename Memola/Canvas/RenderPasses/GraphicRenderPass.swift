@@ -8,7 +8,7 @@
 import MetalKit
 import Foundation
 
-class GraphicRenderPass: RenderPass {
+final class GraphicRenderPass: RenderPass {
     var label: String { "Graphic Render Pass" }
     var descriptor: MTLRenderPassDescriptor?
     var graphicTexture: MTLTexture?
