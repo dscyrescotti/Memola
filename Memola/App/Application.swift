@@ -11,6 +11,8 @@ import SwiftUI
 final class Application: NSObject, ObservableObject {
     @Published var memoObject: MemoObject?
     @Published private(set) var sidebarVisibility: SidebarVisibility = .shown
+
+    lazy var newMemoPublisher = PassthroughSubject<Void, Never>()
 }
 
 extension Application {

@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct TrashView: View {
-    @Environment(\.shortcut) private var shortcut
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @EnvironmentObject private var application: Application

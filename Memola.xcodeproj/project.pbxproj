@@ -26,9 +26,6 @@
 		EC2002D72C4160EF002EBD5F /* EditCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002D62C4160EF002EBD5F /* EditCommands.swift */; };
 		EC2002D92C4161ED002EBD5F /* ViewCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002D82C4161ED002EBD5F /* ViewCommands.swift */; };
 		EC2002DD2C4163E8002EBD5F /* AppCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002DC2C4163E8002EBD5F /* AppCommands.swift */; };
-		EC2002E12C416470002EBD5F /* Shortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002E02C416470002EBD5F /* Shortcut.swift */; };
-		EC2002E52C416551002EBD5F /* Shortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002E42C416551002EBD5F /* Shortcuts.swift */; };
-		EC2002E92C4167C5002EBD5F /* ShortcutKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002E82C4167C5002EBD5F /* ShortcutKey.swift */; };
 		EC2002ED2C417B68002EBD5F /* AppScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002EC2C417B68002EBD5F /* AppScene.swift */; };
 		EC2002F02C417BF1002EBD5F /* ActiveSceneKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002EF2C417BF1002EBD5F /* ActiveSceneKey.swift */; };
 		EC2106AD2C10C2A700FBE27C /* AnyStroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2106AC2C10C2A700FBE27C /* AnyStroke.swift */; };
@@ -167,9 +164,6 @@
 		EC2002D62C4160EF002EBD5F /* EditCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCommands.swift; sourceTree = "<group>"; };
 		EC2002D82C4161ED002EBD5F /* ViewCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCommands.swift; sourceTree = "<group>"; };
 		EC2002DC2C4163E8002EBD5F /* AppCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCommands.swift; sourceTree = "<group>"; };
-		EC2002E02C416470002EBD5F /* Shortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shortcut.swift; sourceTree = "<group>"; };
-		EC2002E42C416551002EBD5F /* Shortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shortcuts.swift; sourceTree = "<group>"; };
-		EC2002E82C4167C5002EBD5F /* ShortcutKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutKey.swift; sourceTree = "<group>"; };
 		EC2002EC2C417B68002EBD5F /* AppScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppScene.swift; sourceTree = "<group>"; };
 		EC2002EF2C417BF1002EBD5F /* ActiveSceneKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSceneKey.swift; sourceTree = "<group>"; };
 		EC2106AC2C10C2A700FBE27C /* AnyStroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyStroke.swift; sourceTree = "<group>"; };
@@ -411,33 +405,6 @@
 			path = Commands;
 			sourceTree = "<group>";
 		};
-		EC2002DE2C41645A002EBD5F /* Shortcut */ = {
-			isa = PBXGroup;
-			children = (
-				EC2002D32C416002002EBD5F /* Commands */,
-				EC2002DF2C416466002EBD5F /* Core */,
-				EC2002E72C4167B1002EBD5F /* EnvironmentValues */,
-			);
-			path = Shortcut;
-			sourceTree = "<group>";
-		};
-		EC2002DF2C416466002EBD5F /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				EC2002E02C416470002EBD5F /* Shortcut.swift */,
-				EC2002E42C416551002EBD5F /* Shortcuts.swift */,
-			);
-			path = Core;
-			sourceTree = "<group>";
-		};
-		EC2002E72C4167B1002EBD5F /* EnvironmentValues */ = {
-			isa = PBXGroup;
-			children = (
-				EC2002E82C4167C5002EBD5F /* ShortcutKey.swift */,
-			);
-			path = EnvironmentValues;
-			sourceTree = "<group>";
-		};
 		EC2002EE2C417BBF002EBD5F /* AppScene */ = {
 			isa = PBXGroup;
 			children = (
@@ -587,7 +554,7 @@
 			isa = PBXGroup;
 			children = (
 				ECA738762BE5EE4E00A4542E /* App */,
-				EC2002DE2C41645A002EBD5F /* Shortcut */,
+				EC2002D32C416002002EBD5F /* Commands */,
 				ECA7387E2BE5FE4200A4542E /* Canvas */,
 				EC50500A2BF6672000B4D86E /* Components */,
 				EC5050102BF670EE00B4D86E /* Config */,
@@ -1164,7 +1131,6 @@
 				EC01511E2C305CA9008A115E /* DashboardView.swift in Sources */,
 				EC8F54AE2C2AF5A4001C7C74 /* LineGridVertex.swift in Sources */,
 				EC2002F02C417BF1002EBD5F /* ActiveSceneKey.swift in Sources */,
-				EC2002E12C416470002EBD5F /* Shortcut.swift in Sources */,
 				EC5E83902BFDB69C00261D9C /* MovingAverage.swift in Sources */,
 				ECFA15262BEF224900455818 /* StrokeObject.swift in Sources */,
 				ECA738FC2BE61C5200A4542E /* Persistence.swift in Sources */,
@@ -1174,7 +1140,6 @@
 				ECFA15222BEF21F500455818 /* CanvasObject.swift in Sources */,
 				ECA738AA2BE6026D00A4542E /* Uniforms.swift in Sources */,
 				ECF7B2D12C39169C004D2C57 /* CGAffineTransform++.swift in Sources */,
-				EC2002E52C416551002EBD5F /* Shortcuts.swift in Sources */,
 				EC2002DD2C4163E8002EBD5F /* AppCommands.swift in Sources */,
 				EC1815082C2D980B00541369 /* Sort.swift in Sources */,
 				EC6E3BD92C43C6C000DD20F3 /* OnDismissSearchViewModifier.swift in Sources */,
@@ -1238,7 +1203,6 @@
 				ECA7388F2BE600DA00A4542E /* Grid.metal in Sources */,
 				EC2BEBF42C0F5FF7005DB0AF /* RTree.swift in Sources */,
 				ECA738C92BE60EF700A4542E /* GraphicContext.swift in Sources */,
-				EC2002E92C4167C5002EBD5F /* ShortcutKey.swift in Sources */,
 				EC0D14212BF79C73009BFE5F /* ToolObject.swift in Sources */,
 				ECDAC07B2C318DBC0000ED77 /* ElementToolbar.swift in Sources */,
 				EC50500D2BF6674400B4D86E /* OnDragViewModifier.swift in Sources */,
