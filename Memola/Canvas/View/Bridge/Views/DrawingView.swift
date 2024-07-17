@@ -21,6 +21,10 @@ final class DrawingView: Platform.View {
     private var lastDrawTime: CFTimeInterval = 0
     private let minDrawInterval: CFTimeInterval = 1.0 / 60.0
 
+    #if os(macOS)
+    var isUserInteractionEnabled: Bool = true
+    #endif
+
     required init(tool: Tool, canvas: Canvas, history: History) {
         self.tool = tool
         self.canvas = canvas
@@ -57,6 +61,10 @@ final class DrawingView: Platform.View {
         let pointInLeftBottomOrigin = convert(event.locationInWindow, from: nil)
         let point = CGPoint(x: pointInLeftBottomOrigin.x, y: bounds.height - pointInLeftBottomOrigin.y)
         touchEnded(at: point)
+    }
+
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        isUserInteractionEnabled ? super.hitTest(point) : nil
     }
     #else
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {

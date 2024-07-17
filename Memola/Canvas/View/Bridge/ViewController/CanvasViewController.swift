@@ -48,7 +48,6 @@ final class CanvasViewController: Platform.ViewController {
     }
 
     #if os(macOS)
-    
     override func viewWillAppear() {
         super.viewWillAppear()
         resizeDocumentView()
@@ -462,14 +461,12 @@ extension CanvasViewController {
             enablesDrawing = false
             enablesPhotoInsertion = true
         }
-        #if os(macOS)
-        #warning("TODO: implement for macos")
-        #else
-        scrollView.isScrollEnabled = enablesScrolling
         drawingView.isUserInteractionEnabled = enablesDrawing
         photoInsertGesture?.isEnabled = enablesPhotoInsertion
-        enablesDrawing ? drawingView.enableUserInteraction() : drawingView.disableUserInteraction()
+        #if os(iOS)
+        scrollView.isScrollEnabled = enablesScrolling
         #endif
+        enablesDrawing ? drawingView.enableUserInteraction() : drawingView.disableUserInteraction()
     }
 }
 
@@ -480,14 +477,6 @@ extension CanvasViewController {
         scrollView.setMagnification(zoomScale, centeredAt: CGPoint(x: rect.midX, y: rect.midY))
         #else
         scrollView.setZoomScale(zoomScale, animated: true)
-        #endif
-    }
-
-    private func lockModeChanged(_ state: Bool) {
-        #if os(macOS)
-        #warning("TODO: implement for macos")
-        #else
-        scrollView.pinchGestureRecognizer?.isEnabled = !state
         #endif
     }
 
