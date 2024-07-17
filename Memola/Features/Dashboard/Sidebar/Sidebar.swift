@@ -58,6 +58,7 @@ struct Sidebar: View {
         .navigationSplitViewColumnWidth(min: 250, ideal: 250, max: 250)
     }
 
+    #if os(iOS)
     private var compactList: some View {
         list
             .toolbar {
@@ -66,6 +67,7 @@ struct Sidebar: View {
                 }
             }
     }
+    #endif
 
     private var list: some View {
         List(selection: $sidebarItem) {

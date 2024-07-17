@@ -16,14 +16,22 @@ struct AboutView: View {
                     Spacer()
                     Text("v\(Bundle.main.appVersion) (\(Bundle.main.appBuild))")
                 }
+                #if os(macOS)
+                .listRowSeparator(.hidden)
+                #endif
             }
-            Section("Copyright") {
+            Section("COPYRIGHT") {
                 Text(Bundle.main.copyright)
                     .font(.callout)
+                    #if os(macOS)
+                    .listRowSeparator(.hidden)
+                    #endif
             }
         }
-        .listStyle(.insetGrouped)
         .navigationTitle("About")
+        #if os(iOS)
+        .listStyle(.insetGrouped)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
     }
 }
