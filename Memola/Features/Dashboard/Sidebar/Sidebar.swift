@@ -9,9 +9,15 @@ import SwiftUI
 
 struct Sidebar: View {
     private let sidebarItems: [SidebarItem] = [.memos, .trash]
-    @Binding private var sidebarItem: SidebarItem?
-
     private let horizontalSizeClass: UserInterfaceSizeClass?
+
+    @Binding private var sidebarItem: SidebarItem?
+    
+    @State private var presentsSettings: Bool = false
+
+    #if os(macOS)
+    @EnvironmentObject private var application: Application
+    #endif
 
     init(sidebarItem: Binding<SidebarItem?>, horizontalSizeClass: UserInterfaceSizeClass?) {
         self._sidebarItem = sidebarItem
@@ -19,25 +25,75 @@ struct Sidebar: View {
     }
 
     var body: some View {
+        #if os(macOS)
+        regularList
+        #else
+        Group {
+            if horizontalSizeClass == .compact {
+                compactList
+            } else {
+                regularList
+            }
+        }
+        .sheet(isPresented: $presentsSettings) {
+            SettingsView()
+        }
+        #endif
+    }
+
+    private var regularList: some View {
+        VStack(spacing: 10) {
+            list
+            Divider()
+            settingsButton
+                .buttonStyle(.unselected)
+                .padding(.horizontal, 10)
+        }
+        #if os(macOS)
+        .padding(.bottom, 10)
+        .background(Color(color: .windowBackgroundColor))
+        #else
+        .background(Color(color: .secondarySystemBackground))
+        #endif
+        .navigationSplitViewColumnWidth(min: 250, ideal: 250, max: 250)
+    }
+
+    private var compactList: some View {
+        list
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    settingsButton
+                }
+            }
+    }
+
+    private var list: some View {
         List(selection: $sidebarItem) {
             ForEach(sidebarItems) { item in
-                if horizontalSizeClass == .compact {
-                    Button {
-                        sidebarItem = item
-                    } label: {
-                        Label(item.title, systemImage: item.icon)
-                            .foregroundColor(.primary)
+                Group {
+                    if horizontalSizeClass == .compact {
+                        Button {
+                            sidebarItem = item
+                        } label: {
+                            Label(item.title, systemImage: item.icon)
+                                .foregroundColor(.primary)
+                        }
+                    } else {
+                        Button {
+                            sidebarItem = item
+                        } label: {
+                            Label(item.title, systemImage: item.icon)
+                                .foregroundColor(.primary)
+                        }
+                        .buttonStyle(sidebarItem == item ? .selected : .unselected)
+                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                     }
-                } else {
-                    Button {
-                        sidebarItem = item
-                    } label: {
-                        Label(item.title, systemImage: item.icon)
-                            .foregroundColor(.primary)
-                    }
-                    .buttonStyle(sidebarItem == item ? .selected : .unselected)
-                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                 }
+                #if os(macOS)
+                .padding(.top, item == .memos ? 20 : 0)
+                #else
+                .padding(.top, horizontalSizeClass == .regular ? (item == .memos ? 20 : 0) : 0)
+                #endif
             }
         }
         .listStyle(.sidebar)
@@ -48,10 +104,21 @@ struct Sidebar: View {
         #else
         .background(Color(color: .secondarySystemBackground))
         #endif
-        .navigationSplitViewColumnWidth(min: 250, ideal: 250, max: 250)
         #if os(iOS)
         .navigationBarTitleDisplayMode(horizontalSizeClass == .compact ? .automatic : .inline)
         #endif
+    }
+
+    private var settingsButton: some View {
+        Button {
+            #if os(macOS)
+            application.openWindow(for: .settings)
+            #else
+            presentsSettings.toggle()
+            #endif
+        } label: {
+            Label("Settings", systemImage: "gearshape.fill")
+        }
     }
 }
 

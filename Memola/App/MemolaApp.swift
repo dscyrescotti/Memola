@@ -16,7 +16,7 @@ struct MemolaApp: App {
     #endif
 
     var body: some Scene {
-        WindowGroup {
+        WindowGroup(id: AppWindow.dashboard.id) {
             DashboardView()
                 .persistence(\.viewContext)
                 .onReceive(NotificationCenter.default.publisher(for: Platform.Application.willTerminateNotification)) { _ in
@@ -36,13 +36,38 @@ struct MemolaApp: App {
         .defaultPosition(.center)
         .windowResizability(.contentSize)
         .defaultSize(width: 1200, height: 800)
-        .windowToolbarStyle(.unifiedCompact)
+        .windowToolbarStyle(.unified)
+        .handlesExternalEvents(matching: [AppWindow.dashboard.id])
         #endif
         .commands {
-            AppCommands()
-            FileCommands()
+            #if os(macOS)
+            AppCommands(application: application)
+            #endif
+            FileCommands(application: application)
             EditCommands()
             ViewCommands(application: application)
         }
+        #if os(macOS)
+        WindowGroup(id: AppWindow.settings.id) {
+            SettingsView()
+                .onReceive(NotificationCenter.default.publisher(for: Platform.Application.willTerminateNotification)) { _ in
+                    withPersistenceSync(\.viewContext) { context in
+                        try context.saveIfNeeded()
+                    }
+                    withPersistenceSync(\.backgroundContext) { context in
+                        try context.saveIfNeeded()
+                    }
+                }
+                #if os(macOS)
+                .frame(minWidth: 700, minHeight: 500)
+                #endif
+                .environmentObject(application)
+        }
+        .defaultPosition(.center)
+        .windowResizability(.contentSize)
+        .defaultSize(width: 800, height: 400)
+        .windowToolbarStyle(.unifiedCompact)
+        .handlesExternalEvents(matching: [AppWindow.settings.id])
+        #endif
     }
 }

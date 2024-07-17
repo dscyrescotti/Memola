@@ -54,6 +54,17 @@ extension Application: NSApplicationDelegate {
         NSWindow.allowsAutomaticWindowTabbing = false
         UserDefaults.standard.register(defaults: ["NSQuitAlwaysKeepsWindows": false])
     }
+
+    func openWindow(for appWindow: AppWindow) {
+        let window = NSApplication.shared.windows.first { window in
+            window.identifier?.rawValue.contains(appWindow.id) == true
+        }
+        if window == nil, let url = appWindow.url {
+            NSWorkspace.shared.open(url)
+        } else {
+            window?.makeKeyAndOrderFront(nil)
+        }
+    }
 }
 #else
 extension Application: UIApplicationDelegate {

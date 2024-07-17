@@ -11,4 +11,5 @@ enum AppScene {
     case memos
     case trash
     case memo
+    case settings
 }

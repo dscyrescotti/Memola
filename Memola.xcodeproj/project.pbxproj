@@ -32,6 +32,8 @@
 		EC2002ED2C417B68002EBD5F /* AppScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002EC2C417B68002EBD5F /* AppScene.swift */; };
 		EC2002F02C417BF1002EBD5F /* ActiveSceneKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2002EF2C417BF1002EBD5F /* ActiveSceneKey.swift */; };
 		EC2106AD2C10C2A700FBE27C /* AnyStroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2106AC2C10C2A700FBE27C /* AnyStroke.swift */; };
+		EC2117632C47FA30005B32A1 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2117622C47FA30005B32A1 /* SettingsView.swift */; };
+		EC2117662C4802C0005B32A1 /* AppWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2117652C4802C0005B32A1 /* AppWindow.swift */; };
 		EC2BEBF42C0F5FF7005DB0AF /* RTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2BEBF32C0F5FF7005DB0AF /* RTree.swift */; };
 		EC2BEBF62C0F600D005DB0AF /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2BEBF52C0F600D005DB0AF /* Box.swift */; };
 		EC2BEBF82C0F601A005DB0AF /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2BEBF72C0F601A005DB0AF /* Node.swift */; };
@@ -169,6 +171,8 @@
 		EC2002EC2C417B68002EBD5F /* AppScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppScene.swift; sourceTree = "<group>"; };
 		EC2002EF2C417BF1002EBD5F /* ActiveSceneKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSceneKey.swift; sourceTree = "<group>"; };
 		EC2106AC2C10C2A700FBE27C /* AnyStroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyStroke.swift; sourceTree = "<group>"; };
+		EC2117622C47FA30005B32A1 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		EC2117652C4802C0005B32A1 /* AppWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWindow.swift; sourceTree = "<group>"; };
 		EC2BEBF32C0F5FF7005DB0AF /* RTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTree.swift; sourceTree = "<group>"; };
 		EC2BEBF52C0F600D005DB0AF /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 		EC2BEBF72C0F601A005DB0AF /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
@@ -439,6 +443,30 @@
 			path = AppScene;
 			sourceTree = "<group>";
 		};
+		EC2117602C47FA14005B32A1 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				EC2117612C47FA29005B32A1 /* Settings */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		EC2117612C47FA29005B32A1 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				EC2117622C47FA30005B32A1 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		EC2117642C4802B4005B32A1 /* AppWindow */ = {
+			isa = PBXGroup;
+			children = (
+				EC2117652C4802C0005B32A1 /* AppWindow.swift */,
+			);
+			path = AppWindow;
+			sourceTree = "<group>";
+		};
 		EC2BEBF22C0F5FE1005DB0AF /* RTree */ = {
 			isa = PBXGroup;
 			children = (
@@ -607,6 +635,7 @@
 			children = (
 				EC01511A2C305ABB008A115E /* Dashboard */,
 				ECA7387B2BE5EF3500A4542E /* Memo */,
+				EC2117602C47FA14005B32A1 /* Settings */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -996,6 +1025,7 @@
 		ECF7B2E52C391DFA004D2C57 /* Utilies */ = {
 			isa = PBXGroup;
 			children = (
+				EC2117642C4802B4005B32A1 /* AppWindow */,
 				EC6E3BDD2C43D5A500DD20F3 /* SidebarVisibility */,
 				EC2002EE2C417BBF002EBD5F /* AppScene */,
 				ECF7B2CF2C39169C004D2C57 /* Extensions */,
@@ -1134,6 +1164,7 @@
 				EC2002DD2C4163E8002EBD5F /* AppCommands.swift in Sources */,
 				EC1815082C2D980B00541369 /* Sort.swift in Sources */,
 				EC6E3BD92C43C6C000DD20F3 /* OnDismissSearchViewModifier.swift in Sources */,
+				EC2117662C4802C0005B32A1 /* AppWindow.swift in Sources */,
 				ECA7387D2BE5EF4B00A4542E /* MemoView.swift in Sources */,
 				ECDDD40D2C366B3B00DF9D5E /* PreviewRenderPass.swift in Sources */,
 				ECF7B2E12C39169C004D2C57 /* View++.swift in Sources */,
@@ -1159,6 +1190,7 @@
 				EC8C9DCE2C39882500A8F3C4 /* NSSyncScrollView.swift in Sources */,
 				ECF7B2D72C39169C004D2C57 /* Color++.swift in Sources */,
 				EC01512C2C306BEF008A115E /* MemoCard.swift in Sources */,
+				EC2117632C47FA30005B32A1 /* SettingsView.swift in Sources */,
 				ECA738D42BE60F9100A4542E /* StrokeGenerator.swift in Sources */,
 				ECF7B2D52C39169C004D2C57 /* CGSize++.swift in Sources */,
 				ECA739082BE623F300A4542E /* PenDock.swift in Sources */,
