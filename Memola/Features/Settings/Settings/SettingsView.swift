@@ -10,10 +10,19 @@ import SwiftUI
 struct SettingsView: View {
     var body: some View {
         NavigationStack {
-            Text("Settings View")
-                .navigationTitle("Settings")
+            List {
+                NavigationLink {
+                    AboutView()
+                } label: {
+                    Label("About", systemImage: "info.circle.fill")
+                        .foregroundStyle(.primary)
+                }
+            }
+            .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.large)
         }
         .focusedSceneValue(\.activeSceneKey, .settings)
+        .interactiveDismissDisabled()
     }
 }
 
