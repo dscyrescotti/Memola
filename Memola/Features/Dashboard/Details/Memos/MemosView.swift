@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct MemosView: View {
-    @Environment(\.shortcut) private var shortcut
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @EnvironmentObject private var application: Application
@@ -159,8 +158,10 @@ struct MemosView: View {
         .onReceive(timer) { date in
             currentDate = date
         }
-        .onReceive(shortcut.publisher) { shortcut in
-            handleShortcut(for: shortcut)
+        .onReceive(application.newMemoPublisher) { shortcut in
+            if application.memoObject == nil {
+                createMemo(title: "Untitled")
+            }
         }
     }
 
@@ -287,17 +288,6 @@ struct MemosView: View {
         memo.deletedAt = .now
         withPersistence(\.viewContext) { context in
             try context.saveIfNeeded()
-        }
-    }
-
-    private func handleShortcut(for shortcut: Shortcuts) {
-        switch shortcut {
-        case .newMemo:
-            if application.memoObject == nil {
-                createMemo(title: "Untitled")
-            }
-        default:
-            break
         }
     }
 }

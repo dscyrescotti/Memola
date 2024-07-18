@@ -100,7 +100,9 @@ final class History: ObservableObject {
                 }
             }
         }
-        redoStack.removeAll()
+        DispatchQueue.main.async { [weak self] in
+            self?.redoStack.removeAll()
+        }
         withPersistence(\.viewContext) { [weak memo] context in
             memo?.updatedAt = .now
             try context.saveIfNeeded()

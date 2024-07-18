@@ -52,7 +52,7 @@ struct DashboardView: View {
         }
         .animation(.easeIn, value: application.memoObject)
         .toolbar(application.memoObject == nil ? .visible : .hidden, for: .windowToolbar)
-        .toolbarBackground(application.memoObject == nil ? .clear : Color(nsColor: .windowBackgroundColor), for: .windowToolbar)
+        .toolbarBackground(Color(nsColor: .unemphasizedSelectedContentBackgroundColor), for: .windowToolbar)
         .onChange(of: columnVisibility) { oldValue, newValue in
             application.changeSidebarVisibility(newValue == .all ? .shown : .hidden)
         }

@@ -29,7 +29,6 @@ extension Color {
 extension Color {
     var hsba: (hue: Double, saturation: Double, brightness: Double, alpha: Double) {
         #if os(macOS)
-        #warning("TODO: need double check")
         let nsColor = NSColor(self)
         var hue: CGFloat = 0
         var saturation: CGFloat = 0
@@ -52,7 +51,6 @@ extension Color {
 extension Platform.Color {
     var components: [CGFloat] {
         #if os(macOS)
-        #warning("TODO: need double check")
         let nsColor: NSColor = self
         let ciColor: CIColor = .init(color: nsColor) ?? CIColor(red: 0, green: 0, blue: 0)
         return [ciColor.red, ciColor.green, ciColor.blue, ciColor.alpha]
