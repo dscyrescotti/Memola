@@ -44,7 +44,7 @@
 		EC50500D2BF6674400B4D86E /* OnDragViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC50500C2BF6674400B4D86E /* OnDragViewModifier.swift */; };
 		EC5D40812C21CE270067F090 /* PhotoBackgroundRenderPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5D40802C21CE270067F090 /* PhotoBackgroundRenderPass.swift */; };
 		EC5E83902BFDB69C00261D9C /* MovingAverage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5E838F2BFDB69C00261D9C /* MovingAverage.swift */; };
-		EC68C9992C4A888C00D8E4F9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EC68C9982C4A888C00D8E4F9 /* LaunchScreen.storyboard */; };
+		EC68C9992C4A888C00D8E4F9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EC68C9982C4A888C00D8E4F9 /* LaunchScreen.storyboard */; platformFilter = ios; };
 		EC6E3BD72C43C6A400DD20F3 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6E3BD62C43C6A400DD20F3 /* Application.swift */; };
 		EC6E3BD92C43C6C000DD20F3 /* OnDismissSearchViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6E3BD82C43C6C000DD20F3 /* OnDismissSearchViewModifier.swift */; };
 		EC6E3BDB2C43C78700DD20F3 /* NavigationSplitViewVisibility++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6E3BDA2C43C78700DD20F3 /* NavigationSplitViewVisibility++.swift */; };
