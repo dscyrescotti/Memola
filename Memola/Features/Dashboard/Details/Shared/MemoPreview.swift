@@ -36,7 +36,7 @@ struct MemoPreview: View {
                     .fill(.white)
             }
         }
-        .frame(width: cellWidth, height: cellHeight)
+        .frame(width: max(.zero, cellWidth), height: max(.zero, cellHeight))
         .background(.white)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
