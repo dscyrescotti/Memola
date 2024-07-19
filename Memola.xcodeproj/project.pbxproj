@@ -44,6 +44,7 @@
 		EC50500D2BF6674400B4D86E /* OnDragViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC50500C2BF6674400B4D86E /* OnDragViewModifier.swift */; };
 		EC5D40812C21CE270067F090 /* PhotoBackgroundRenderPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5D40802C21CE270067F090 /* PhotoBackgroundRenderPass.swift */; };
 		EC5E83902BFDB69C00261D9C /* MovingAverage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5E838F2BFDB69C00261D9C /* MovingAverage.swift */; };
+		EC68C9992C4A888C00D8E4F9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EC68C9982C4A888C00D8E4F9 /* LaunchScreen.storyboard */; };
 		EC6E3BD72C43C6A400DD20F3 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6E3BD62C43C6A400DD20F3 /* Application.swift */; };
 		EC6E3BD92C43C6C000DD20F3 /* OnDismissSearchViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6E3BD82C43C6C000DD20F3 /* OnDismissSearchViewModifier.swift */; };
 		EC6E3BDB2C43C78700DD20F3 /* NavigationSplitViewVisibility++.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6E3BDA2C43C78700DD20F3 /* NavigationSplitViewVisibility++.swift */; };
@@ -183,6 +184,7 @@
 		EC50500E2BF670EA00B4D86E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EC5D40802C21CE270067F090 /* PhotoBackgroundRenderPass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoBackgroundRenderPass.swift; sourceTree = "<group>"; };
 		EC5E838F2BFDB69C00261D9C /* MovingAverage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovingAverage.swift; sourceTree = "<group>"; };
+		EC68C9982C4A888C00D8E4F9 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EC6E3BD62C43C6A400DD20F3 /* Application.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		EC6E3BD82C43C6C000DD20F3 /* OnDismissSearchViewModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnDismissSearchViewModifier.swift; sourceTree = "<group>"; };
 		EC6E3BDA2C43C78700DD20F3 /* NavigationSplitViewVisibility++.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NavigationSplitViewVisibility++.swift"; sourceTree = "<group>"; };
@@ -526,6 +528,14 @@
 			path = Algorithms;
 			sourceTree = "<group>";
 		};
+		EC68C9972C4A887C00D8E4F9 /* LaunchScreen */ = {
+			isa = PBXGroup;
+			children = (
+				EC68C9982C4A888C00D8E4F9 /* LaunchScreen.storyboard */,
+			);
+			path = LaunchScreen;
+			sourceTree = "<group>";
+		};
 		EC6E3BDD2C43D5A500DD20F3 /* SidebarVisibility */ = {
 			isa = PBXGroup;
 			children = (
@@ -665,6 +675,7 @@
 		ECA738802BE5FE6000A4542E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				EC68C9972C4A887C00D8E4F9 /* LaunchScreen */,
 				ECA738FE2BE61D5700A4542E /* Models */,
 				ECA738FD2BE61D4700A4542E /* Assets */,
 			);
@@ -1102,6 +1113,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC68C9992C4A888C00D8E4F9 /* LaunchScreen.storyboard in Resources */,
 				EC7F6BF32BE5E6E400A34A7B /* Preview Assets.xcassets in Resources */,
 				EC7F6BF02BE5E6E400A34A7B /* Assets.xcassets in Resources */,
 			);
@@ -1377,7 +1389,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Memola/Memola.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -1416,7 +1428,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Memola/Memola.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
