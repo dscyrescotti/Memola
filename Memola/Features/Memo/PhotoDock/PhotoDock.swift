@@ -21,7 +21,7 @@ struct PhotoDock: View {
 
     @State private var opensCamera: Bool = false
     @State private var isCameraAccessDenied: Bool = false
-    @State private var photosPickerItem: PhotosPickerItem?
+    @State private var photosPickerItems: [PhotosPickerItem] = []
 
     init(memo: MemoObject, tool: Tool, canvas: Canvas) {
         self.memo = memo
@@ -80,12 +80,14 @@ struct PhotoDock: View {
             Text("Memola requires access to the camera to capture photos. Please open Settings and enable camera access.")
         }
         #endif
-        .onChange(of: photosPickerItem) { oldValue, newValue in
-            if let photoItem = newValue {
+        .onChange(of: photosPickerItems) { oldValue, newValue in
+            if !newValue.isEmpty {
                 Task {
                     tool.isLoadingPhoto = true
-                    await createFile(for: photoItem)
-                    photosPickerItem = nil
+                    for photoItem in newValue {
+                        await createFile(for: photoItem)
+                    }
+                    photosPickerItems = []
                     tool.isLoadingPhoto = false
                 }
             }
@@ -105,7 +107,7 @@ struct PhotoDock: View {
             }
             .hoverEffect(.lift)
             #endif
-            PhotosPicker(selection: $photosPickerItem, matching: .images, preferredItemEncoding: .compatible) {
+            PhotosPicker(selection: $photosPickerItems, matching: .images, preferredItemEncoding: .compatible) {
                 Image(systemName: "photo.fill.on.rectangle.fill")
                     #if os(macOS)
                     .frame(width: size * 2, height: size)
@@ -161,7 +163,7 @@ struct PhotoDock: View {
             }
             .hoverEffect(.lift)
             #endif
-            PhotosPicker(selection: $photosPickerItem, matching: .images, preferredItemEncoding: .compatible) {
+            PhotosPicker(selection: $photosPickerItems, matching: .images, preferredItemEncoding: .compatible) {
                 Image(systemName: "photo.fill.on.rectangle.fill")
                     .frame(width: size, height: size)
                     .clipShape(.rect(cornerRadius: 8))
