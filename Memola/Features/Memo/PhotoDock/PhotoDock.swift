@@ -11,6 +11,9 @@ import PhotosUI
 struct PhotoDock: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
+    @FetchRequest private var fileObjects: FetchedResults<PhotoFileObject>
+
+    private let memo: MemoObject
     private let size: CGFloat = 40
 
     @ObservedObject private var tool: Tool
@@ -20,15 +23,30 @@ struct PhotoDock: View {
     @State private var isCameraAccessDenied: Bool = false
     @State private var photosPickerItem: PhotosPickerItem?
 
-    init(tool: Tool, canvas: Canvas) {
+    init(memo: MemoObject, tool: Tool, canvas: Canvas) {
+        self.memo = memo
         self.tool = tool
         self.canvas = canvas
+
+        let predicate: NSPredicate = NSPredicate(format: "graphicContext = %@", memo.canvas.graphicContext)
+        let descriptors: [SortDescriptor<PhotoFileObject>] = [SortDescriptor(\.createdAt)]
+        self._fileObjects = FetchRequest(sortDescriptors: descriptors, predicate: predicate)
     }
 
     var body: some View {
         Group {
             #if os(macOS)
-            photoOption
+            GeometryReader { proxy in
+                VStack(alignment: .trailing, spacing: 5) {
+                    photoOption
+                    photoItemGrid
+                        .frame(minHeight: proxy.size.height * 0.2, maxHeight: proxy.size.height * 0.4)
+                }
+                .fixedSize()
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
+            }
+            .padding(10)
+            .transition(.move(edge: .trailing).combined(with: .blurReplace))
             #else
             if horizontalSizeClass == .regular {
                 photoOption
@@ -41,7 +59,7 @@ struct PhotoDock: View {
         #if os(iOS)
         .fullScreenCover(isPresented: $opensCamera) {
             let image: Binding<UIImage?> = Binding {
-                tool.selectedPhotoItem?.image
+                tool.selectedPhotoFile?.image
             } set: { image in
                 guard let image else { return }
                 tool.selectPhoto(image, for: canvas.canvasID)
@@ -63,21 +81,19 @@ struct PhotoDock: View {
         }
         #endif
         .onChange(of: photosPickerItem) { oldValue, newValue in
-            if newValue != nil {
+            if let photoItem = newValue {
                 Task {
                     tool.isLoadingPhoto = true
-                    let data = try? await newValue?.loadTransferable(type: Data.self)
-                    if let data, let image = Platform.Image(data: data) {
-                        tool.selectPhoto(image, for: canvas.canvasID)
-                    }
+                    await createFile(for: photoItem)
                     photosPickerItem = nil
+                    tool.isLoadingPhoto = false
                 }
             }
         }
     }
 
     private var photoOption: some View {
-        VStack(spacing: 0) {
+        HStack(spacing: 0) {
             #if os(iOS)
             Button {
                 openCamera()
@@ -91,7 +107,11 @@ struct PhotoDock: View {
             #endif
             PhotosPicker(selection: $photosPickerItem, matching: .images, preferredItemEncoding: .compatible) {
                 Image(systemName: "photo.fill.on.rectangle.fill")
+                    #if os(macOS)
+                    .frame(width: size * 2, height: size)
+                    #else
                     .frame(width: size, height: size)
+                    #endif
                     .clipShape(.rect(cornerRadius: 8))
                     .contentShape(.rect(cornerRadius: 8))
             }
@@ -126,9 +146,6 @@ struct PhotoDock: View {
             RoundedRectangle(cornerRadius: 8)
                 .fill(.regularMaterial)
         }
-        .padding(.trailing, 10)
-        .frame(maxHeight: .infinity)
-        .transition(.move(edge: .trailing).combined(with: .blurReplace))
     }
 
     private var compactPhotoOption: some View {
@@ -186,6 +203,49 @@ struct PhotoDock: View {
         .transition(.move(edge: .bottom).combined(with: .blurReplace))
     }
 
+    @ViewBuilder
+    private var photoItemGrid: some View {
+        let padding: CGFloat = 5
+        let size = (self.size * 2 - (5 + padding * 2)) / 2
+        let columns: [GridItem] = .init(repeating: GridItem(.flexible(), spacing: 5), count: 2)
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: 5) {
+                ForEach(fileObjects) { file in
+                    Group {
+                        let previewSize = file.previewSize(size)
+                        if let previewImage = file.previewImage {
+                            Image(image: previewImage)
+                                .resizable()
+                                .frame(width: previewSize.width, height: previewSize.height)
+                                .onTapGesture {
+                                    if tool.selectedPhotoFile == file {
+                                        tool.unselectPhoto()
+                                    } else {
+                                        tool.selectPhoto(file)
+                                    }
+                                }
+                        } else {
+                            Color.gray.opacity(0.5)
+                        }
+                    }
+                    .frame(width: size, height: size)
+                    .clipShape(RoundedRectangle(cornerRadius: 5))
+                    .overlay {
+                        if tool.selectedPhotoFile == file {
+                            RoundedRectangle(cornerRadius: 5)
+                                .stroke(Color.accentColor, lineWidth: 2.5)
+                        }
+                    }
+                }
+            }
+            .padding(padding)
+        }
+        .background {
+            RoundedRectangle(cornerRadius: 8)
+                .fill(.regularMaterial)
+        }
+    }
+
     private func openCamera() {
         let status = AVCaptureDevice.authorizationStatus(for: .video)
         switch status {
@@ -203,6 +263,13 @@ struct PhotoDock: View {
             opensCamera = true
         default:
             isCameraAccessDenied = true
+        }
+    }
+
+    private func createFile(for photoItem: PhotosPickerItem) async {
+        let data = try? await photoItem.loadTransferable(type: Data.self)
+        if let data, let image = Platform.Image(data: data) {
+            tool.createFile(image, with: memo.canvas)
         }
     }
 }

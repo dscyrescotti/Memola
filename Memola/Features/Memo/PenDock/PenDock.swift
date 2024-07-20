@@ -38,7 +38,7 @@ struct PenDock: View {
             VStack(alignment: .trailing, spacing: 5) {
                 penPropertyTool
                 penItemList
-                    .frame(maxWidth: proxy.size.width * 0.4)
+                    .frame(maxHeight: proxy.size.height * 0.4)
             }
             .fixedSize()
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
@@ -187,6 +187,40 @@ struct PenDock: View {
         .padding(.leading, 10)
         .contentShape(.rect)
         .contextMenu(if: pen.strokeStyle != .eraser) {
+            #if os(macOS)
+            Button {
+                tool.selectPen(pen)
+            } label: {
+                Label(
+                    title: { Text("Select") },
+                    icon: { Image(systemName: "pencil.tip.crop.circle") }
+                )
+            }
+            Button {
+                let originalPen = pen
+                let pen = PenObject.createObject(\.viewContext, penStyle: originalPen.style)
+                pen.color = originalPen.rgba
+                pen.thickness = originalPen.thickness
+                pen.isSelected = true
+                pen.tool = tool.object
+                let _pen = Pen(object: pen)
+                tool.duplicatePen(_pen, of: originalPen)
+            } label: {
+                Label(
+                    title: { Text("Duplicate") },
+                    icon: { Image(systemName: "plus.square.on.square") }
+                )
+            }
+            Button(role: .destructive) {
+                tool.removePen(pen)
+            } label: {
+                Label(
+                    title: { Text("Remove") },
+                    icon: { Image(systemName: "trash") }
+                )
+            }
+            .disabled(tool.markers.count <= 1)
+            #else
             ControlGroup {
                 Button {
                     tool.selectPen(pen)
@@ -222,12 +256,12 @@ struct PenDock: View {
                 .disabled(tool.markers.count <= 1)
             }
             .controlGroupStyle(.menu)
+            #endif
         } preview: {
             penPreview(pen)
                 .drawingGroup()
                 #if os(iOS)
                 .contentShape(.contextMenuPreview, .rect(cornerRadius: 10))
-                #else
                 #endif
         }
         .onDrag(if: pen.strokeStyle != .eraser) {

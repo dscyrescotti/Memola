@@ -153,7 +153,7 @@ extension GraphicContext {
                     }
                 }
             case 1:
-                guard let photo = element.photo, photo.imageURL != nil else { return }
+                guard let photo = element.photo, photo.file?.imageURL != nil else { return }
                 let _photo = Photo(object: photo)
                 tree.insert(_photo.element, in: _photo.photoBox)
             default:
@@ -312,23 +312,26 @@ extension GraphicContext {
 
 // MARK: - Photo
 extension GraphicContext {
-    func insertPhoto(at point: CGPoint, photoItem: PhotoItem) -> Photo {
-        let size = photoItem.getDimension()
+    func insertPhoto(at point: CGPoint, photoFile: PhotoFileObject) -> Photo {
+        let size = photoFile.photoDimension()
         let origin = point
         let bounds = [origin.x - size.width / 2, origin.y - size.height / 2, origin.x + size.width / 2, origin.y + size.height / 2]
-        let photo = Photo(url: photoItem.id, size: size, origin: origin, bounds: bounds, createdAt: .now, bookmark: photoItem.bookmark)
+        let photo = Photo(url: photoFile.imageURL, size: size, origin: origin, bounds: bounds, createdAt: .now, bookmark: photoFile.bookmark)
         tree.insert(photo.element, in: photo.photoBox)
+        let photoFileID = photoFile.objectID
         withPersistence(\.backgroundContext) { [weak _photo = photo, weak graphicContext = object] context in
-            guard let _photo else { return }
+            guard let _photo, let photoFile = context.object(with: photoFileID) as? PhotoFileObject else {
+                return
+            }
             let photo = PhotoObject(\.backgroundContext)
-            photo.imageURL = _photo.url
             photo.bounds = _photo.bounds
             photo.width = _photo.size.width
             photo.originY = _photo.origin.y
             photo.originX = _photo.origin.x
             photo.height = _photo.size.height
             photo.createdAt = _photo.createdAt
-            photo.bookmark = _photo.bookmark
+            photo.file = photoFile
+            photoFile.photos?.add(photo)
             let element = ElementObject(\.backgroundContext)
             element.createdAt = _photo.createdAt
             element.type = 1

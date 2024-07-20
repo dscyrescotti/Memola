@@ -20,4 +20,8 @@ final class MemoObject: NSManagedObject, Identifiable {
     @NSManaged var preview: Data?
     @NSManaged var tool: ToolObject
     @NSManaged var canvas: CanvasObject
+
+    var files: [PhotoFileObject] {
+        canvas.graphicContext.files.compactMap { $0 as? PhotoFileObject }
+    }
 }

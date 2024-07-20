@@ -26,6 +26,7 @@
     <entity name="GraphicContextObject" representedClassName="GraphicContextObject" syncable="YES">
         <relationship name="canvas" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CanvasObject" inverseName="graphicContext" inverseEntity="CanvasObject"/>
         <relationship name="elements" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ElementObject" inverseName="graphicContext" inverseEntity="ElementObject"/>
+        <relationship name="files" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="PhotoFileObject" inverseName="graphicContext" inverseEntity="PhotoFileObject"/>
     </entity>
     <entity name="MemoObject" representedClassName="MemoObject" syncable="YES">
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
@@ -46,6 +47,14 @@
         <attribute name="thickness" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="tool" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ToolObject" inverseName="pens" inverseEntity="ToolObject"/>
     </entity>
+    <entity name="PhotoFileObject" representedClassName="PhotoFileObject" syncable="YES">
+        <attribute name="bookmark" optional="YES" attributeType="Binary"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dimension" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
+        <attribute name="imageURL" optional="YES" attributeType="URI"/>
+        <relationship name="graphicContext" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GraphicContextObject" inverseName="files" inverseEntity="GraphicContextObject"/>
+        <relationship name="photos" toMany="YES" deletionRule="Cascade" destinationEntity="PhotoObject" inverseName="file" inverseEntity="PhotoObject"/>
+    </entity>
     <entity name="PhotoObject" representedClassName="PhotoObject" syncable="YES">
         <attribute name="bookmark" optional="YES" attributeType="Binary"/>
         <attribute name="bounds" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>
@@ -56,6 +65,7 @@
         <attribute name="originY" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="width" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="element" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ElementObject" inverseName="photo" inverseEntity="ElementObject"/>
+        <relationship name="file" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PhotoFileObject" inverseName="photos" inverseEntity="PhotoFileObject"/>
     </entity>
     <entity name="QuadObject" representedClassName="QuadObject" syncable="YES">
         <attribute name="color" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[CGFloat]"/>

@@ -13,16 +13,23 @@ struct PhotoPreview: View {
     private let photoItem: PhotoItem
     @ObservedObject private var tool: Tool
 
+    private var previewWidth: CGFloat? {
+        horizontalSizeClass == .compact ? 80 : nil
+    }
+
+    private var previewHeight: CGFloat? {
+        horizontalSizeClass == .compact ? nil : 100
+    }
+
     init(photoItem: PhotoItem, tool: Tool) {
         self.photoItem = photoItem
         self.tool = tool
     }
 
     var body: some View {
-        Image(image: photoItem.previewImage)
+        Image(image: photoItem.image)
             .resizable()
-            .scaledToFit()
-            .frame(width: horizontalSizeClass == .compact ? 80 : nil, height: horizontalSizeClass == .compact ? nil : 100)
+            .frame(width: previewWidth, height: previewHeight)
             .cornerRadius(5)
             .overlay {
                 RoundedRectangle(cornerRadius: 5)
@@ -33,7 +40,7 @@ struct PhotoPreview: View {
             .cornerRadius(5)
             .overlay(alignment: .topLeading) {
                 Button {
-                    tool.unselectPhoto()
+//                    tool.unselectPhoto()
                 } label: {
                     Image(systemName: "xmark.circle.fill")
                         .font(.title2)

@@ -75,14 +75,7 @@ struct MemoView: View {
                 case .pen:
                     PenDock(tool: tool, canvas: canvas)
                 case .photo:
-                    ZStack(alignment: .bottomTrailing) {
-                        PhotoDock(tool: tool, canvas: canvas)
-                        if let photoItem = tool.selectedPhotoItem {
-                            PhotoPreview(photoItem: photoItem, tool: tool)
-                                .transition(.move(edge: .trailing).combined(with: .blurReplace))
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    PhotoDock(memo: memo, tool: tool, canvas: canvas)
                 default:
                     EmptyView()
                 }
@@ -99,13 +92,6 @@ struct MemoView: View {
                 switch tool.selection {
                 case .pen:
                     PenDock(tool: tool, canvas: canvas)
-                        .transition(.move(edge: .bottom).combined(with: .blurReplace))
-                case .photo:
-                    if let photoItem = tool.selectedPhotoItem {
-                        PhotoPreview(photoItem: photoItem, tool: tool)
-                            .frame(maxWidth: .infinity, alignment: .trailing)
-                            .transition(.move(edge: .trailing))
-                    }
                 default:
                     EmptyView()
                 }

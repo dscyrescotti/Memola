@@ -237,6 +237,7 @@ struct MemosView: View {
         markerPenObjects.first?.isSelected = true
 
         let graphicContextObject = GraphicContextObject(\.viewContext)
+        graphicContextObject.files = []
         graphicContextObject.elements = []
 
         memoObject.canvas = canvasObject

@@ -167,6 +167,4 @@ struct ElementToolbar: View {
         .frame(maxWidth: .infinity)
         .transition(.move(edge: .bottom).combined(with: .blurReplace))
     }
-
-    
 }

@@ -12,4 +12,5 @@ import Foundation
 final class GraphicContextObject: NSManagedObject {
     @NSManaged var canvas: CanvasObject?
     @NSManaged var elements: NSMutableOrderedSet
+    @NSManaged var files: NSMutableOrderedSet
 }
