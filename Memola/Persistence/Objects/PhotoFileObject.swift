@@ -19,7 +19,7 @@ final class PhotoFileObject: NSManagedObject, Identifiable {
     @NSManaged var graphicContext: GraphicContextObject?
 
     var previewImage: Platform.Image? {
-        guard let imageURL else { return nil }
+        guard let imageURL = bookmark?.getBookmarkURL() else { return nil }
         guard let data = try? Data(contentsOf: imageURL, options: []) else { return nil }
         return Platform.Image(data: data)
     }

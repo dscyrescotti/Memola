@@ -13,7 +13,6 @@ struct PhotoDock: View {
 
     @FetchRequest private var fileObjects: FetchedResults<PhotoFileObject>
 
-    private let memo: MemoObject
     private let size: CGFloat = 40
 
     @ObservedObject private var tool: Tool
@@ -23,12 +22,14 @@ struct PhotoDock: View {
     @State private var isCameraAccessDenied: Bool = false
     @State private var photosPickerItems: [PhotosPickerItem] = []
 
-    init(memo: MemoObject, tool: Tool, canvas: Canvas) {
-        self.memo = memo
+    init(tool: Tool, canvas: Canvas) {
         self.tool = tool
         self.canvas = canvas
 
-        let predicate: NSPredicate = NSPredicate(format: "graphicContext = %@", memo.canvas.graphicContext)
+        var predicate: NSPredicate?
+        if let canvasObject = canvas.object {
+            predicate = NSPredicate(format: "graphicContext = %@", canvasObject.graphicContext)
+        }
         let descriptors: [SortDescriptor<PhotoFileObject>] = [SortDescriptor(\.createdAt)]
         self._fileObjects = FetchRequest(sortDescriptors: descriptors, predicate: predicate)
     }
@@ -36,22 +37,12 @@ struct PhotoDock: View {
     var body: some View {
         Group {
             #if os(macOS)
-            GeometryReader { proxy in
-                VStack(alignment: .trailing, spacing: 5) {
-                    photoOption
-                    photoItemGrid
-                        .frame(minHeight: proxy.size.height * 0.2, maxHeight: proxy.size.height * 0.4)
-                }
-                .fixedSize()
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
-            }
-            .padding(10)
-            .transition(.move(edge: .trailing).combined(with: .blurReplace))
+                photoDock
             #else
             if horizontalSizeClass == .regular {
-                photoOption
+                photoDock
             } else {
-                compactPhotoOption
+                compactPhotoDock
             }
             #endif
         }
@@ -59,10 +50,13 @@ struct PhotoDock: View {
         #if os(iOS)
         .fullScreenCover(isPresented: $opensCamera) {
             let image: Binding<UIImage?> = Binding {
-                tool.selectedPhotoFile?.image
+                .none
             } set: { image in
                 guard let image else { return }
-                tool.selectPhoto(image, for: canvas.canvasID)
+                tool.isLoadingPhoto = true
+                tool.createFile(image, with: canvas.object)
+                saveFile()
+                tool.isLoadingPhoto = false
             }
             CameraView(image: image, canvas: canvas)
                 .ignoresSafeArea()
@@ -87,11 +81,44 @@ struct PhotoDock: View {
                     for photoItem in newValue {
                         await createFile(for: photoItem)
                     }
+                    saveFile()
                     photosPickerItems = []
                     tool.isLoadingPhoto = false
                 }
             }
         }
+    }
+
+    private var photoDock: some View {
+        GeometryReader { proxy in
+            VStack(alignment: .trailing, spacing: 5) {
+                photoOption
+                photoItemGrid
+                    .frame(minHeight: proxy.size.height * 0.2, maxHeight: proxy.size.height * 0.4)
+            }
+            .fixedSize()
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
+        }
+        .padding(10)
+        .transition(.move(edge: .trailing).combined(with: .blurReplace))
+    }
+
+    private var compactPhotoDock: some View {
+        GeometryReader { proxy in
+            HStack(spacing: 0) {
+                compactPhotoItemList
+                compactPhotoOption
+            }
+            .fixedSize(horizontal: false, vertical: true)
+            .background {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(.regularMaterial)
+            }
+            .frame(maxWidth: min(proxy.size.height, proxy.size.width), maxHeight: .infinity, alignment: .bottom)
+            .frame(maxWidth: .infinity)
+        }
+        .padding(10)
+        .transition(.move(edge: .bottom).combined(with: .blurReplace))
     }
 
     private var photoOption: some View {
@@ -196,13 +223,6 @@ struct PhotoDock: View {
                 #endif
             }
         }
-        .background {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(.regularMaterial)
-        }
-        .padding(.bottom, 10)
-        .frame(maxWidth: .infinity)
-        .transition(.move(edge: .bottom).combined(with: .blurReplace))
     }
 
     @ViewBuilder
@@ -210,7 +230,7 @@ struct PhotoDock: View {
         let padding: CGFloat = 5
         let size = (self.size * 2 - (5 + padding * 2)) / 2
         let columns: [GridItem] = .init(repeating: GridItem(.flexible(), spacing: 5), count: 2)
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             LazyVGrid(columns: columns, spacing: 5) {
                 ForEach(fileObjects) { file in
                     Group {
@@ -248,6 +268,44 @@ struct PhotoDock: View {
         }
     }
 
+    @ViewBuilder
+    private var compactPhotoItemList: some View {
+        let padding: CGFloat = 5
+        let size = self.size - padding * 2
+        ScrollView(.horizontal, showsIndicators: false) {
+            LazyHStack(spacing: 5) {
+                ForEach(fileObjects) { file in
+                    Group {
+                        let previewSize = file.previewSize(size)
+                        if let previewImage = file.previewImage {
+                            Image(image: previewImage)
+                                .resizable()
+                                .frame(width: previewSize.width, height: previewSize.height)
+                                .onTapGesture {
+                                    if tool.selectedPhotoFile == file {
+                                        tool.unselectPhoto()
+                                    } else {
+                                        tool.selectPhoto(file)
+                                    }
+                                }
+                        } else {
+                            Color.gray.opacity(0.5)
+                        }
+                    }
+                    .frame(width: size, height: size)
+                    .clipShape(RoundedRectangle(cornerRadius: 5))
+                    .overlay {
+                        if tool.selectedPhotoFile == file {
+                            RoundedRectangle(cornerRadius: 5)
+                                .stroke(Color.accentColor, lineWidth: 2.5)
+                        }
+                    }
+                }
+            }
+            .padding(padding)
+        }
+    }
+
     private func openCamera() {
         let status = AVCaptureDevice.authorizationStatus(for: .video)
         switch status {
@@ -271,7 +329,16 @@ struct PhotoDock: View {
     private func createFile(for photoItem: PhotosPickerItem) async {
         let data = try? await photoItem.loadTransferable(type: Data.self)
         if let data, let image = Platform.Image(data: data) {
-            tool.createFile(image, with: memo.canvas)
+            tool.createFile(image, with: canvas.object)
+        }
+    }
+
+    private func saveFile() {
+        withPersistenceSync(\.backgroundContext) { context in
+            try context.saveIfNeeded()
+            withPersistenceSync(\.viewContext) { context in
+                try context.saveIfNeeded()
+            }
         }
     }
 }

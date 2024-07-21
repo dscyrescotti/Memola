@@ -75,7 +75,7 @@ struct MemoView: View {
                 case .pen:
                     PenDock(tool: tool, canvas: canvas)
                 case .photo:
-                    PhotoDock(memo: memo, tool: tool, canvas: canvas)
+                    PhotoDock(tool: tool, canvas: canvas)
                 default:
                     EmptyView()
                 }

@@ -33,9 +33,6 @@ struct ElementToolbar: View {
                 ZStack(alignment: .bottom) {
                     if tool.selection == .photo {
                         PhotoDock(tool: tool, canvas: canvas)
-                            .padding(.bottom, 10)
-                            .frame(maxWidth: .infinity)
-                            .transition(.move(edge: .bottom).combined(with: .blurReplace))
                     } else {
                         compactToolbar
                     }
@@ -164,7 +161,7 @@ struct ElementToolbar: View {
                 .fill(.regularMaterial)
         }
         .padding(10)
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         .transition(.move(edge: .bottom).combined(with: .blurReplace))
     }
 }

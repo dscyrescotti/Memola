@@ -128,13 +128,13 @@ final class Tool: NSObject, ObservableObject {
         }
     }
 
-    func createFile(_ image: Platform.Image, with canvas: CanvasObject) {
+    func createFile(_ image: Platform.Image, with canvas: CanvasObject?) {
         guard let (resizedImage, dimension) = resizePhoto(of: image) else { return }
-        guard let photoItem = bookmarkPhoto(of: resizedImage, and: image, in: dimension, with: canvas.objectID) else { return }
+        guard let objectID = canvas?.objectID, let photoItem = bookmarkPhoto(of: resizedImage, and: image, in: dimension, with: objectID) else { return }
         let _dimension = photoItem.dimension
-        let graphicContext = canvas.graphicContext
-        withPersistence(\.viewContext) { [weak graphicContext = graphicContext] context in
-            let file = PhotoFileObject(\.viewContext)
+        let graphicContext = canvas?.graphicContext
+        withPersistenceSync(\.backgroundContext) { [weak graphicContext = graphicContext] context in
+            let file = PhotoFileObject(\.backgroundContext)
             file.imageURL = photoItem.id
             file.bookmark = photoItem.bookmark
             file.dimension = [_dimension.width, _dimension.height]
@@ -142,7 +142,6 @@ final class Tool: NSObject, ObservableObject {
             file.photos = []
             file.graphicContext = graphicContext
             graphicContext?.files.add(file)
-            try context.saveIfNeeded()
         }
     }
 

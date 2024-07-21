@@ -320,7 +320,7 @@ extension GraphicContext {
         tree.insert(photo.element, in: photo.photoBox)
         let photoFileID = photoFile.objectID
         withPersistence(\.backgroundContext) { [weak _photo = photo, weak graphicContext = object] context in
-            guard let _photo, let photoFile = context.object(with: photoFileID) as? PhotoFileObject else {
+            guard let _photo, let photoFile = try context.existingObject(with: photoFileID) as? PhotoFileObject else {
                 return
             }
             let photo = PhotoObject(\.backgroundContext)
