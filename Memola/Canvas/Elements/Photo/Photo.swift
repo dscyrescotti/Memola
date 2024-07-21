@@ -37,12 +37,12 @@ final class Photo: @unchecked Sendable, Equatable {
 
     convenience init(object: PhotoObject) {
         self.init(
-            url: object.imageURL,
+            url: object.file?.imageURL,
             size: .init(width: object.width, height: object.height),
             origin: .init(x: object.originX, y: object.originY),
             bounds: object.bounds,
             createdAt: object.createdAt ?? .now,
-            bookmark: object.bookmark
+            bookmark: object.file?.bookmark
         )
         self.object = object
     }

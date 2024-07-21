@@ -221,8 +221,8 @@ extension Canvas {
 
 // MARK: - Photo
 extension Canvas {
-    func insertPhoto(at point: CGPoint, photoItem: PhotoItem) -> Photo {
-        graphicContext.insertPhoto(at: point, photoItem: photoItem)
+    func insertPhoto(at point: CGPoint, photoFile: PhotoFileObject) -> Photo {
+        graphicContext.insertPhoto(at: point, photoFile: photoFile)
     }
 }
 

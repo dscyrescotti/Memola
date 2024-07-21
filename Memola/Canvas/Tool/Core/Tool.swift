@@ -19,7 +19,7 @@ final class Tool: NSObject, ObservableObject {
     @Published var selectedPen: Pen?
     @Published var draggedPen: Pen?
     // MARK: - Photo
-    @Published var selectedPhotoItem: PhotoItem?
+    @Published var selectedPhotoFile: PhotoFileObject?
     @Published var isLoadingPhoto: Bool = false
 
     @Published var selection: ToolSelection = .hand
@@ -128,13 +128,29 @@ final class Tool: NSObject, ObservableObject {
         }
     }
 
-    func selectPhoto(_ image: Platform.Image, for canvasID: NSManagedObjectID) {
+    func createFile(_ image: Platform.Image, with canvas: CanvasObject?) {
         guard let (resizedImage, dimension) = resizePhoto(of: image) else { return }
-        let photoItem = bookmarkPhoto(of: resizedImage, and: image, in: dimension, with: canvasID)
-        withAnimation {
-            selectedPhotoItem = photoItem
-            isLoadingPhoto = false
+        guard let objectID = canvas?.objectID, let photoItem = bookmarkPhoto(of: resizedImage, and: image, in: dimension, with: objectID) else { return }
+        let _dimension = photoItem.dimension
+        let graphicContext = canvas?.graphicContext
+        withPersistenceSync(\.backgroundContext) { [weak graphicContext = graphicContext] context in
+            let file = PhotoFileObject(\.backgroundContext)
+            file.imageURL = photoItem.id
+            file.bookmark = photoItem.bookmark
+            file.dimension = [_dimension.width, _dimension.height]
+            file.createdAt = .now
+            file.photos = []
+            file.graphicContext = graphicContext
+            graphicContext?.files.add(file)
         }
+    }
+
+    func selectPhoto(_ photoFile: PhotoFileObject) {
+        selectedPhotoFile = photoFile
+    }
+
+    func unselectPhoto() {
+        selectedPhotoFile = nil
     }
 
     private func resizePhoto(of image: Platform.Image) -> (Platform.Image, CGSize)? {
@@ -198,25 +214,10 @@ final class Tool: NSObject, ObservableObject {
         var photoBookmark: PhotoItem?
         do {
             let bookmark = try file.bookmarkData(options: .minimalBookmark)
-            photoBookmark = PhotoItem(id: file, image: image, previewImage: previewImage, dimension: dimension, bookmark: bookmark)
+            photoBookmark = PhotoItem(id: file, image: image, dimension: dimension, bookmark: bookmark)
         } catch {
             NSLog("[Memola] - \(error.localizedDescription)")
         }
         return photoBookmark
-    }
-
-    func unselectPhoto() {
-        guard let photoItem = selectedPhotoItem else { return }
-        let fileManager = FileManager.default
-        if let url = photoItem.bookmark.getBookmarkURL() {
-            do {
-                try fileManager.removeItem(at: url)
-            } catch {
-                NSLog("[Memola] - \(error.localizedDescription)")
-            }
-        }
-        withAnimation {
-            selectedPhotoItem = nil
-        }
     }
 }

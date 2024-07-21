@@ -329,17 +329,15 @@ extension CanvasViewController {
     }
 
     @objc private func recognizeTapGesture(_ gesture: Platform.TapGestureRecognizer) {
-        guard let photoItem = tool.selectedPhotoItem else { return }
-        withAnimation {
-            tool.selectedPhotoItem = nil
-        }
+        guard let photoFile = tool.selectedPhotoFile else { return }
+        tool.selectedPhotoFile = nil
         #if os(macOS)
         let pointInLeftBottomOrigin = gesture.location(in: drawingView)
         let point = CGPoint(x: pointInLeftBottomOrigin.x, y: drawingView.bounds.height - pointInLeftBottomOrigin.y)
         #else
         let point = gesture.location(in: drawingView)
         #endif
-        let photo = canvas.insertPhoto(at: point.muliply(by: drawingView.ratio), photoItem: photoItem)
+        let photo = canvas.insertPhoto(at: point.muliply(by: drawingView.ratio), photoFile: photoFile)
         history.addUndo(.photo(photo))
         drawingView.draw()
     }

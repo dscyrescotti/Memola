@@ -20,7 +20,8 @@ final class Persistence {
     }()
 
     lazy var backgroundContext: NSManagedObjectContext = {
-        let context = persistentContainer.newBackgroundContext()
+        let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        context.parent = viewContext
         context.undoManager = nil
         context.automaticallyMergesChangesFromParent = true
         return context
