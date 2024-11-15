@@ -10,7 +10,7 @@ import SwiftUI
 struct AboutView: View {
     var body: some View {
         List {
-            Section {
+            Section("INFO") {
                 HStack {
                     Text("App Version")
                     Spacer()
@@ -19,6 +19,12 @@ struct AboutView: View {
                 #if os(macOS)
                 .listRowSeparator(.hidden)
                 #endif
+            }
+            Section("REPOSTORY") {
+                Text("https://github.com/dscyrescotti/Memola")
+                    #if os(macOS)
+                    .listRowSeparator(.hidden)
+                    #endif
             }
             Section("COPYRIGHT") {
                 Text(Bundle.main.copyright)
