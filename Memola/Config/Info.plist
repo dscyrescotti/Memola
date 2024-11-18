@@ -40,7 +40,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Memola requires access to the camera to capture photos.</string>
+	<string>This app needs access to your camera to capture photos for adding them to your memos.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2024 Aye Chan. All rights reserved.</string>
 	<key>UIApplicationSceneManifest</key>
