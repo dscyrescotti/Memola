@@ -1,17 +1,24 @@
-<p align="center">
-<img width="30%" src="Assets/app-logo.png">
-</p>
+<div align="center">
+    <img width="30%" src="Assets/app-logo.png">
+    <h1>
+        Memola
+    </h1>
+    <div>
+        <a href="https://apps.apple.com/th/app/memola/id6738171174">
+            <img height="25px" src="Assets/ios-app-store.svg">
+        </a>
+        <a href="https://apps.apple.com/th/app/memola/id6738171174">
+            <img height="25px" src="Assets/mac-app-store.svg">
+        </a>
+    </div>
+</div>
+<br>
 
-<hr/>
-
-**Memola** is an open-source note-taking application that lets you jot down ideas and sketch your visions seamlessly on your iPhone, iPad, and MacBook.
+**Memola** is an open-source note-taking application, fully built using the Metal framework, allowing you to seamlessly jot down ideas and sketch your visions across iOS, iPadOS, and macOS.
 
 <p align="center">
 <img width="100%" src="Assets/app-demo.png">
 </p>
-
-## 🎉 Motivation
-Last year, I started reading Metal by Tutorials from Kodeco and was fascinated by GPU programming, particularly the process of building a graphic rendering engine. This led me to develop a note-taking app with a 2D render engine using Metal. There were a lot of challenges throughout, and I initially thought it would be a flop. However, I managed to figure out workarounds to get a functional render engine. I know it is not perfect yet and there are a lot of battles to be won in optimizing render efficiency and adding more writing tools. Regardless, I feel like it is ready to lauch the app and make the code open-source.
 
 ## 👨‍💻 Contributions
 **Memola** welcomes all developers to contribute if you have any idea to enhance and open an issue if you encounter any bug.
