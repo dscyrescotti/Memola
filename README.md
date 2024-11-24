@@ -5,10 +5,10 @@
     </h1>
     <div>
         <a href="https://apps.apple.com/th/app/memola/id6738171174">
-            <img height="25px" src="Assets/ios-app-store.svg">
+            <img height="40px" src="Assets/ios-app-store.svg">
         </a>
         <a href="https://apps.apple.com/th/app/memola/id6738171174">
-            <img height="25px" src="Assets/mac-app-store.svg">
+            <img height="40px" src="Assets/mac-app-store.svg">
         </a>
     </div>
 </div>
