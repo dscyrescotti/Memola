@@ -9,6 +9,8 @@ import SwiftUI
 import Foundation
 
 struct ColorPicker: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
     @State private var hue: Double = 1
     @State private var saturation: Double = 0
     @State private var brightness: Double = 1
@@ -16,16 +18,32 @@ struct ColorPicker: View {
 
     @Binding private var color: Color
 
-    private let size: CGFloat = 20
+    private let isCompact: Bool
+    private let boundSize: CGFloat
+    private let size: CGFloat = 25
 
-    init(color: Binding<Color>) {
+    init(color: Binding<Color>, boundSize: CGFloat, isCompact: Bool = false) {
         self._color = color
+        self.isCompact = isCompact
+        self.boundSize = boundSize
     }
 
     var body: some View {
-        VStack(spacing: 10) {
+        #if os(macOS)
+        colorPicker
+        #else
+        if horizontalSizeClass == .regular {
             colorPicker
-                .frame(width: 200, height: 200)
+        } else {
+            compactColorPicker
+        }
+        #endif
+    }
+
+    private var colorPicker: some View {
+        VStack(spacing: 10) {
+            colorPalette
+                .frame(width: boundSize, height: boundSize)
             HStack(spacing: 10) {
                 hueSlider
                 alphaSlider
@@ -47,7 +65,29 @@ struct ColorPicker: View {
     }
 
     @ViewBuilder
-    private var colorPicker: some View {
+    private var compactColorPicker: some View {
+        let padding: CGFloat = 30 + (isCompact ? size * 2 + 10 : 0)
+        VStack(spacing: 10) {
+            colorPalette
+                .frame(width: boundSize - padding, height: boundSize - padding)
+            HStack(spacing: 10) {
+                hueSlider
+                alphaSlider
+            }
+        }
+        .padding(15)
+        .padding(.top, 10)
+        .onAppear {
+            let hsba = color.hsba
+            hue = hsba.hue
+            saturation = hsba.saturation
+            brightness = hsba.brightness
+            alpha = hsba.alpha * 1.43 - 0.43
+        }
+    }
+
+    @ViewBuilder
+    private var colorPalette: some View {
         GeometryReader { proxy in
             ZStack {
                 Color(hue: hue, saturation: 1, brightness: 1)

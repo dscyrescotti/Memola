@@ -67,7 +67,7 @@ struct PenDock: View {
                     compactPenItemList
                         .fixedSize(horizontal: false, vertical: true)
                     HStack(spacing: 0) {
-                        compactPenPropertyTool
+                        compactPenPropertyTool(bounds: proxy.frame(in: .global).size)
                         Divider()
                             .padding(.vertical, 4)
                             .frame(height: size)
@@ -360,9 +360,10 @@ struct PenDock: View {
     @ViewBuilder
     private var penPropertyTool: some View {
         if let pen = tool.selectedPen {
+            let size: CGFloat = 250
             VStack(spacing: 5) {
                 if pen.strokeStyle == .marker {
-                    penColorPicker(pen)
+                    penColorPicker(pen, bounds: .init(width: size, height: size))
                 }
                 penThicknessPicker(pen)
             }
@@ -379,14 +380,14 @@ struct PenDock: View {
     }
 
     @ViewBuilder
-    private var compactPenPropertyTool: some View {
+    private func compactPenPropertyTool(bounds: CGSize) -> some View {
         if let pen = tool.selectedPen {
             HStack(spacing: 8) {
                 penThicknessPicker(pen)
                     .frame(width: penPropertySize)
                     .rotationEffect(.degrees(-90))
                 if pen.strokeStyle == .marker {
-                    penColorPicker(pen)
+                    penColorPicker(pen, bounds: bounds)
                         .frame(width: penPropertySize)
                         .transition(.move(edge: .trailing).combined(with: .opacity))
                 }
@@ -395,7 +396,7 @@ struct PenDock: View {
         }
     }
 
-    private func penColorPicker(_ pen: Pen) -> some View {
+    private func penColorPicker(_ pen: Pen, bounds: CGSize) -> some View {
         Button {
             opensColorPicker = true
         } label: {
@@ -437,8 +438,45 @@ struct PenDock: View {
                     tool.objectWillChange.send()
                 }
             )
-            ColorPicker(color: color)
-                .presentationCompactAdaptation(.popover)
+            #if os(macOS)
+            ColorPicker(color: color, boundSize: min(bounds.height, bounds.width))
+                .onDisappear {
+                    withPersistence(\.viewContext) { context in
+                        try context.saveIfNeeded()
+                    }
+                }
+            #else
+            if horizontalSizeClass == .regular {
+                ColorPicker(color: color, boundSize: min(bounds.height, bounds.width))
+                    .onDisappear {
+                        withPersistence(\.viewContext) { context in
+                            try context.saveIfNeeded()
+                        }
+                    }
+            } else {
+                compactColorPicker(color: color, bounds: bounds)
+            }
+            #endif
+        }
+    }
+
+    @ViewBuilder
+    func compactColorPicker(color: Binding<Color>, bounds: CGSize) -> some View {
+        let size = min(bounds.height, bounds.width)
+        if bounds.height > bounds.width {
+            ColorPicker(color: color, boundSize: size)
+                .presentationDetents([.height(size + 40)])
+                .presentationDragIndicator(.visible)
+                .onDisappear {
+                    withPersistence(\.viewContext) { context in
+                        try context.saveIfNeeded()
+                    }
+                }
+        } else {
+            ColorPicker(color: color, boundSize: size, isCompact: true)
+                .presentationCompactAdaptation(.sheet)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
                 .onDisappear {
                     withPersistence(\.viewContext) { context in
                         try context.saveIfNeeded()
