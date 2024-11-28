@@ -5,10 +5,10 @@
     </h1>
     <div>
         <a href="https://apps.apple.com/app/memola/id6738171174">
-            <img height="31px" src="Assets/ios-app-store.svg">
+            <img height="35px" src="Assets/ios-app-store.svg">
         </a>
         <a href="https://apps.apple.com/app/memola/id6738171174">
-            <img height="31px" src="Assets/mac-app-store.svg">
+            <img height="35px" src="Assets/mac-app-store.svg">
         </a>
     </div>
 </div>
@@ -36,6 +36,7 @@ Memola is an open-source note-taking application, fully built using the Metal fr
 
 ## Table of Contents
 - [Motivation](#motivation)
+- [Roadmap](#roadmap)
 - [Community](#community)
 - [Contributing](#contributing)
 - [Credits](#credits)
