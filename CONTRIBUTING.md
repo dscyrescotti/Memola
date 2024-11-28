@@ -2,13 +2,23 @@
 
 Be a part of Memola! Pull requests, bug reports, suggestions and any other contributions are welcomed and highly encouraged.
 
-## Fork and Clone
+## Table of Contents
+- [Getting Start](#getting-started)
+- [Contributing](#contributing)
+- [Branching](#branching)
+- [Pull Request](#pull-request)
+- [Feature Request](#feature-request)
+- [Bug Report](#bug-report)
+- [Community](#community)
+- [Code of Conduct](#code-of-conduct)
+
+
+## Getting Started
 Tap the "Fork" button on the top of the site. After forking, clone the forked repository to your Mac.
 ```bash
 git clone https://github.com/dscyrescotti/Memola.git
 cd Memola
 ```
-## Run Project
 Make sure you have already installed the latest Xcode and open the project.
 ```bash
 xed Memola.xcodeproj
@@ -16,7 +26,7 @@ xed Memola.xcodeproj
 Now you are good to run the project and explore the codebase.
 > [!IMPORTANT]
 > You need to change the bundle identifier and run the project on a real device that supports for Metal.
-> You can check Metal compatibility [here](https://support.apple.com/en-us/102894)
+> You can check Metal compatibility [here](https://support.apple.com/en-us/102894).
 
 ## Contributing
 We’re excited to have you contribute and be part of our project’s growth! Whether you’re fixing bugs, implementing new features, or suggesting improvements, your input is invaluable.
@@ -24,8 +34,16 @@ We’re excited to have you contribute and be part of our project’s growth! Wh
 - Our list of open bug issues is a great way to contribute and improve the app’s stability. Browse the "Issues" tab to find bugs labeled as “bug” or “help wanted”.
 - Feel free to bring your own commits for enhancements—whether it’s a new feature, optimization, or improvement, your input matters!
 
+## Branching
+When contributing to Memola, please follow these branching guidelines to ensure smooth collaboration:
+- Always create your branches starting from the `develop` branch.
+- 	Use a clear and descriptive name that reflects the purpose of the branch, such as:
+    
+    - `feature/your-feature-name` for new features.
+    - `bug/issue-description` for bug fixes.
+
 ## Pull Request
-Once you are happy with your changes, submit a "Pull Request".
+Once you are happy with your changes, submit a "Pull Request" targeting the `develop` branch for review.
 
 The pull request opens with a template loaded. Fill out all fields that are relevant.
 
