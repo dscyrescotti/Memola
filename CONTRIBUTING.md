@@ -9,7 +9,6 @@ Be a part of Memola! Pull requests, bug reports, suggestions and any other contr
 - [Pull Request](#pull-request)
 - [Feature Request](#feature-request)
 - [Bug Report](#bug-report)
-- [Community](#community)
 - [Code of Conduct](#code-of-conduct)
 
 
