@@ -21,12 +21,18 @@ Memola is an open-source note-taking application, fully built using the Metal fr
 </p>
 
 ## Motivation
-Metal is a fascinating framework where we can leverage the optimal power of GPUs through compute shaders and rendering shaders to build advanced applications powered by GPUs. This raised multiple questions like "How is the render pipeline constructed?" and "How are renders generated?", which led to an adventurous journey of crafting a 2D render engine. That's how this project, Memola, started to dive into the world of GPU programming.  
+Metal is a fascinating framework where we can leverage the optimal power of GPUs through compute shaders and rendering shaders to build advanced applications powered by GPUs. This raised multiple questions like "How is the render pipeline constructed?" and "How are renders generated?" which led to an adventurous journey of crafting a 2D render engine. That's how Memola, started to dive into the world of GPU programming.
+
+## Community
+We encourage open and constructive discussions within our [GitHub Discussions](https://github.com/dscyrescotti/Memola/discussions) to help improve the project, share ideas, and address challenges together. Whether you’re looking for help, proposing new features, or sharing your insights, our community is here to collaborate and grow. 
 
 ## Contributing
-**Memola** welcomes all developers to contribute if you have any idea to enhance and open an issue if you encounter any bug.
+Memola welcomes all developers to contribute! Share your enhancement ideas or report bugs by opening an issue with detailed information. Your input is invaluable to the project’s success!
+
+Before contributing, please review our [Contributing Guideline](/CONTRIBUTING.md) for more information.
 
 ## Credits
+Memola wouldn’t exist without the incredible work of these repositories.
 - [BezierKit](https://github.com/hfutrell/BezierKit)
 - [FastDraw](https://github.com/collinzrj/FastDraw)
 - [hand-drawing-swift-metal](https://github.com/owengombas/hand-drawing-swift-metal)
