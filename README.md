@@ -18,13 +18,13 @@
     <img src="https://img.shields.io/badge/iOS-17+-blue.svg" />
     <img src="https://img.shields.io/badge/macOS-14+-blue.svg" />
     <a href="https://github.com/dscyrescotti/Memola/releases/latest">
-        <img src="https://img.shields.io/github/v/release/dscyrescotti/Memola?color=green&label=latest%20release&sort=semver&style=flat-square" />
+        <img src="https://img.shields.io/github/v/release/dscyrescotti/Memola?color=green&label=latest%20release&sort=semver&style=flat-round" />
     </a>
     <a href="https://github.com/dscyrescotti/Memola/stargazers">
-        <img src="https://img.shields.io/github/stars/dscyrescotti/Memola?color=red&style=flat-square" />
+        <img src="https://img.shields.io/github/stars/dscyrescotti/Memola?color=red&style=flat-round" />
     </a>
     <a href="https://github.com/dscyrescotti/Memola/forks">
-        <img src="https://img.shields.io/github/forks/dscyrescotti/Memola?style=flat-square&color=red" />
+        <img src="https://img.shields.io/github/forks/dscyrescotti/Memola?style=flat-round&color=red" />
     </a>
 </p>
 
@@ -36,7 +36,7 @@ Memola is an open-source note-taking application, fully built using the Metal fr
 
 ## Table of Contents
 - [Motivation](#motivation)
-- [Roadmap](#roadmap)
+- [Roadmap](#ro)
 - [Community](#community)
 - [Contributing](#contributing)
 - [Credits](#credits)
