@@ -1,5 +1,3 @@
-<!--- IMPORTANT: If this PR addresses multiple unrelated issues, it will be closed until separated. -->
-
 ### Description
 
 <!--- REQUIRED: Describe what changed in detail -->
